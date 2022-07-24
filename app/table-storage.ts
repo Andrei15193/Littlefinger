@@ -27,7 +27,21 @@ export async function ensureTableStorageAsync({ recreateTables = false, deleteEx
 
     if (recreateTables) {
         const tableService = TableServiceClient.fromConnectionString(AzureTableStorageConnectionString)
+        const tableNames: readonly string[] = await getTableNamesAsync(tableService);
+        await Promise.all(tableNames.map(tableName => tableService.deleteTable(tableName)));
+    }
+    else if (deleteExtraTables) {
+        const tableService = TableServiceClient.fromConnectionString(AzureTableStorageConnectionString)
+        const tableNames: readonly string[] = await getTableNamesAsync(tableService);
+        await Promise.all(tableNames
+            .filter(tableName => currentTables.every(table => table.tableName !== tableName))
+            .map(tableName => tableService.deleteTable(tableName))
+        );
+    }
 
+    await Promise.all(currentTables.map(currentTable => currentTable.createTable()));
+
+    async function getTableNamesAsync(tableService: TableServiceClient): Promise<readonly string[]> {
         const tableNames: string[] = [];
         const tablesIterator = await tableService.listTables();
         let result = await tablesIterator.next();
@@ -37,22 +51,6 @@ export async function ensureTableStorageAsync({ recreateTables = false, deleteEx
             result = await tablesIterator.next();
         }
 
-        await Promise.all(tableNames.map(tableName => tableService.deleteTable(tableName)));
+        return tableNames;
     }
-    else if (deleteExtraTables) {
-        const tableService = TableServiceClient.fromConnectionString(AzureTableStorageConnectionString)
-
-        const tableNames: string[] = [];
-        const tablesIterator = await tableService.listTables();
-        let result = await tablesIterator.next();
-        while (!result.done) {
-            if (result.value.name !== undefined && currentTables.every(currentTable => currentTable.tableName !== result.value.name))
-                tableNames.push(result.value.name);
-            result = await tablesIterator.next();
-        }
-
-        await Promise.all(tableNames.map(tableName => tableService.deleteTable(tableName)));
-    }
-
-    await Promise.all(currentTables.map(currentTable => currentTable.createTable()));
 }

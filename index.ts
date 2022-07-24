@@ -25,7 +25,19 @@ import { tabs } from "./app/tabs";
         .set("view engine", "hbs")
         .set("views", path.join(process.cwd(), "app", "views"))
         .set("view options", { layout: "layouts/default" })
-        .use(express.static(path.join(process.cwd(), "app", "assets")));
+        .use(express.static(path.join(process.cwd(), "app", "assets")))
+        .use(express.urlencoded({ extended: true }))
+        .use((req, res, next) => {
+            res.locals = {
+                user: {
+                    id: "00000000-0000-0000-0000-000000000000",
+                    username: "andrei15193",
+                    displayName: "Andrei",
+                    defaultCurrency: "RON"
+                }
+            };
+            next();
+        });
     registerHandlers(app);
 
     await ensureTableStorageAsync({

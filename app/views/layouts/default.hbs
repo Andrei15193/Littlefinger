@@ -9,6 +9,15 @@
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
 
     <style>
+        .currency-input {
+            flex: initial !important;
+            width: 90px !important;
+        }
+
+        .pointer {
+            cursor: pointer;
+        }
+
         div.logo {
             fill: black;
             stroke: none;
@@ -73,15 +82,17 @@
             <h5><em>master of coin</em></h5>
         </div>
 
+        {{#if user}}
         <div class="user h-100 p-2">
             <div class="info py-1 px-2 text-end">
-                <h3 class="m-0">Andrei</h3>
+                <h3 class="m-0">{{ user.displayName }}</h3>
             </div>
             <div class="btn-group d-flex" role="group">
-                <a href="#" class="btn btn-light btn-sm">Log expense</a>
+                <a href="/expenses/add" class="btn btn-light btn-sm">Log expense</a>
                 <a href="#" class="btn btn-light btn-sm">Logout</a>
             </div>
         </div>
+        {{/if}}
     </div>
 
     <ul class="px-4 mb-3 nav nav-tabs">
@@ -100,12 +111,10 @@
 
     <hr class="w-100 ">
     <div class="mb-3 text-center">
-        <strong>LittleFinger</strong>, <em>brothel keeper</em>
+        <strong>LittleFinger</strong>, <em>book keeper</em>
     </div>
 </body>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
-    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
 
 </html>

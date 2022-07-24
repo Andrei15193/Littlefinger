@@ -1,0 +1,35 @@
+<div class="d-flex flex-row align-items-center">
+    <h3>Expenses</h3>
+    <a href="/expenses/add" class="ms-2 btn btn-sm btn-primary">Add</a>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Shop</th>
+            <th>Tags</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Amount</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each expenses}}
+        <tr>
+            <td>{{ name }}</td>
+            <td>{{ shop }}</td>
+            <td>
+                {{#each tags}}
+                <div class="badge rounded-pill text-bg-primary">{{ this }}</div>
+                {{/each}}
+            </td>
+            <td>{{currency}} {{ price }}</td>
+            <td>{{ quantity }}</td>
+            <td>{{currency}} {{ amount }}</td>
+            <td>{{ date }}</td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
