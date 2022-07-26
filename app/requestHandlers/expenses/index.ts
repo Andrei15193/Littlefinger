@@ -1,8 +1,10 @@
 import type { Express } from "express";
-import { registerHandlers as registerGetHandlers } from "./get";
-import { registerHandlers as registerPostHandlers } from "./post";
+import { registerHandlers as registerListHandlers } from "./list";
+import { registerHandlers as registerDetailHandlers } from "./detail";
+import { registerHandlers as registerCreateHandlers } from "./create";
 
 export function registerHandlers(app: Express): void {
-    registerGetHandlers(app);
-    registerPostHandlers(app);
+    registerListHandlers(app);
+    registerCreateHandlers(app);
+    registerDetailHandlers(app);
 }

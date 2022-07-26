@@ -18,7 +18,7 @@
     <tbody>
         {{#each expenses}}
         <tr>
-            <td>{{ name }}</td>
+            <td><a href="/expenses/{{ id }}">{{ name }}</a></td>
             <td>{{ shop }}</td>
             <td>
                 {{#each tags}}
@@ -27,8 +27,8 @@
             </td>
             <td>{{currency}} {{ price }}</td>
             <td>{{ quantity }}</td>
-            <td>{{currency}} {{ amount }}</td>
-            <td>{{ date }}</td>
+            <td>{{ currency }} {{ amount }}</td>
+            <td>{{ formatDate date }}</td>
         </tr>
         {{/each}}
     </tbody>

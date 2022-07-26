@@ -12,8 +12,11 @@ interface IExpense {
     readonly currency: string;
     readonly quantity: number;
     readonly amount: number;
-    readonly date: string;
+    readonly date: Date;
 }
+
+const title = "Expenses";
+const tab = tabs.expenses;
 
 export function registerHandlers(app: Express): void {
     app.get("/expenses", async (req, res) => {
@@ -29,7 +32,10 @@ export function registerHandlers(app: Express): void {
             expenseEntities.push(expenseEntity);
 
         const expenses: IExpense[] = expenseEntities
-            .sort((left, right) => left.date.getDate() - right.date.getDate())
+            .sort((left, right) => {
+                const compareResult = left.date.getDate() - right.date.getDate();
+                return compareResult == 0 ? left.name.localeCompare(right.name) : compareResult;
+            })
             .map(expenseEntity => ({
                 id: expenseEntity.rowKey,
                 name: expenseEntity.name,
@@ -39,9 +45,13 @@ export function registerHandlers(app: Express): void {
                 currency: expenseEntity.currency,
                 quantity: expenseEntity.quantity,
                 amount: expenseEntity.price * 100 * expenseEntity.quantity / 100,
-                date: expenseEntity.date.toLocaleDateString()
+                date: expenseEntity.date
             }));
 
-        res.render("expenses/index", { title: "Expenses", tab: tabs.expenses, expenses });
+        res.render("expenses/list", {
+            title,
+            tab,
+            expenses
+        });
     });
 }
