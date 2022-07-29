@@ -65,7 +65,7 @@ export function registerHandlers(app: Express): void {
                     title,
                     tab,
                     validated: true,
-                    formError: "An unknown error has occurred, please retry the operation",
+                    formError: "An unknown error has occurred, please reload the page and retry the operation",
                     form
                 });
             }
@@ -97,7 +97,7 @@ function readForm(body: IExpenseFormRequestBody): IExpenseForm {
             value: Number(body.price)
         },
         currency: {
-            value: body.currency?.trim() || ""
+            value: body.currency?.trim().toUpperCase() || ""
         },
         quantity: {
             value: Number(body.quantity)

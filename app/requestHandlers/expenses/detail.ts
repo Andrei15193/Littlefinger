@@ -15,10 +15,12 @@ interface IExpenseFormRequestBody {
     readonly quantity: number;
     readonly date: string;
     readonly etag: string;
+    readonly deleteFlag: string;
 }
 
 interface IExpenseUpdateForm extends IExpenseForm {
     readonly etag: string;
+    readonly deleteFlag: boolean;
 }
 
 function title(expenseId: string): string {
@@ -27,56 +29,124 @@ function title(expenseId: string): string {
 const tab = tabs.expenses;
 
 export function registerHandlers(app: Express): void {
-    app.get("/expenses/:id", async (req, res) => {
-        const { id: expenseId } = req.params;
+    app.get("/expenses/:month(\\d{4}-\\d{2})/:id", async (req, res) => {
+        const { month: expenseMonth, id: expenseId = "" } = req.params;
         const { user: { id: userId } } = res.locals;
 
-        const expenseEntity = await tables.expenses.getEntity<IExpenseEntity>(`${userId}-2022-07`, expenseId);
-
-        res.render("expenses/detail", {
-            title: title(expenseId),
-            tab,
-            previousTags: ["tag1", "tag2"],
-            previousCurrencies: ["RON", "EUR"],
-            validated: false,
-            form: ({
-                name: { value: expenseEntity.name },
-                shop: { value: expenseEntity.shop },
-                tags: { value: JSON.parse(expenseEntity.tags) },
-                price: { value: expenseEntity.price },
-                currency: { value: expenseEntity.currency },
-                quantity: { value: expenseEntity.quantity },
-                date: { value: expenseEntity.date },
-                etag: expenseEntity.etag
-            } as IExpenseForm)
-        });
+        try {
+            const expenseEntity = await tables.expenses.getEntity<IExpenseEntity>(`${userId}-${expenseMonth}`, expenseId);
+            res.render("expenses/detail", {
+                title: title(expenseId),
+                tab,
+                previousTags: ["tag1", "tag2"],
+                previousCurrencies: ["RON", "EUR"],
+                validated: false,
+                form: ({
+                    name: { value: expenseEntity.name },
+                    shop: { value: expenseEntity.shop },
+                    tags: { value: JSON.parse(expenseEntity.tags) },
+                    price: { value: expenseEntity.price },
+                    currency: { value: expenseEntity.currency },
+                    quantity: { value: expenseEntity.quantity },
+                    date: { value: expenseEntity.date },
+                    etag: expenseEntity.etag
+                } as IExpenseForm)
+            });
+        }
+        catch (error) {
+            const { statusCode } = error as RestError;
+            if (statusCode === 404)
+                res.render("expenses/detail", {
+                    title: title(expenseId),
+                    tab,
+                    validated: false,
+                    formError: "The expense you are trying to view does not exist",
+                    form: {
+                        etag: "*"
+                    }
+                });
+            else
+                res.render("expenses/detail", {
+                    title: title(expenseId),
+                    tab,
+                    validated: false,
+                    formError: "An unknown error has occurred, please reload the page and retry the operation"
+                });
+        }
     });
 
-    app.post("/expenses/:id", async (req, res) => {
-        const { id: expenseId } = req.params;
+    app.post("/expenses/:month(\\d{4}-\\d{2})/:id", async (req, res) => {
+        const { month: expenseMonth, id: expenseId = "" } = req.params;
         const { user: { id: userId } } = res.locals;
         const form = readForm(req.body as IExpenseFormRequestBody);
+        const partitionKey = `${userId}-${expenseMonth}`;
+
+        if (form.deleteFlag) {
+            try {
+                await tables.expenses.deleteEntity(partitionKey, expenseId, { etag: form.etag });
+                res.redirect("/expenses");
+            }
+            catch (error) {
+                const { statusCode } = error as RestError;
+                if (statusCode === 404)
+                    res.redirect("/expenses");
+                else if (statusCode === 412)
+                    res.render("expenses/detail", {
+                        title: title(expenseId),
+                        tab,
+                        validated: false,
+                        formError: "The expense has been edited",
+                        form
+                    });
+                else
+                    res.render("expenses/detail", {
+                        title: title(expenseId),
+                        tab,
+                        validated: false,
+                        formError: "An unknown error has occurred, please reload the page and retry the operation",
+                        form
+                    });
+            }
+        }
 
         if (validate(form)) {
-            const expenseMonth = form.date.value.toISOString().substring(0, "YYYY-MM".length);
-            const partitionKey = `${userId}-${expenseMonth}`
+            const newExpenseMonth = form.date.value.toISOString().substring(0, "YYYY-MM".length);
 
             try {
-                await tables.expenses.updateEntity<IExpenseEntity>(
-                    {
-                        partitionKey,
-                        rowKey: expenseId,
-                        name: form.name.value,
-                        shop: form.shop.value,
-                        tags: JSON.stringify(form.tags.value),
-                        currency: form.currency.value,
-                        price: form.price.value,
-                        quantity: form.quantity.value,
-                        date: form.date.value
-                    },
-                    "Replace",
-                    { etag: form.etag }
-                );
+                if (expenseMonth === newExpenseMonth)
+                    await tables.expenses.updateEntity<IExpenseEntity>(
+                        {
+                            partitionKey,
+                            rowKey: expenseId,
+                            name: form.name.value,
+                            shop: form.shop.value,
+                            tags: JSON.stringify(form.tags.value),
+                            currency: form.currency.value,
+                            price: form.price.value,
+                            quantity: form.quantity.value,
+                            date: form.date.value
+                        },
+                        "Replace",
+                        { etag: form.etag }
+                    );
+                else {
+                    const newPartitionKey = `${userId}-${newExpenseMonth}`;
+
+                    await tables.expenses.deleteEntity(partitionKey, expenseId, { etag: form.etag });
+                    await tables.expenses.createEntity<IExpenseEntity>(
+                        {
+                            partitionKey: newPartitionKey,
+                            rowKey: expenseId,
+                            name: form.name.value,
+                            shop: form.shop.value,
+                            tags: JSON.stringify(form.tags.value),
+                            currency: form.currency.value,
+                            price: form.price.value,
+                            quantity: form.quantity.value,
+                            date: form.date.value
+                        }
+                    );
+                }
 
                 res.redirect("/expenses");
             }
@@ -95,7 +165,7 @@ export function registerHandlers(app: Express): void {
                         title: title(expenseId),
                         tab,
                         validated: true,
-                        formError: "An unknown error has occurred, please retry the operation",
+                        formError: "An unknown error has occurred, please reload the page and retry the operation",
                         form
                     });
             }
@@ -125,7 +195,7 @@ function readForm(body: IExpenseFormRequestBody): IExpenseUpdateForm {
             value: Number(body.price)
         },
         currency: {
-            value: body.currency?.trim() || ""
+            value: body.currency?.trim().toUpperCase() || ""
         },
         quantity: {
             value: Number(body.quantity)
@@ -133,6 +203,7 @@ function readForm(body: IExpenseFormRequestBody): IExpenseUpdateForm {
         date: {
             value: body.date ? new Date(body.date) : null
         },
-        etag: body.etag || ""
+        etag: body.etag || "",
+        deleteFlag: Boolean(body.deleteFlag)
     };
 }

@@ -55,6 +55,65 @@
             border-left-width: 1px;
             border-color: var(--bs-orange);
         }
+
+        table.table-sticky > thead > tr {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background-color: white;
+        }
+
+        table.table-sticky > thead > tr > th {
+            padding: 0;
+            height: 1px;
+            border-bottom: 0;
+        }
+
+        table.table-sticky > thead > tr > th > div {
+            height: 100%;
+            border-bottom-width: 1px;
+            border-bottom-style: solid;
+            border-bottom-color: var(--bs-table-border-color);
+        }
+
+        table.table-sticky:not(.table-sm) > thead > tr > th > div {
+            padding: .5rem;
+        }
+
+        table.table-sticky.table-sm > thead > tr > th > div {
+            padding: .25rem;
+        }
+
+        table.table-sticky > tfoot > tr {
+            position: sticky;
+            bottom: 0;
+            z-index: 100;
+            background-color: white;
+        }
+
+        table.table-sticky tbody:last-of-type:not(:last-child) tr:last-child td {
+            border-bottom: 0;
+        }
+
+        table.table-sticky > tfoot > tr > td {
+            padding: 0;
+            height: 1px;
+        }
+
+        table.table-sticky > tfoot > tr > td > div {
+            height: 100%;
+            border-top-width: 1px;
+            border-top-style: solid;
+            border-top-color: var(--bs-table-border-color);
+        }
+
+        table.table-sticky:not(.table-sm) > tfoot > tr > td > div {
+            padding: .5rem;
+        }
+
+        table.table-sticky.table-sm > tfoot > tr > td > div {
+            padding: .25rem;
+        }
     </style>
 </head>
 
@@ -105,13 +164,15 @@
         {{/each}}
     </ul>
 
-    <div class="mx-4 flex-fill">
+    <div class="mx-4 d-flex flex-column flex-fill">
         {{{ body }}}
     </div>
 
     <hr class="w-100 ">
-    <div class="mb-3 text-center">
-        <strong>LittleFinger</strong>, <em>book keeper</em>
+    <div class="text-center">
+        <div class="mb-3">
+            <strong>LittleFinger</strong>, <em>book keeper</em>
+        </div>
     </div>
 </body>
 

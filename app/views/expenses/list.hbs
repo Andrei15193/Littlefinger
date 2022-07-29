@@ -1,35 +1,110 @@
 <div class="d-flex flex-row align-items-center">
     <h3>Expenses</h3>
     <a href="/expenses/add" class="ms-2 btn btn-sm btn-primary">Add</a>
+    <nav class="ms-auto">
+        <ul class="pagination pagination-sm">
+            <li class="page-item">
+                <a class="page-link" href="/expenses/{{ pagination.nextMonth }}">
+                    <span aria-hidden="true">&laquo;</span>
+                    {{ pagination.nextMonth }}
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="/expenses/{{ pagination.currentMonth }}">
+                    {{ pagination.currentMonth }}
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="/expenses/{{ pagination.previousMonth }}">
+                    {{ pagination.previousMonth }}
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
 </div>
 
-<table class="table">
+<table class="table table-sticky table-hover">
     <thead>
         <tr>
-            <th>Name</th>
-            <th>Shop</th>
-            <th>Tags</th>
-            <th>Price</th>
-            <th>Quantity</th>
-            <th>Amount</th>
-            <th>Date</th>
+            <th>
+                <div>Name</div>
+            </th>
+            <th>
+                <div>Shop</div>
+            </th>
+            <th>
+                <div>Tags</div>
+            </th>
+            <th>
+                <div>Price</div>
+            </th>
+            <th>
+                <div>Quantity</div>
+            </th>
+            <th>
+                <div>Amount</div>
+            </th>
+            <th>
+                <div>Date</div>
+            </th>
         </tr>
     </thead>
     <tbody>
         {{#each expenses}}
-        <tr>
-            <td><a href="/expenses/{{ id }}">{{ name }}</a></td>
+        <tr{{#unlessOdd @index}} class="table-light" {{/unlessOdd}}>
+            <td><a href="/expenses/{{ formatISOYearMonth date }}/{{ id }}">{{ name }}</a></td>
             <td>{{ shop }}</td>
             <td>
                 {{#each tags}}
                 <div class="badge rounded-pill text-bg-primary">{{ this }}</div>
                 {{/each}}
             </td>
-            <td>{{currency}} {{ price }}</td>
-            <td>{{ quantity }}</td>
-            <td>{{ currency }} {{ amount }}</td>
+            <td>
+                {{currency}}&nbsp;&nbsp;&nbsp;<span class="invisible">{{ getLeadingZeros amount @root.format.integerDigitsCount.price }}</span>{{ formatNumber price }}
+            </td>
+            <td><span class="invisible">{{ getLeadingZeros quantity @root.format.integerDigitsCount.quantity }}</span>{{ formatIntegerNumber quantity }}</td>
+            <td>
+                {{ currency }}&nbsp;&nbsp;&nbsp;<span class="invisible">{{ getLeadingZeros amount @root.format.integerDigitsCount.amount }}</span>{{ formatNumber amount }}
+            </td>
             <td>{{ formatDate date }}</td>
         </tr>
         {{/each}}
     </tbody>
+    <tfoot>
+        <tr>
+            <td>
+                <div>Total</div>
+            </td>
+            <td>
+                <div><span class="invisible">&nbsp;</span></div>
+            </td>
+            <td>
+                <div><span class="invisible">&nbsp;</span></div>
+            </td>
+            <td>
+                <div><span class="invisible">&nbsp;</span></div>
+            </td>
+            <td>
+                <div><span class="invisible">&nbsp;</span></div>
+            </td>
+            <td>
+                <div>
+                    {{#each totals}}
+                    <div>
+                        {{ currency }}&nbsp;&nbsp;&nbsp;<span class="invisible">{{ getLeadingZeros amount @root.format.integerDigitsCount.amount }}</span>{{ formatNumber amount }}
+                    </div>
+                    {{/each}}
+                </div>
+            </td>
+            <td>
+                <div><span class="invisible">&nbsp;</span></div>
+            </td>
+        </tr>
+    </tfoot>
 </table>
+
+{{#each expenses}}
+{{else}}
+<div class="p-2 alert alert-secondary text-center" role="alert">There are no expenses made for this month.</div>
+{{/each}}

@@ -6,7 +6,7 @@
 </div>
 {{/if}}
 
-<form method="POST">
+<form id="expenseForm" method="POST">
     <div class="mb-3">
         <label for="name" class="form-label">Name</label>
         <input type="text" class="form-control form-control-sm{{#if validated}}{{#if form.name.error}} is-invalid{{else}} is-valid{{/if}}{{/if}}" id="name" name="name" value="{{ form.name.value }}">
@@ -60,12 +60,32 @@
     </div>
 
     <input type="hidden" id="etag" name="etag" value="{{ form.etag }}">
+    <input type="hidden" id="deleteFlag" name="deleteFlag" value="">
 
     <div class="d-flex flex-row">
         <button type="submit" class="btn btn-sm btn-primary">Update</button>
+        <button type="button" class="ms-2 btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#confirmationModal">Delete</button>
         <a href="/expenses" class="ms-2 btn btn-sm btn-secondary">Cancel</a>
     </div>
 </form>
+
+<div class="modal fade" id="confirmationModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Confirm Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+        <div class="modal-body">
+            Deleting action will permanently delete this entry, please confirm your action.
+        </div>
+            <div class="modal-footer" method="DELETE">
+                <button type="button" class="btn btn-danger" onclick="deleteExpense()">Confirm</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
     function addTag(tag) {
@@ -101,4 +121,9 @@
             addTag("{{ this }}");
         {{/unless}}
     {{/each}}
+
+    function deleteExpense() {
+        document.getElementById("deleteFlag").value = "yes";
+        document.getElementById("expenseForm").submit();
+    }
 </script>
