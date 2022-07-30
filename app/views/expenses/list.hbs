@@ -61,47 +61,51 @@
                 {{/each}}
             </td>
             <td>
-                {{currency}}&nbsp;&nbsp;&nbsp;<span class="invisible">{{ getLeadingZeros amount @root.format.integerDigitsCount.price }}</span>{{ formatNumber price }}
+                {{ currency }}<span class="ms-2 invisible">{{ getLeadingZeros amount @root.format.integerDigitsCount.price }}</span>{{ formatNumber price }}
             </td>
             <td><span class="invisible">{{ getLeadingZeros quantity @root.format.integerDigitsCount.quantity }}</span>{{ formatIntegerNumber quantity }}</td>
             <td>
-                {{ currency }}&nbsp;&nbsp;&nbsp;<span class="invisible">{{ getLeadingZeros amount @root.format.integerDigitsCount.amount }}</span>{{ formatNumber amount }}
+                {{ currency }}<span class="ms-2 invisible">{{ getLeadingZeros amount @root.format.integerDigitsCount.amount }}</span>{{ formatNumber amount }}
             </td>
             <td>{{ formatDate date }}</td>
         </tr>
         {{/each}}
     </tbody>
-    <tfoot>
-        <tr>
-            <td>
-                <div>Total</div>
-            </td>
-            <td>
-                <div><span class="invisible">&nbsp;</span></div>
-            </td>
-            <td>
-                <div><span class="invisible">&nbsp;</span></div>
-            </td>
-            <td>
-                <div><span class="invisible">&nbsp;</span></div>
-            </td>
-            <td>
-                <div><span class="invisible">&nbsp;</span></div>
-            </td>
-            <td>
-                <div>
-                    {{#each totals}}
+    {{#each expenses}}
+        {{#if @first}}
+        <tfoot>
+            <tr>
+                <td>
+                    <div>Total</div>
+                </td>
+                <td>
+                    <div><span class="invisible">&nbsp;</span></div>
+                </td>
+                <td>
+                    <div><span class="invisible">&nbsp;</span></div>
+                </td>
+                <td>
+                    <div><span class="invisible">&nbsp;</span></div>
+                </td>
+                <td>
+                    <div><span class="invisible">&nbsp;</span></div>
+                </td>
+                <td>
                     <div>
-                        {{ currency }}&nbsp;&nbsp;&nbsp;<span class="invisible">{{ getLeadingZeros amount @root.format.integerDigitsCount.amount }}</span>{{ formatNumber amount }}
+                        {{#each @root.totals}}
+                        <div>
+                            {{ currency }}<span class="ms-2 invisible">{{ getLeadingZeros amount @root.format.integerDigitsCount.amount }}</span>{{ formatNumber amount }}
+                        </div>
+                        {{/each}}
                     </div>
-                    {{/each}}
-                </div>
-            </td>
-            <td>
-                <div><span class="invisible">&nbsp;</span></div>
-            </td>
-        </tr>
-    </tfoot>
+                </td>
+                <td>
+                    <div><span class="invisible">&nbsp;</span></div>
+                </td>
+            </tr>
+        </tfoot>
+        {{/if}}
+    {{/each}}
 </table>
 
 {{#each expenses}}

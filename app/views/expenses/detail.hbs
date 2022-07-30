@@ -9,24 +9,24 @@
 <form id="expenseForm" method="POST">
     <div class="mb-3">
         <label for="name" class="form-label">Name</label>
-        <input type="text" class="form-control form-control-sm{{#if validated}}{{#if form.name.error}} is-invalid{{else}} is-valid{{/if}}{{/if}}" id="name" name="name" value="{{ form.name.value }}">
+        <input type="text" class="form-control form-control-sm{{#if validated}}{{#if form.name.error}} is-invalid{{else}} is-valid{{/if}}{{/if}}" id="name" name="name" value="{{ form.name.value }}"{{#if notFound}} disabled{{/if}}>
         <div class="invalid-feedback">{{ form.name.error }}</div>
     </div>
     <div class="mb-3">
         <label for="shop" class="form-label">Shop</label>
-        <input type="text" class="form-control form-control-sm{{#if validated}}{{#if form.shop.error}} is-invalid{{else}} is-valid{{/if}}{{/if}}" id="shop" name="shop" value="{{ form.shop.value }}">
+        <input type="text" class="form-control form-control-sm{{#if validated}}{{#if form.shop.error}} is-invalid{{else}} is-valid{{/if}}{{/if}}" id="shop" name="shop" value="{{ form.shop.value }}"{{#if notFound}} disabled{{/if}}>
         <div class="invalid-feedback">{{ form.shop.error }}</div>
     </div>
     <div class="mb-3">
         <label for="tags" class="form-label">Tags</label>
         <div class="input-group">
-            <input type="text" class="form-control form-control-sm{{#if validated}}{{#if form.tags.error}} is-invalid{{else}} is-valid{{/if}}{{/if}}" list="tagOptions" id="tags" name="tags" value="{{#each form.tags.value}}{{#if @first}}{{ this }}{{/if}}{{/each}}">
+            <input type="text" class="form-control form-control-sm{{#if validated}}{{#if form.tags.error}} is-invalid{{else}} is-valid{{/if}}{{/if}}" list="tagOptions" id="tags" name="tags" value="{{#each form.tags.value}}{{#if @first}}{{ this }}{{/if}}{{/each}}"{{#if notFound}} disabled{{/if}}>
             <datalist id="tagOptions">
                 {{#each previousTags}}
                 <option value="{{ this }}">
                 {{/each}}
             </datalist>
-            <button class="btn btn-sm btn-outline-secondary rounded-end" type="button" onclick="addTag()">Add More</button>
+            <button class="btn btn-sm btn-outline-secondary rounded-end" type="button" onclick="addTag()"{{#if notFound}} disabled{{/if}}>Add More</button>
 
             <div class="invalid-feedback">{{ form.tags.error }}</div>
         </div>
@@ -35,14 +35,14 @@
     <div class="mb-3">
         <label for="price" class="form-label">Price</label>
         <div class="input-group">
-            <input type="text" class="form-control form-control-sm currency-input{{#if validated}}{{#if form.currency.error}} is-invalid{{else}} is-valid{{/if}}{{/if}}" list="currencyOptions" id="currency" name="currency" placeholder="Currency" value="{{ form.currency.value }}">
+            <input type="text" class="form-control form-control-sm currency-input{{#if validated}}{{#if form.currency.error}} is-invalid{{else}} is-valid{{/if}}{{/if}}" list="currencyOptions" id="currency" name="currency" placeholder="Currency" value="{{ form.currency.value }}"{{#if notFound}} disabled{{/if}}>
             <datalist id="currencyOptions">
                 {{#each previousCurrencies}}
                 <option value="{{ this }}">
                 {{/each}}
             </datalist>
 
-            <input type="number" step="any" class="form-control form-control-sm{{#if validated}}{{#if form.price.error}} is-invalid{{else}} is-valid{{/if}}{{/if}}" id="price" name="price" value="{{ form.price.value }}">
+            <input type="number" step="any" class="form-control form-control-sm{{#if validated}}{{#if form.price.error}} is-invalid{{else}} is-valid{{/if}}{{/if}}" id="price" name="price" value="{{ form.price.value }}"{{#if notFound}} disabled{{/if}}>
 
             {{#if form.currency.error }}<div class="invalid-feedback">{{ form.currency.error }}</div>{{/if}}
             {{#if form.price.error }}<div class="invalid-feedback">{{ form.price.error }}</div>{{/if}}
@@ -50,12 +50,12 @@
     </div>
     <div class="mb-3">
         <label for="quantity" class="form-label">Quantity</label>
-        <input type="number" step="any" class="form-control form-control-sm{{#if validated}}{{#if form.quantity.error}} is-invalid{{else}} is-valid{{/if}}{{/if}}" id="quantity" name="quantity" value="{{ form.quantity.value }}">
+        <input type="number" step="any" class="form-control form-control-sm{{#if validated}}{{#if form.quantity.error}} is-invalid{{else}} is-valid{{/if}}{{/if}}" id="quantity" name="quantity" value="{{ form.quantity.value }}"{{#if notFound}} disabled{{/if}}>
         <div class="invalid-feedback">{{ form.quantity.error }}</div>
     </div>
     <div class="mb-3">
         <label for="date" class="form-label">Date</label>
-        <input type="date" class="form-control form-control-sm{{#if validated}}{{#if form.date.error}} is-invalid{{else}} is-valid{{/if}}{{/if}}" id="date" name="date" value="{{ toInputDateValue form.date.value }}">
+        <input type="date" class="form-control form-control-sm{{#if validated}}{{#if form.date.error}} is-invalid{{else}} is-valid{{/if}}{{/if}}" id="date" name="date" value="{{ toInputDateValue form.date.value }}"{{#if notFound}} disabled{{/if}}>
         <div class="invalid-feedback">{{ form.date.error }}</div>
     </div>
 
@@ -63,9 +63,9 @@
     <input type="hidden" id="deleteFlag" name="deleteFlag" value="">
 
     <div class="d-flex flex-row">
-        <button type="submit" class="btn btn-sm btn-primary">Update</button>
-        <button type="button" class="ms-2 btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#confirmationModal">Delete</button>
-        <a href="/expenses" class="ms-2 btn btn-sm btn-secondary">Cancel</a>
+        <button type="submit" class="btn btn-sm btn-primary"{{#if notFound}} disabled{{/if}}>Update</button>
+        <button type="button" class="ms-2 btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#confirmationModal"{{#if notFound}} disabled{{/if}}>Delete</button>
+        <a href="/expenses/{{ expenseMonth }}" class="ms-2 btn btn-sm btn-secondary">Cancel</a>
     </div>
 </form>
 

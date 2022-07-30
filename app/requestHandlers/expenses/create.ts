@@ -1,10 +1,8 @@
 import type { Express } from "express";
-import type { IExpenseEntity } from "../../data/IExpenseEntity";
 import type { IExpenseForm } from "./form";
 import { validate } from "./form";
-import { v4 as uuid } from "uuid";
-import { tables } from "../../table-storage";
 import { tabs } from "../../tabs";
+import { DataStorage } from "../../data/DataStorage";
 
 interface IExpenseFormRequestBody {
     readonly name: string;
@@ -40,25 +38,21 @@ export function registerHandlers(app: Express): void {
 
     app.post("/expenses/add", async (req, res) => {
         const { user: { id: userId } } = res.locals;
+        const dataStorage = new DataStorage(userId);
+
         const form = readForm(req.body as IExpenseFormRequestBody);
-
         if (validate(form)) {
-            const expenseMonth = form.date.value.toISOString().substring(0, "YYYY-MM".length);
-            const partitionKey = `${userId}-${expenseMonth}`
-            const expenseId = uuid();
-
             try {
-                await tables.expenses.createEntity<IExpenseEntity>({
-                    partitionKey,
-                    rowKey: expenseId,
+                await dataStorage.expenses.addAsync({
                     name: form.name.value,
                     shop: form.shop.value,
-                    tags: JSON.stringify(form.tags.value),
-                    currency: form.currency.value,
+                    tags: form.tags.value,
                     price: form.price.value,
+                    currency: form.currency.value,
                     quantity: form.quantity.value,
                     date: form.date.value
                 });
+                res.redirect("/expenses");
             }
             catch {
                 res.render("expenses/detail", {
@@ -69,8 +63,6 @@ export function registerHandlers(app: Express): void {
                     form
                 });
             }
-
-            res.redirect("/expenses");
         }
         else
             res.render("expenses/add", {
