@@ -30,8 +30,8 @@ const tab = tabs.expenses;
 
 export function registerHandlers(app: Express): void {
     app.get("/expenses/:month(\\d{4}-\\d{2})/:id", async (req, res) => {
-        const { month: expenseMonth = "", id: expenseId = "" } = req.params;
-        const { user: { id: userId } } = res.locals;
+        const { params: { month: expenseMonth = "", id: expenseId = "" } } = req;
+        const { locals: { user: { id: userId } } } = res;
 
         const dataStorage = new DataStorage(userId);
 
@@ -73,8 +73,8 @@ export function registerHandlers(app: Express): void {
     });
 
     app.post("/expenses/:month(\\d{4}-\\d{2})/:id", async (req, res) => {
-        const { month: expenseMonth = "", id: expenseId = "" } = req.params;
-        const { user: { id: userId } } = res.locals;
+        const { params: { month: expenseMonth = "", id: expenseId = "" } } = req;
+        const { locals: { user: { id: userId } } } = res;
 
         const dataStorage = new DataStorage(userId);
 

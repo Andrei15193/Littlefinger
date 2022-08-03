@@ -18,10 +18,15 @@ const title = "Add Expense";
 const tab = tabs.expenses;
 
 export function registerHandlers(app: Express): void {
-    app.get("/expenses/add", (req, res) => {
+    app.get("/expenses/:month(\\d{4}-\\d{2})?/add", (req, res) => {
+        const { params: { month: routeMonth, } } = req;
+
         res.render("expenses/add", {
             title,
             tab,
+            route: {
+                month: routeMonth
+            },
             previousTags: ["tag1", "tag2"],
             previousCurrencies: ["RON", "EUR"],
             form: ({
@@ -31,13 +36,14 @@ export function registerHandlers(app: Express): void {
                 price: { value: undefined },
                 currency: { value: res.locals.user.defaultCurrency || "" },
                 quantity: { value: 1 },
-                date: { value: new Date() }
+                date: { value: routeMonth === null || routeMonth === undefined ? new Date() : new Date(routeMonth) }
             } as IExpenseForm)
         });
     });
 
-    app.post("/expenses/add", async (req, res) => {
-        const { user: { id: userId } } = res.locals;
+    app.post("/expenses/:month(\\d{4}-\\d{2})?/add", async (req, res) => {
+        const { params: { month: routeMonth, } } = req;
+        const { locals: { user: { id: userId } } } = res;
         const dataStorage = new DataStorage(userId);
 
         const form = readForm(req.body as IExpenseFormRequestBody);
@@ -58,6 +64,9 @@ export function registerHandlers(app: Express): void {
                 res.render("expenses/detail", {
                     title,
                     tab,
+                    route: {
+                        month: routeMonth
+                    },
                     validated: true,
                     formError: "An unknown error has occurred, please reload the page and retry the operation",
                     form
@@ -68,6 +77,9 @@ export function registerHandlers(app: Express): void {
             res.render("expenses/add", {
                 title,
                 tab,
+                route: {
+                    month: routeMonth
+                },
                 validated: true,
                 form
             });

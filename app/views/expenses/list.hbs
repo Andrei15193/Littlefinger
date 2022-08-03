@@ -1,6 +1,6 @@
 <div class="d-flex flex-row align-items-center">
     <h3>Expenses</h3>
-    <a href="/expenses/add" class="ms-2 btn btn-sm btn-primary">Add</a>
+    <a href="/expenses{{#if route.month}}/{{ route.month }}{{/if}}/add" class="ms-2 btn btn-sm btn-primary">Add</a>
     <nav class="ms-auto">
         <ul class="pagination pagination-sm">
             <li class="page-item">

@@ -61,7 +61,7 @@
 
     <div class="d-flex flex-row">
         <button type="submit" class="btn btn-sm btn-primary">Add</button>
-        <a href="/expenses" class="ms-2 btn btn-sm btn-secondary">Cancel</a>
+        <a href="/expenses{{#if route.month}}/{{ route.month }}{{/if}}" class="ms-2 btn btn-sm btn-secondary">Cancel</a>
     </div>
 </form>
 

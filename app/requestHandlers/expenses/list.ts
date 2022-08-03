@@ -25,8 +25,8 @@ const tab = tabs.expenses;
 
 export function registerHandlers(app: Express): void {
     app.get("/expenses/:month(\\d{4}-\\d{2})?", async (req, res) => {
-        const { month: expensesMonth = new Date().toISOString().substring(0, "YYYY-MM".length) } = req.params;
-        const { user: { id: userId } } = res.locals;
+        const { params: { month: routeMonth, month: expensesMonth = new Date().toISOString().substring(0, "YYYY-MM".length) } } = req;
+        const { locals: { user: { id: userId } } } = res;
 
         const monthlyExpenses = tables.expenses.listEntities<IExpenseEntity>({
             queryOptions: {
@@ -76,6 +76,9 @@ export function registerHandlers(app: Express): void {
             tab,
             expenses,
             totals,
+            route: {
+                month: routeMonth
+            },
             format: {
                 integerDigitsCount: {
                     price: Math.max(...expenses.map(expense => expense.price))?.toFixed(0).length,
