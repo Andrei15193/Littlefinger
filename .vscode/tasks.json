@@ -2,7 +2,7 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "npm: build",
+            "label": "npm run build",
             "detail": "typescript",
             "type": "npm",
             "script": "build",
@@ -13,7 +13,7 @@
             "problemMatcher": []
         },
         {
-            "label": "npm: watch",
+            "label": "npm run watch",
             "detail": "typescript --watch",
             "type": "npm",
             "script": "watch",
@@ -29,10 +29,10 @@
             }
         },
         {
-            "label": "npm: host",
+            "label": "npm run host:app",
             "detail": "nodemon",
             "type": "npm",
-            "script": "host",
+            "script": "host:app",
             "problemMatcher": [],
             "presentation": {
                 "echo": true,
@@ -45,10 +45,26 @@
             }
         },
         {
-            "label": "npm: host-storage",
+            "label": "npm run host:storage",
             "detail": "azurite",
             "type": "npm",
-            "script": "local-storage",
+            "script": "host:storage",
+            "problemMatcher": [],
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "group": "dev",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": true
+            }
+        },
+        {
+            "label": "npm run host:functionsApp",
+            "detail": "func start",
+            "type": "npm",
+            "script": "host:functionsApp",
             "problemMatcher": [],
             "presentation": {
                 "echo": true,
@@ -65,9 +81,10 @@
             "detail": "run local development services",
             "type": "shell",
             "dependsOn": [
-                "npm: watch",
-                "npm: host",
-                "npm: host-storage"
+                "npm run watch",
+                "npm run host:app",
+                "npm run host:storage",
+                "npm run host:functionsApp"
             ],
             "group": {
                 "kind": "build",

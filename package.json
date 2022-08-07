@@ -6,14 +6,16 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc --watch",
-    "host": "nodemon --require dotenv/config out/index.js --port 8080 --delete-extra-tables",
-    "local-storage": "azurite --location .data"
+    "host:app": "nodemon --require dotenv/config out/app/index.js --port 8080 --delete-extra-tables",
+    "host:functionsApp": "func start",
+    "host:storage": "azurite --location .data"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@azure/data-tables": "^13.1.2",
+    "@azure/functions": "^3.2.0",
     "express": "^4.18.1",
     "hbs": "^4.2.0",
     "uuid": "^8.3.2"
@@ -23,6 +25,7 @@
     "@types/hbs": "^4.0.1",
     "@types/node": "^18.0.6",
     "@types/uuid": "^8.3.4",
+    "azure-functions-core-tools": "^4.0.4670",
     "azurite": "^3.18.0",
     "dotenv": "^16.0.1",
     "nodemon": "^2.0.19",

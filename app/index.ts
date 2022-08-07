@@ -1,9 +1,9 @@
 import express from "express";
 import path from "path";
-import { handlebars } from "./app/handlebars";
-import { registerHandlers } from "./app/requestHandlers";
-import { ensureTableStorageAsync } from "./app/table-storage";
-import { tabs } from "./app/tabs";
+import { handlebars } from "./handlebars";
+import { registerHandlers } from "./requestHandlers";
+import { ensureTableStorageAsync } from "./table-storage";
+import { tabs } from "./tabs";
 
 (async function startApplicationAsync(): Promise<void> {
     const app = express();
