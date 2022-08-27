@@ -53,7 +53,7 @@
     <tbody>
         {{#each expenses}}
         <tr{{#unlessOdd @index}} class="table-light" {{/unlessOdd}}>
-            <td><a href="/expenses/{{ formatISOYearMonth date }}/{{ id }}">{{ name }}</a></td>
+            <td><a href="/expenses/{{ formatISOYearMonth date }}/{{ id }}/edit">{{ name }}</a></td>
             <td>{{ shop }}</td>
             <td>
                 {{#each tags}}

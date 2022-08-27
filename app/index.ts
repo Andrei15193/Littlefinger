@@ -1,6 +1,6 @@
 import express from "express";
 import path from "path";
-import { handlebars } from "./handlebars";
+import { createHandlebarsInstance } from "./handlebars";
 import { registerHandlers } from "./requestHandlers";
 import { ensureTableStorageAsync } from "./table-storage";
 import { tabs } from "./tabs";
@@ -17,7 +17,7 @@ import { tabs } from "./tabs";
     const args = readCommandLineArguments(process.argv);
     const port: number | undefined = args.named.port !== undefined ? Number(args.named.port) : undefined;
 
-    handlebars.registerPartials(path.join(process.cwd(), "views", "partials"));
+    const handlebars = createHandlebarsInstance(path.join(process.cwd(), "app", "views"));
     handlebars.localsAsTemplateData(app);
 
     app

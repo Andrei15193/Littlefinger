@@ -1,12 +1,12 @@
 {
-  "name": "little-finger",
+  "name": "littlefinger",
   "version": "1.0.0",
   "description": "",
   "main": "index.ts",
   "scripts": {
     "build": "tsc",
     "watch": "tsc --watch",
-    "host:app": "nodemon --require dotenv/config out/app/index.js --port 8080 --delete-extra-tables",
+    "host:app": "nodemon --require dotenv/config --delay 1s --watch out/app --watch app/views --ext js,css,png,svg,hbs out/app/index.js --port 8080 --delete-extra-tables",
     "host:functionsApp": "func start",
     "host:storage": "azurite --location .data"
   },

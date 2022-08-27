@@ -1,13 +1,19 @@
-import type { ExcludeFormNullValues, IFormField } from "../forms";
+import type { ExcludeFormNullValues, IForm, IFormField } from "../forms";
 
-export interface IExpenseForm {
+export interface IExpenseForm extends IForm {
     readonly name: IFormField<string>;
     readonly shop: IFormField<string>;
     readonly tags: IFormField<readonly string[]>;
     readonly price: IFormField<number | null | undefined>;
     readonly currency: IFormField<string>;
     readonly quantity: IFormField<number>;
-    readonly date: IFormField<Date | null | undefined>
+    readonly date: IFormField<Date | null | undefined>;
+}
+
+export async function fillOptionsAsync(form: IExpenseForm): Promise<void> {
+    form.tags.options = ["Tag1", "Tag2"];
+    form.shop.options = ["Shop 1", "Shop 2"];
+    form.currency.options = ["RON", "EUR"];
 }
 
 export function validate(form: IExpenseForm): form is ExcludeFormNullValues<IExpenseForm> {
@@ -41,6 +47,10 @@ export function validate(form: IExpenseForm): form is ExcludeFormNullValues<IExp
         form.date.error = "Please provide the date when you made the purchase";
         isFormValid = false;
     }
+
+    form.isValidated = true;
+    form.isValid = isFormValid;
+    form.isInvalid = !isFormValid;
 
     return isFormValid;
 }

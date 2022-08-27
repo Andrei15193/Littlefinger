@@ -1,0 +1,40 @@
+<h3>Expense {{ expense.name }}</h3>
+
+{{#if form.error}}
+<div class="alert alert-danger p-2" role="alert">
+    {{ form.error }}
+</div>
+{{/if}}
+
+<form method="POST">
+    <input type="hidden" id="etag" name="etag" value="{{ form.etag }}">
+    <input type="hidden" id="deleteFlag" name="deleteFlag" value="">
+
+    {{> expenses/form expenseId=route.id}}
+
+    <div class="d-flex flex-row">
+        <button type="submit" formaction="edit" class="btn btn-sm btn-primary">Update</button>
+        <button type="button" class="ms-2 btn btn-sm btn-danger" data-bs-toggle="modal"
+            data-bs-target="#confirmationModal">Delete</button>
+        <a href="/expenses/{{ route.month }}" class="ms-2 btn btn-sm btn-secondary">Cancel</a>
+    </div>
+
+    <div class="modal fade" id="confirmationModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Confirm Deletion</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>This action will permanently delete your logged expense.</p>
+                    <p class="mb-0">Please confirm your action.</p>
+                </div>
+                <div class="modal-footer" method="DELETE">
+                    <button type="submit" formaction="delete" class="btn btn-danger">Confirm</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

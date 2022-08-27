@@ -62,6 +62,9 @@ export class ExpensesDataCollection {
     }
 
     public async updateAsync(expenseMonth: string, expenseId: string, expense: IExpenseUpdate): Promise<void> {
+        if (isInvalidEtag(expense.etag))
+            throw new DataStorageError("Invalid etag");
+
         const newExpenseMonth = getExpenseMonth(expense.date);
         const partitionKey = `${this._userId}-${expenseMonth}`;
 

@@ -1,10 +1,12 @@
 import type { Express } from "express";
-import type { IExpenseForm } from "./form";
+import { fillOptionsAsync, IExpenseForm } from "./form";
 import { validate } from "./form";
 import { tabs } from "../../tabs";
 import { DataStorage } from "../../data/DataStorage";
 
 interface IExpenseFormRequestBody {
+    readonly validated: string;
+
     readonly name: string;
     readonly shop: string;
     readonly tags: string | readonly string[];
@@ -21,33 +23,39 @@ export function registerHandlers(app: Express): void {
     app.get("/expenses/:month(\\d{4}-\\d{2})?/add", (req, res) => {
         const { params: { month: routeMonth, } } = req;
 
+        const form: IExpenseForm = {
+            isValidated: false,
+            isValid: true,
+            isInvalid: false,
+
+            name: { value: "" },
+            shop: { value: "" },
+            tags: {
+                value: []
+            },
+            price: { value: undefined },
+            currency: {
+                value: res.locals.user.defaultCurrency || ""
+            },
+            quantity: { value: 1 },
+            date: { value: routeMonth === null || routeMonth === undefined ? new Date() : new Date(routeMonth) }
+        };
+        fillOptionsAsync(form);
+
         res.render("expenses/add", {
             title,
             tab,
-            route: {
-                month: routeMonth
-            },
-            previousTags: ["tag1", "tag2"],
-            previousCurrencies: ["RON", "EUR"],
-            form: ({
-                name: { value: "" },
-                shop: { value: "" },
-                tags: { value: [] },
-                price: { value: undefined },
-                currency: { value: res.locals.user.defaultCurrency || "" },
-                quantity: { value: 1 },
-                date: { value: routeMonth === null || routeMonth === undefined ? new Date() : new Date(routeMonth) }
-            } as IExpenseForm)
+            route: req.params,
+            form
         });
     });
 
     app.post("/expenses/:month(\\d{4}-\\d{2})?/add", async (req, res) => {
-        const { params: { month: routeMonth, } } = req;
         const { locals: { user: { id: userId } } } = res;
         const dataStorage = new DataStorage(userId);
 
         const form = readForm(req.body as IExpenseFormRequestBody);
-        if (validate(form)) {
+        if (validate(form))
             try {
                 await dataStorage.expenses.addAsync({
                     name: form.name.value,
@@ -61,40 +69,82 @@ export function registerHandlers(app: Express): void {
                 res.redirect("/expenses");
             }
             catch {
-                res.render("expenses/detail", {
+                form.error = "An unknown error has occurred, please reload the page and retry the operation";
+                fillOptionsAsync(form);
+
+                res.render("expenses/add", {
                     title,
                     tab,
-                    route: {
-                        month: routeMonth
-                    },
-                    validated: true,
-                    formError: "An unknown error has occurred, please reload the page and retry the operation",
+                    route: req.params,
                     form
                 });
             }
-        }
-        else
+        else {
+            fillOptionsAsync(form);
+
             res.render("expenses/add", {
                 title,
                 tab,
-                route: {
-                    month: routeMonth
-                },
-                validated: true,
+                route: req.params,
                 form
             });
+        }
+    });
+
+    app.post("/expenses/:month(\\d{4}-\\d{2})?/add-tag", async (req, res) => {
+        const form = readForm(req.body as IExpenseFormRequestBody);
+        fillOptionsAsync(form);
+        form.tags.value = [""].concat(form.tags.value);
+        if (form.isValidated)
+            validate(form);
+
+        res.render("expenses/add", {
+            title,
+            tab,
+            route: req.params,
+            form
+        });
+    });
+
+    app.post("/expenses/:month(\\d{4}-\\d{2})?/remove-tag", async (req, res) => {
+        const { query: { tag } } = req;
+
+        const form = readForm(req.body as IExpenseFormRequestBody);
+        fillOptionsAsync(form);
+        form.tags.value = form.tags.value.filter(existingTag => tag !== existingTag);
+        if (form.isValidated)
+            validate(form)
+
+        res.render("expenses/add", {
+            title,
+            tab,
+            route: req.params,
+            form
+        });
     });
 }
 
 function readForm(body: IExpenseFormRequestBody): IExpenseForm {
-    return {
+    const form: IExpenseForm = {
+        isValidated: body.validated === "true",
+        isValid: true,
+        isInvalid: false,
+
         name: { value: body.name?.trim() || "" },
         shop: { value: body.shop?.trim() || "" },
         tags: {
             value: (Array.isArray(body.tags) ? body.tags : [body.tags])
-                .filter(tag => tag !== undefined && tag !== null)
-                .map((tag: string) => tag.trim())
-                .filter(tag => tag.length > 0)
+                .map((tag: string) => tag?.trim())
+                .filter(tag => tag !== undefined && tag !== null && tag.length > 0)
+                .reduce<string[]>(
+                    (result, tag) => {
+                        if (!result.includes(tag))
+                            result.push(tag);
+
+                        return result;
+                    },
+                    []
+                )
                 .sort()
         },
         price: {
@@ -110,4 +160,9 @@ function readForm(body: IExpenseFormRequestBody): IExpenseForm {
             value: body.date ? new Date(body.date) : null
         }
     };
+
+    if (form.isValidated)
+        validate(form);
+
+    return form;
 }
