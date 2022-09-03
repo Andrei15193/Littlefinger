@@ -1,11 +1,23 @@
 import fs from "fs";
 import hbs from "hbs";
+import Markdown from "markdown-it";
+import markdownItAttrs from "markdown-it-attrs";
 import path from "path";
 
 type IHandlebars = ReturnType<typeof hbs.create>;
 
 export function createHandlebarsInstance(viewsDirectoryPath: string): IHandlebars {
+    const markdownParser = new Markdown();
+    markdownParser.configure("commonmark");
+    markdownParser.use(markdownItAttrs, {
+        allowedAttributes: ["id", "class", "target", "title"]
+    });
+
     const handlebars: IHandlebars = hbs.create();
+
+    handlebars.registerHelper("markdown", function (this: any, text: string) {
+        return text === undefined || text === null ? undefined : markdownParser.renderInline(text);
+    });
 
     handlebars.registerHelper("ifCompare", function (this: any, arg1: any, operator: string, arg2: any, options) {
         return compare(arg1, operator, arg2) ? options.fn(this) : options.inverse(this);
@@ -27,24 +39,36 @@ export function createHandlebarsInstance(viewsDirectoryPath: string): IHandlebar
         return value % 2 !== 0 ? options.fn(this) : options.inverse(this);
     });
 
-    handlebars.registerHelper("getLeadingZeros", function (this: any, value: number, integerDigitsCount?: number): string {
-        const significantIntegerDigits = value.toLocaleString(undefined);
-        const completeIntegerDigits = value.toLocaleString(undefined, { minimumIntegerDigits: integerDigitsCount, minimumFractionDigits: 0 });
+    handlebars.registerHelper("getLeadingZeros", function (this: any, locale: string, value: number, integerDigitsCount?: number): string {
+        if (locale === undefined || locale === null || typeof locale !== "string")
+            throw new Error("getLeadingZeros expects a locale, but none was provided.");
+
+        const significantIntegerDigits = value.toLocaleString(locale);
+        const completeIntegerDigits = value.toLocaleString(locale, { minimumIntegerDigits: integerDigitsCount, minimumFractionDigits: 0 });
 
         return completeIntegerDigits.substring(0, completeIntegerDigits.length - significantIntegerDigits.length);
     });
-    handlebars.registerHelper("formatNumber", function (this: any, value?: number): string {
-        return value?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || "";
+    handlebars.registerHelper("formatNumber", function (this: any, locale: string, value?: number): string {
+        if (locale === undefined || locale === null || typeof locale !== "string")
+            throw new Error("formatNumber expects a locale, but none was provided.");
+
+        return value?.toLocaleString(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || "";
     });
-    handlebars.registerHelper("formatIntegerNumber", function (this: any, value?: number): string {
-        return value?.toLocaleString(undefined, { maximumFractionDigits: 0 }) || "";
+    handlebars.registerHelper("formatIntegerNumber", function (this: any, locale: string, value?: number): string {
+        if (locale === undefined || locale === null || typeof locale !== "string")
+            throw new Error("formatIntegerNumber expects a locale, but none was provided.");
+
+        return value?.toLocaleString(locale, { maximumFractionDigits: 0 }) || "";
     });
 
     handlebars.registerHelper("toInputDateValue", function (this: any, date: Date): string {
         return date?.toISOString().split("T")[0] || "";
     });
-    handlebars.registerHelper("formatDate", function (this: any, date: Date): string {
-        return date?.toLocaleDateString() || "";
+    handlebars.registerHelper("formatDate", function (this: any, locale: string, date: Date): string {
+        if (locale === undefined || locale === null || typeof locale !== "string")
+            throw new Error("formatDate expects a locale, but none was provided.");
+
+        return date?.toLocaleDateString(locale) || "";
     });
     handlebars.registerHelper("formatISOYearMonth", function (this: any, date: Date): string {
         return date?.toISOString().substring(0, "YYYY-MM".length) || "";

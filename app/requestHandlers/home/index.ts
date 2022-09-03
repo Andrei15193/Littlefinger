@@ -1,8 +1,12 @@
 import type { Express } from "express";
-import { tabs } from "../../tabs";
+import type { IApplicationTabs } from "../../applicationTabs";
+import type { ITranslation } from "../../translations/translation";
 
 export function registerHandlers(app: Express): void {
     app.get("/", (req, res) => {
-        res.render("index", { title: "Home", tab: tabs.home });
+        const tabs: IApplicationTabs = res.locals.tabs;
+        const translation: ITranslation = res.locals.translation;
+
+        res.render("index", { title: translation.home.title, tab: tabs.home });
     });
 }

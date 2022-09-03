@@ -1,7 +1,8 @@
 import type { Express } from "express";
 import type { IExpenseEntity } from "../../data/IExpenseEntity";
+import type { IApplicationTabs } from "../../applicationTabs";
+import type { ITranslation } from "../../translations/translation";
 import { tables } from "../../table-storage";
-import { tabs } from "../../tabs";
 
 interface IExpense {
     readonly id: string;
@@ -20,13 +21,12 @@ interface ITotal {
     amount: number;
 }
 
-const title = "Expenses";
-const tab = tabs.expenses;
-
 export function registerHandlers(app: Express): void {
     app.get("/expenses/:month(\\d{4}-\\d{2})?", async (req, res) => {
         const { params: { month: routeMonth, month: expensesMonth = new Date().toISOString().substring(0, "YYYY-MM".length) } } = req;
         const { locals: { user: { id: userId } } } = res;
+        const translation: ITranslation = res.locals.translation;
+        const tabs: IApplicationTabs = res.locals.tabs;
 
         const monthlyExpenses = tables.expenses.listEntities<IExpenseEntity>({
             queryOptions: {
@@ -72,8 +72,8 @@ export function registerHandlers(app: Express): void {
             .sort((left, right) => right.amount - left.amount);
 
         res.render("expenses/list", {
-            title,
-            tab,
+            title: translation.expenses.list.title,
+            tab: tabs.expenses,
             expenses,
             totals,
             route: {

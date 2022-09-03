@@ -1,4 +1,4 @@
-<h3>Log Expense</h3>
+<h3>{{{ markdown translation.expenses.add.pageTitle }}}</h3>
 
 {{#if form.error}}
 <div class="alert alert-danger p-2" role="alert">
@@ -10,7 +10,7 @@
     {{> expenses/form}}
 
     <div class="d-flex flex-row">
-        <button type="submit" formaction="add" class="btn btn-sm btn-primary">Add</button>
-        <a href="/expenses{{#if route.month}}/{{ route.month }}{{/if}}" class="ms-2 btn btn-sm btn-secondary">Cancel</a>
+        <button type="submit" formaction="add" class="btn btn-sm btn-primary">{{{ translation.expenses.add.addButtonLabel }}}</button>
+        <a href="/expenses{{#if route.month}}/{{ route.month }}{{/if}}" class="ms-2 btn btn-sm btn-secondary">{{{ translation.expenses.add.cancelButtonLabel }}}</a>
     </div>
 </form>

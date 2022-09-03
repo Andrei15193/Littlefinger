@@ -1,13 +1,17 @@
 import type { Express } from "express";
 import type { IForm, IEditForm } from "../forms";
 import type { IExpenseForm } from "./form";
+import type { IApplicationTabs } from "../../applicationTabs";
+import { IFormError, ITranslation } from "../../translations/translation";
 import type { DataStorageError } from "../../data/DataStorageError";
 import { fillOptionsAsync, validate } from "./form";
-import { tabs } from "../../tabs";
 import { getExpenseMonth } from "../../data/DataStorageHelpers";
 import { DataStorage } from "../../data/DataStorage";
 
 interface IExpenseFormRequestBody {
+    readonly validated: "true" | "false";
+    readonly etag: string;
+
     readonly name: string;
     readonly shop: string;
     readonly tags: string | readonly string[];
@@ -15,18 +19,14 @@ interface IExpenseFormRequestBody {
     readonly currency: string;
     readonly quantity: number;
     readonly date: string;
-    readonly etag: string;
 }
-
-function title(expenseId: string): string {
-    return `Edit Expense ${expenseId}`;
-}
-const tab = tabs.expenses;
 
 export function registerHandlers(app: Express): void {
     app.get("/expenses/:month(\\d{4}-\\d{2})/:id/edit", async (req, res) => {
         const { params: { month: expenseMonth = "", id: expenseId = "" } } = req;
-        const { locals: { user: { id: userId } } } = res;
+        const userId: string = res.locals.user.id;
+        const translation: ITranslation = res.locals.translation;
+        const tabs: IApplicationTabs = res.locals.tabs;
 
         const dataStorage = new DataStorage(userId);
 
@@ -49,8 +49,8 @@ export function registerHandlers(app: Express): void {
             await fillOptionsAsync(form);
 
             res.render("expenses/edit", {
-                title: title(expenseId),
-                tab,
+                title: translation.expenses.edit.title(expenseId),
+                tab: tabs.expenses,
                 route: req.params,
                 form
             });
@@ -58,16 +58,16 @@ export function registerHandlers(app: Express): void {
         catch (error) {
             const dataStorageError = error as DataStorageError;
             res.render("expenses/edit-not-found", {
-                title: title(expenseId),
-                tab,
+                title: translation.expenses.edit.title(expenseId),
+                tab: tabs.expenses,
                 route: req.params,
                 form: {
                     isValidated: false,
                     isValid: false,
                     isInvalid: true,
-                    error: dataStorageError.toString({
-                        "Not Found": "The expense you are trying to view does not exist",
-                        "Unknown": "An unknown error has occurred, please reload the page and retry the operation"
+                    error: dataStorageError.map<IFormError>({
+                        "Not Found": translation.expenses.form.error.notFound(expenseMonth),
+                        "Unknown": translation.expenses.form.error.unknown
                     })
                 } as IForm
             });
@@ -76,12 +76,14 @@ export function registerHandlers(app: Express): void {
 
     app.post("/expenses/:month(\\d{4}-\\d{2})/:id/edit", async (req, res) => {
         const { params: { month: expenseMonth = "", id: expenseId = "" } } = req;
-        const { locals: { user: { id: userId } } } = res;
+        const userId: string = res.locals.user.id;
+        const translation: ITranslation = res.locals.translation;
+        const tabs: IApplicationTabs = res.locals.tabs;
 
         const dataStorage = new DataStorage(userId);
 
-        const form = readForm(req.body as IExpenseFormRequestBody);
-        if (validate(form))
+        const form = readForm(translation, req.body as IExpenseFormRequestBody);
+        if (validate(translation, form))
             try {
                 await dataStorage.expenses.updateAsync(expenseMonth, expenseId, {
                     name: form.name.value,
@@ -97,15 +99,15 @@ export function registerHandlers(app: Express): void {
             }
             catch (error) {
                 const dataStorageError = error as DataStorageError;
-                form.error = dataStorageError.toString({
-                    "Invalid etag": "The expense has already been edited or deleted",
-                    "Unknown": "An unknown error has occurred, please reload the page and retry the operation"
-                });
+                form.error = dataStorageError.map({
+                    "Invalid etag": translation.expenses.form.error.invalidEtag,
+                    "Unknown": translation.expenses.form.error.unknown
+                })
                 await fillOptionsAsync(form);
 
                 res.render("expenses/edit", {
-                    title: title(expenseId),
-                    tab,
+                    title: translation.expenses.edit.title(expenseId),
+                    tab: tabs.expenses,
                     route: req.params,
                     form
                 });
@@ -113,8 +115,8 @@ export function registerHandlers(app: Express): void {
         else {
             await fillOptionsAsync(form);
             res.render("expenses/edit", {
-                title: title(expenseId),
-                tab,
+                title: translation.expenses.edit.title(expenseId),
+                tab: tabs.expenses,
                 route: req.params,
                 form
             });
@@ -123,28 +125,30 @@ export function registerHandlers(app: Express): void {
 
     app.post("/expenses/:month(\\d{4}-\\d{2})/:id/delete", async (req, res) => {
         const { params: { month: expenseMonth = "", id: expenseId = "" } } = req;
-        const { locals: { user: { id: userId } } } = res;
+        const userId: string = res.locals.user.id;
+        const translation: ITranslation = res.locals.translation;
+        const tabs: IApplicationTabs = res.locals.tabs;
 
         const dataStorage = new DataStorage(userId);
 
-        const form = readForm(req.body as IExpenseFormRequestBody);
+        const form = readForm(translation, req.body as IExpenseFormRequestBody);
         try {
             await dataStorage.expenses.deleteAsync(expenseMonth, expenseId, form.etag);
             res.redirect(`/expenses/${expenseMonth}`);
         }
         catch (error) {
             const dataStorageError = error as DataStorageError;
-            form.error = dataStorageError.toString({
-                "Invalid etag": "The expense has been edited or deleted",
-                "Unknown": "An unknown error has occurred, please reload the page and retry the operation"
-            });
+            form.error = dataStorageError.map({
+                "Invalid etag": translation.expenses.form.error.invalidEtag,
+                "Unknown": translation.expenses.form.error.unknown
+            })
             await fillOptionsAsync(form);
 
             dataStorageError.handle({
                 "Not Found": () => res.redirect(`/expenses/${expenseMonth}`),
                 "Unknown": () => res.render("expenses/edit", {
-                    title: title(expenseId),
-                    tab,
+                    title: translation.expenses.edit.title(expenseId),
+                    tab: tabs.expenses,
                     route: req.params,
                     form
                 })
@@ -153,41 +157,48 @@ export function registerHandlers(app: Express): void {
     });
 
     app.post("/expenses/:month(\\d{4}-\\d{2})/:id/add-tag", async (req, res) => {
-        const form = readForm(req.body as IExpenseFormRequestBody);
+        const { params: { id: expenseId = "" } } = req;
+        const translation: ITranslation = res.locals.translation;
+        const tabs: IApplicationTabs = res.locals.tabs;
+
+        const form = readForm(translation, req.body as IExpenseFormRequestBody);
         fillOptionsAsync(form);
         form.tags.value = [""].concat(form.tags.value);
         if (form.isValidated)
-            validate(form);
+            validate(translation, form);
 
         res.render("expenses/edit", {
-            title,
-            tab,
+            title: translation.expenses.edit.title(expenseId),
+            tab: tabs.expenses,
             route: req.params,
             form
         });
     });
 
     app.post("/expenses/:month(\\d{4}-\\d{2})/:id/remove-tag", async (req, res) => {
+        const { params: { id: expenseId = "" } } = req;
         const { query: { tag } } = req;
+        const translation: ITranslation = res.locals.translation;
+        const tabs: IApplicationTabs = res.locals.tabs;
 
-        const form = readForm(req.body as IExpenseFormRequestBody);
+        const form = readForm(translation, req.body as IExpenseFormRequestBody);
         fillOptionsAsync(form);
         form.tags.value = form.tags.value.filter(existingTag => tag !== existingTag);
         if (form.isValidated)
-            validate(form);
+            validate(translation, form);
 
         res.render("expenses/edit", {
-            title,
-            tab,
+            title: translation.expenses.edit.title(expenseId),
+            tab: tabs.expenses,
             route: req.params,
             form
         });
     });
 }
 
-function readForm(body: IExpenseFormRequestBody): IEditForm<IExpenseForm> {
-    return {
-        isValidated: false,
+function readForm(translation: ITranslation, body: IExpenseFormRequestBody): IEditForm<IExpenseForm> {
+    const form: IEditForm<IExpenseForm> = {
+        isValidated: body.validated === "true",
         isValid: true,
         isInvalid: false,
 
@@ -214,4 +225,9 @@ function readForm(body: IExpenseFormRequestBody): IEditForm<IExpenseForm> {
         },
         etag: body.etag || ""
     };
+
+    if (form.isValidated)
+        validate(translation, form);
+
+    return form;
 }

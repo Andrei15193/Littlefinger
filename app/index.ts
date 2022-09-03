@@ -1,26 +1,19 @@
+import type { ITranslation } from "./translations/translation";
 import express from "express";
 import path from "path";
 import { createHandlebarsInstance } from "./handlebars";
 import { registerHandlers } from "./requestHandlers";
 import { ensureTableStorageAsync } from "./table-storage";
-import { tabs } from "./tabs";
+import { ApplicationTabs } from "./applicationTabs";
+import { translations } from "./translations";
 
 (async function startApplicationAsync(): Promise<void> {
-    const app = express();
-    Object.assign(app.locals, {
-        application: {
-            name: "LittleFinger",
-            tabs
-        }
-    });
-
     const args = readCommandLineArguments(process.argv);
     const port: number | undefined = args.named.port !== undefined ? Number(args.named.port) : undefined;
 
     const handlebars = createHandlebarsInstance(path.join(process.cwd(), "app", "views"));
-    handlebars.localsAsTemplateData(app);
 
-    app
+    const app = express()
         .engine("hbs", handlebars.__express)
         .set("view engine", "hbs")
         .set("views", path.join(process.cwd(), "app", "views"))
@@ -28,7 +21,12 @@ import { tabs } from "./tabs";
         .use(express.static(path.join(process.cwd(), "app", "assets")))
         .use(express.urlencoded({ extended: true }))
         .use((req, res, next) => {
+            const responseLocale = req.acceptsLanguages(...translations.map(translation => translation.locale)) || translations[0]?.locale;
+            const translation: ITranslation = translations.filter(translation => translation.locale === responseLocale)[0]!;
+
             res.locals = {
+                translation,
+                tabs: new ApplicationTabs(translation),
                 user: {
                     id: "00000000-0000-0000-0000-000000000000",
                     username: "andrei15193",

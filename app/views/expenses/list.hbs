@@ -1,6 +1,6 @@
 <div class="d-flex flex-row align-items-center">
-    <h3>Expenses</h3>
-    <a href="/expenses{{#if route.month}}/{{ route.month }}{{/if}}/add" class="ms-2 btn btn-sm btn-primary">Add</a>
+    <h3>{{{ markdown translation.expenses.list.pageTitle }}}</h3>
+    <a href="/expenses{{#if route.month}}/{{ route.month }}{{/if}}/add" class="ms-2 btn btn-sm btn-primary">{{{ markdown translation.expenses.list.addButtonLabel }}}</a>
     <nav class="ms-auto">
         <ul class="pagination pagination-sm">
             <li class="page-item">
@@ -28,25 +28,25 @@
     <thead>
         <tr>
             <th>
-                <div>Name</div>
+                <div>{{{ markdown translation.expenses.list.columns.name }}}</div>
             </th>
             <th>
-                <div>Shop</div>
+                <div>{{{ markdown translation.expenses.list.columns.shop }}}</div>
             </th>
             <th>
-                <div>Tags</div>
+                <div>{{{ markdown translation.expenses.list.columns.tags }}}</div>
             </th>
             <th>
-                <div>Price</div>
+                <div>{{{ markdown translation.expenses.list.columns.price }}}</div>
             </th>
             <th>
-                <div>Quantity</div>
+                <div>{{{ markdown translation.expenses.list.columns.quantity }}}</div>
             </th>
             <th>
-                <div>Amount</div>
+                <div>{{{ markdown translation.expenses.list.columns.amount }}}</div>
             </th>
             <th>
-                <div>Date</div>
+                <div>{{{ markdown translation.expenses.list.columns.date }}}</div>
             </th>
         </tr>
     </thead>
@@ -61,13 +61,13 @@
                 {{/each}}
             </td>
             <td>
-                {{ currency }}<span class="ms-2 invisible">{{ getLeadingZeros amount @root.format.integerDigitsCount.price }}</span>{{ formatNumber price }}
+                {{ currency }}<span class="ms-2 invisible">{{ getLeadingZeros @root.translation.locale amount @root.format.integerDigitsCount.price }}</span>{{ formatNumber @root.translation.locale price }}
             </td>
-            <td><span class="invisible">{{ getLeadingZeros quantity @root.format.integerDigitsCount.quantity }}</span>{{ formatIntegerNumber quantity }}</td>
+            <td><span class="invisible">{{ getLeadingZeros @root.translation.locale quantity @root.format.integerDigitsCount.quantity }}</span>{{ formatIntegerNumber @root.translation.locale quantity }}</td>
             <td>
-                {{ currency }}<span class="ms-2 invisible">{{ getLeadingZeros amount @root.format.integerDigitsCount.amount }}</span>{{ formatNumber amount }}
+                {{ currency }}<span class="ms-2 invisible">{{ getLeadingZeros @root.translation.locale amount @root.format.integerDigitsCount.amount }}</span>{{ formatNumber @root.translation.locale amount }}
             </td>
-            <td>{{ formatDate date }}</td>
+            <td>{{ formatDate @root.translation.locale date }}</td>
         </tr>
         {{/each}}
     </tbody>
@@ -76,7 +76,7 @@
         <tfoot>
             <tr>
                 <td>
-                    <div>Total</div>
+                    <div>{{{ markdown @root.translation.expenses.list.totalsRow.total }}}</div>
                 </td>
                 <td>
                     <div><span class="invisible">&nbsp;</span></div>
@@ -94,7 +94,7 @@
                     <div>
                         {{#each @root.totals}}
                         <div>
-                            {{ currency }}<span class="ms-2 invisible">{{ getLeadingZeros amount @root.format.integerDigitsCount.amount }}</span>{{ formatNumber amount }}
+                            {{ currency }}<span class="ms-2 invisible">{{ getLeadingZeros @root.translation.locale amount @root.format.integerDigitsCount.amount }}</span>{{ formatNumber @root.translation.locale amount }}
                         </div>
                         {{/each}}
                     </div>
@@ -110,5 +110,5 @@
 
 {{#each expenses}}
 {{else}}
-<div class="p-2 alert alert-secondary text-center" role="alert">There are no expenses made for this month.</div>
+<div class="p-2 alert alert-secondary text-center" role="alert">{{{ markdown @root.translation.expenses.list.empty }}}</div>
 {{/each}}

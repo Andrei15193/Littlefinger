@@ -1,3 +1,4 @@
+import type { ITranslation } from "../../translations/translation";
 import type { ExcludeFormNullValues, IForm, IFormField } from "../forms";
 
 export interface IExpenseForm extends IForm {
@@ -16,35 +17,35 @@ export async function fillOptionsAsync(form: IExpenseForm): Promise<void> {
     form.currency.options = ["RON", "EUR"];
 }
 
-export function validate(form: IExpenseForm): form is ExcludeFormNullValues<IExpenseForm> {
+export function validate(translation: ITranslation, form: IExpenseForm): form is ExcludeFormNullValues<IExpenseForm> {
     let isFormValid = true;
 
     if (form.name.value.length === 0) {
-        form.name.error = "Please provide a name for the expense that you have made";
+        form.name.error = translation.expenses.form.name.error.required;
         isFormValid = false;
     }
     if (form.shop.value.length === 0) {
-        form.shop.error = "Please provide the name of the shop where you made your purchase";
+        form.shop.error = translation.expenses.form.shop.error.required;
         isFormValid = false;
     }
     if (form.tags.value.length === 0) {
-        form.tags.error = "Please provide at least one tag (useful when generating reports)";
+        form.tags.error = translation.expenses.form.tags.error.required;
         isFormValid = false;
     }
     if (form.price.value === null || form.price.value === undefined || Number.isNaN(form.price.value) || form.price.value <= 0 || !Number.isInteger(form.price.value * 100)) {
-        form.price.error = "Please provide a price that is greater than zero and has at most two decimals";
+        form.price.error = translation.expenses.form.price.error.required;
         isFormValid = false;
     }
     if (form.currency.value.length === 0) {
-        form.currency.error = "Please provide the currency in which you made the purchase";
+        form.currency.error = translation.expenses.form.currency.error.required;
         isFormValid = false;
     }
     if (!Number.isInteger(form.quantity.value) || form.quantity.value <= 0) {
-        form.quantity.error = "Please provide the quantity which must be an integer greater than zero";
+        form.quantity.error = translation.expenses.form.quantity.error.required;
         isFormValid = false;
     }
     if (form.date.value === null) {
-        form.date.error = "Please provide the date when you made the purchase";
+        form.date.error = translation.expenses.form.date.error.required;
         isFormValid = false;
     }
 

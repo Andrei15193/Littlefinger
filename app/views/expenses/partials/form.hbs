@@ -1,12 +1,12 @@
 <input type="hidden" name="validated" id="validated" value="{{ form.isValidated }}">
 
 <div class="mb-3">
-    <label for="name" class="form-label">Name</label>
+    <label for="name" class="form-label">{{{ markdown translation.expenses.form.name.label }}}</label>
     <input type="text" class="form-control form-control-sm{{#if form.isValidated}}{{#if form.name.error}} is-invalid{{else}} is-valid{{/if}}{{/if}}" id="name" name="name" value="{{ form.name.value }}">
-    <div class="invalid-feedback">{{ form.name.error }}</div>
+    <div class="invalid-feedback">{{{ markdown form.name.error }}}</div>
 </div>
 <div class="mb-3">
-    <label for="shop" class="form-label">Shop</label>
+    <label for="shop" class="form-label">{{{ markdown translation.expenses.form.shop.label }}}</label>
     <input type="text" class="form-control form-control-sm{{#if form.isValidated}}{{#if form.shop.error}} is-invalid{{else}} is-valid{{/if}}{{/if}}" id="shop" name="shop" value="{{ form.shop.value }}" list="shopOptions">
     <datalist id="shopOptions">
         {{#each form.shop.options}}
@@ -14,10 +14,10 @@
         {{/each}}
     </datalist>
 
-    <div class="invalid-feedback">{{ form.shop.error }}</div>
+    <div class="invalid-feedback">{{{ markdown form.shop.error }}}</div>
 </div>
 <div class="mb-3">
-    <label for="tags" class="form-label">Tags</label>
+    <label for="tags" class="form-label">{{{ markdown translation.expenses.form.tags.label }}}</label>
     <div class="input-group">
         <input type="text" class="form-control form-control-sm{{#if form.isValidated}}{{#if form.tags.error}} is-invalid{{else}} is-valid{{/if}}{{/if}}" list="tagOptions" id="tags" name="tags" value="{{#each form.tags.value}}{{#if @first}}{{ this }}{{/if}}{{/each}}">
         <datalist id="tagOptions">
@@ -25,9 +25,9 @@
             <option value="{{ this }}">
             {{/each}}
         </datalist>
-        <button class="btn btn-sm btn-outline-secondary rounded-end" type="submit" formaction="add-tag">Add More</button>
+        <button class="btn btn-sm btn-outline-secondary rounded-end" type="submit" formaction="add-tag">{{{ markdown translation.expenses.form.tags.addMoreButtonLabel }}}</button>
 
-        <div class="invalid-feedback">{{ form.tags.error }}</div>
+        <div class="invalid-feedback">{{{ markdown form.tags.error }}}</div>
     </div>
     <div class="mt-1">
         {{#each form.tags.value}}
@@ -46,7 +46,7 @@
     </div>
 </div>
 <div class="mb-3">
-    <label for="price" class="form-label">Price</label>
+    <label for="price" class="form-label">{{{ markdown translation.expenses.form.price.label }}}</label>
     <div class="input-group">
         <input type="text" class="form-control form-control-sm currency-input{{#if form.isValidated}}{{#if form.currency.error}} is-invalid{{else}} is-valid{{/if}}{{/if}}" id="currency" name="currency" placeholder="Currency" value="{{ form.currency.value }}" list="currencyOptions">
         <datalist id="currencyOptions">
@@ -55,19 +55,19 @@
             {{/each}}
         </datalist>
 
-        <input type="number" step="any" class="form-control form-control-sm{{#if form.isValidated}}{{#if form.price.error}} is-invalid{{else}} is-valid{{/if}}{{/if}}" id="price" name="price" value="{{ form.price.value }}">
+        <input type="number" lang="" step="any" class="form-control form-control-sm{{#if form.isValidated}}{{#if form.price.error}} is-invalid{{else}} is-valid{{/if}}{{/if}}" id="price" name="price" value="{{ form.price.value }}">
 
-        {{#if form.currency.error }}<div class="invalid-feedback">{{ form.currency.error }}</div>{{/if}}
-        {{#if form.price.error }}<div class="invalid-feedback">{{ form.price.error }}</div>{{/if}}
+        {{#if form.currency.error }}<div class="invalid-feedback">{{{ markdown form.currency.error }}}</div>{{/if}}
+        {{#if form.price.error }}<div class="invalid-feedback">{{{ markdown form.price.error }}}</div>{{/if}}
     </div>
 </div>
 <div class="mb-3">
-    <label for="quantity" class="form-label">Quantity</label>
+    <label for="quantity" class="form-label">{{{ markdown translation.expenses.form.quantity.label }}}</label>
     <input type="number" step="any" class="form-control form-control-sm{{#if form.isValidated}}{{#if form.quantity.error}} is-invalid{{else}} is-valid{{/if}}{{/if}}" id="quantity" name="quantity" value="{{ form.quantity.value }}">
-    <div class="invalid-feedback">{{ form.quantity.error }}</div>
+    <div class="invalid-feedback">{{{ markdown form.quantity.error }}}</div>
 </div>
 <div class="mb-3">
-    <label for="date" class="form-label">Date</label>
+    <label for="date" class="form-label">{{{ markdown translation.expenses.form.date.label }}}</label>
     <input type="date" class="form-control form-control-sm{{#if form.isValidated}}{{#if form.date.error}} is-invalid{{else}} is-valid{{/if}}{{/if}}" id="date" name="date" value="{{ toInputDateValue form.date.value }}">
-    <div class="invalid-feedback">{{ form.date.error }}</div>
+    <div class="invalid-feedback">{{{ markdown form.date.error }}}</div>
 </div>

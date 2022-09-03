@@ -2,7 +2,7 @@ export interface IForm {
     isValidated: boolean;
     isValid: boolean;
     isInvalid: boolean;
-    error?: string;
+    error?: string | { readonly message: string; readonly actions: readonly string[] };
 }
 
 export type IEditForm<TForm extends IForm> = TForm & {

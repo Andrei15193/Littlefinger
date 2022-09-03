@@ -40,6 +40,10 @@ export class DataStorageError extends Error {
         callback(this);
     }
 
+    public map<TResult>(lookup: DataStorageErrorReasonMapping<TResult>): TResult {
+        return lookup[this.reason] || lookup["Unknown"];
+    }
+
     public override toString(lookup?: DataStorageErrorReasonMapping<string>): string {
         if (lookup !== undefined && lookup !== null)
             return lookup[this.reason] || lookup["Unknown"];
