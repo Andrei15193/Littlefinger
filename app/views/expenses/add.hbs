@@ -10,7 +10,7 @@
     {{> expenses/form}}
 
     <div class="d-flex flex-row">
-        <button type="submit" formaction="add" class="btn btn-sm btn-primary">{{{ translation.expenses.add.addButtonLabel }}}</button>
+        <button type="submit" name="command" value="add" class="btn btn-sm btn-primary">{{{ translation.expenses.add.addButtonLabel }}}</button>
         <a href="/expenses{{#if route.month}}/{{ route.month }}{{/if}}" class="ms-2 btn btn-sm btn-secondary">{{{ translation.expenses.add.cancelButtonLabel }}}</a>
     </div>
 </form>

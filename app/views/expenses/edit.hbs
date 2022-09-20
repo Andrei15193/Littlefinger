@@ -13,7 +13,7 @@
     {{> expenses/form expenseId=route.id}}
 
     <div class="d-flex flex-row">
-        <button type="submit" formaction="edit" class="btn btn-sm btn-primary">{{{ markdown translation.expenses.edit.updateButtonLabel  }}}</button>
+        <button type="submit" name="command" value="edit" class="btn btn-sm btn-primary">{{{ markdown translation.expenses.edit.updateButtonLabel  }}}</button>
         <button type="button" class="ms-2 btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#confirmationModal">{{{ markdown translation.expenses.edit.deleteButtonLabel  }}}</button>
         <a href="/expenses/{{ route.month }}" class="ms-2 btn btn-sm btn-secondary">{{{ markdown translation.expenses.edit.cancelButtonLabel  }}}</a>
     </div>
@@ -29,8 +29,8 @@
                     <p>{{{ markdown translation.expenses.edit.deleteConfirmation.description }}}</p>
                     <p class="mb-0">{{{ markdown translation.expenses.edit.deleteConfirmation.confirmationMessage }}}</p>
                 </div>
-                <div class="modal-footer" method="DELETE">
-                    <button type="submit" formaction="delete" class="btn btn-danger">{{{ markdown translation.expenses.edit.deleteConfirmation.confirmButtonLabel }}}</button>
+                <div class="modal-footer">
+                    <button type="submit" name="command" value="remove" class="btn btn-danger">{{{ markdown translation.expenses.edit.deleteConfirmation.confirmButtonLabel }}}</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{{ markdown translation.expenses.edit.deleteConfirmation.cancelButtonLabel }}}</button>
                 </div>
             </div>

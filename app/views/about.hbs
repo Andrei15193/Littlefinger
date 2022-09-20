@@ -4,7 +4,16 @@
 
 <p>{{{ markdown translation.about.description }}}</p>
 
-<h4>{{{ markdown translation.about.resources.title }}}</h4>
+<h4>{{{ markdown translation.about.externalResources.title }}}</h4>
 <ul>
-    <li>{{{ markdown translation.about.resources.cartoon }}}</li>
+    {{#each translation.about.externalResources.websites }}
+    <li>
+        {{{ markdown description }}}
+        <ul>
+        {{#each resources }}
+            <li>{{{ markdown this }}}</li>
+        {{/each}}
+        </ul>
+    </li>
+    {{/each}}
 </ul>

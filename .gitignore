@@ -1,3 +1,6 @@
 .data/
 node_modules/
 out/
+
+# Microsoft Office Temporary Files
+~$$*.~*

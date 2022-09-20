@@ -138,9 +138,12 @@ export interface IAboutTranslationLabels {
     readonly title: string;
     readonly skit: string;
     readonly description: string;
-    readonly resources: {
-        readonly title: string
-        readonly cartoon: string
+    readonly externalResources: {
+        readonly title: string;
+        readonly websites: readonly {
+            readonly description: string;
+            readonly resources: readonly string[];
+        }[];
     };
 }
 

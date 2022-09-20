@@ -5,6 +5,7 @@ const AzureTableStorageConnectionString = (process.env as any).CUSTOMCONNSTR_AZU
 const applicationTables = {
     users: TableClient.fromConnectionString(AzureTableStorageConnectionString, "users"),
     expenses: TableClient.fromConnectionString(AzureTableStorageConnectionString, "expenses"),
+    expenseTags: TableClient.fromConnectionString(AzureTableStorageConnectionString, "expenseTags")
 };
 
 export const tables = applicationTables as { readonly [key in keyof typeof applicationTables]: TableClient };
@@ -43,13 +44,10 @@ export async function ensureTableStorageAsync({ recreateTables = false, deleteEx
 
     async function getTableNamesAsync(tableService: TableServiceClient): Promise<readonly string[]> {
         const tableNames: string[] = [];
-        const tablesIterator = await tableService.listTables();
-        let result = await tablesIterator.next();
-        while (!result.done) {
-            if (result.value.name !== undefined)
-                tableNames.push(result.value.name);
-            result = await tablesIterator.next();
-        }
+
+        for await (let table of tableService.listTables())
+            if (table.name !== undefined)
+                tableNames.push(table.name);
 
         return tableNames;
     }

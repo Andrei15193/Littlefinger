@@ -36,7 +36,7 @@ export const expensesTranslationLabels: IExpensesTranslationLabels = {
             title: "Expense Not Found"
         },
 
-        updateButtonLabel: "Add",
+        updateButtonLabel: "Update",
         deleteButtonLabel: "Delete",
         cancelButtonLabel: "Cancel",
 

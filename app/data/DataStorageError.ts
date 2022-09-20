@@ -1,12 +1,12 @@
 import type { RestError } from "@azure/data-tables";
 
-export type DataStorageErrorReason = "Invalid etag" | "Not Found" | "Unknown";
+export type DataStorageErrorReason = "InvalidEtag" | "NotFound" | "Unknown";
 
 export class DataStorageError extends Error {
-    public constructor(reason: "Invalid etag");
+    public constructor(reason: "InvalidEtag");
     public constructor(restError: RestError);
 
-    public constructor(reasonOrRestError: "Invalid etag" | RestError) {
+    public constructor(reasonOrRestError: "InvalidEtag" | RestError) {
         if (typeof reasonOrRestError === "string") {
             super();
             this.reason = reasonOrRestError;
@@ -16,11 +16,11 @@ export class DataStorageError extends Error {
             super(reasonOrRestError.message);
             switch (reasonOrRestError?.statusCode) {
                 case 404:
-                    this.reason = "Not Found";
+                    this.reason = "NotFound";
                     break;
 
                 case 412:
-                    this.reason = "Invalid etag";
+                    this.reason = "InvalidEtag";
                     break;
 
                 default:
@@ -36,22 +36,26 @@ export class DataStorageError extends Error {
     public readonly restError: RestError | null;
 
     public handle(callbacks: DataStorageErrorReasonMapping<(dataStorageError: DataStorageError) => void>): void {
-        const callback = (callbacks[this.reason] || callbacks["Unknown"]);
+        const callback = (callbacks[DataStorageError._uncapitalize(this.reason)] || callbacks.unknown);
         callback(this);
     }
 
     public map<TResult>(lookup: DataStorageErrorReasonMapping<TResult>): TResult {
-        return lookup[this.reason] || lookup["Unknown"];
+        return lookup[DataStorageError._uncapitalize(this.reason)] || lookup.unknown;
     }
 
     public override toString(lookup?: DataStorageErrorReasonMapping<string>): string {
         if (lookup !== undefined && lookup !== null)
-            return lookup[this.reason] || lookup["Unknown"];
+            return lookup[DataStorageError._uncapitalize(this.reason)] || lookup.unknown;
         else
             return super.toString();
+    }
+
+    private static _uncapitalize(value: DataStorageErrorReason): Uncapitalize<DataStorageErrorReason> {
+        return (value[0]?.toLowerCase() + value.substring(1)) as Uncapitalize<DataStorageErrorReason>;
     }
 }
 
 export type DataStorageErrorReasonMapping<TValue> =
-    { readonly [reason in Exclude<DataStorageErrorReason, "Unknown">]?: TValue }
-    & { readonly [reason in Extract<DataStorageErrorReason, "Unknown">]: TValue };
+    { readonly [reason in Uncapitalize<Exclude<DataStorageErrorReason, "Unknown">>]?: TValue }
+    & { readonly [reason in Uncapitalize<Extract<DataStorageErrorReason, "Unknown">>]: TValue };

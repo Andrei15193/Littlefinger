@@ -3,6 +3,8 @@ import hbs from "hbs";
 import Markdown from "markdown-it";
 import markdownItAttrs from "markdown-it-attrs";
 import path from "path";
+import { Enum } from "./global/Enum";
+import { ExpenseTagColor } from "./model/Expenses";
 
 type IHandlebars = ReturnType<typeof hbs.create>;
 
@@ -148,6 +150,10 @@ export function createHandlebarsInstance(viewsDirectoryPath: string): IHandlebar
             } while (toVisit.length > 0);
         }
     }
+
+    handlebars.registerHelper("expenseTagColorClass", function (this: any, expenseTagColor: ExpenseTagColor): string {
+        return `tag-${Enum.getKey(ExpenseTagColor, expenseTagColor)}`;
+    });
 
     return handlebars;
 }
