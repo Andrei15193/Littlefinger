@@ -11,7 +11,7 @@ import { AddExpenseTagCommandHandler } from "./commands/AddExpenseTagCommandHand
 import { RemoveExpenseTagCommandHandler } from "./commands/RemoveExpenseTagCommandHandler";
 
 export class EditExpensePage extends Page<IEditExpenseRouteParams, PageRequestBody<IExpenseFormData>, IExpenseFormViewOptions> {
-    public readonly route: string = "/expenses/:month(\\d{4}-\\d{2})/:id/edit";
+    public readonly route: string = "/expenses/:month(\\d{4}-\\d{2})/:id";
 
     public readonly handlers: [QueryHandlerType<IEditExpenseRouteParams, IExpenseFormViewOptions>, ...ICommandHandlerDefinition<IEditExpenseRouteParams, PageRequestBody<IExpenseFormData>, IExpenseFormViewOptions>[]] = [
         GetExpenseQueryHandler,

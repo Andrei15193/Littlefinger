@@ -10,7 +10,7 @@ import type { IExpenseFormData } from "../../ExpenseForm";
 import type { PageRequestBody } from "../../../page/IBasePageRequestBody";
 import { CommandHandler } from "../../../page";
 import { ExpenseForm } from "../../ExpenseForm";
-import { AzureTableStorageUtils } from "../../../../data/repositories/AzureTableStorageUtils";
+import { ExpensesUtils } from "../../../../model/ExpensesUtils";
 
 export class EditExpenseCommandHandler extends CommandHandler<IEditExpenseRouteParams, PageRequestBody<IExpenseFormData>, IExpenseFormViewOptions> {
     private readonly _translation: ITranslation;
@@ -45,7 +45,7 @@ export class EditExpenseCommandHandler extends CommandHandler<IEditExpenseRouteP
                     etag: form.etag!
                 });
 
-                return this.redirect(`/expenses/${AzureTableStorageUtils.getExpenseMonth(form.date.value!)}`);
+                return this.redirect(`/expenses/${ExpensesUtils.getExpenseMonth(form.date.value!)}`);
             }
             catch (error) {
                 const dataStorageError = error as DataStorageError;

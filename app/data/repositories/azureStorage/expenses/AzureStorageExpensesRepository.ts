@@ -7,6 +7,7 @@ import { TableTransaction } from "@azure/data-tables";
 import { v4 as uuid } from "uuid";
 import { DataStorageError } from "../../../DataStorageError";
 import { AzureTableStorageUtils } from "../../AzureTableStorageUtils";
+import { ExpensesUtils } from "../../../../model/ExpensesUtils";
 
 export class AzureStorageExpensesRepository implements IExpensesRepository {
     private readonly _userId: string;
@@ -34,7 +35,7 @@ export class AzureStorageExpensesRepository implements IExpensesRepository {
             const allExpenseTagsByName = await this._getAllExpenseTagsByName();
 
             const expenses: IExpense[] = [];
-            for await (const expenseEntity of this._azureStorage.tables.expenses.listEntities<IExpenseEntity>({ queryOptions: { filter: `PartitionKey eq '${this._userId}-${expensesMonth}'` } }))
+            for await (const expenseEntity of this._azureStorage.tables.expenses.listEntities<IExpenseEntity>({ queryOptions: { filter: `PartitionKey eq ${AzureTableStorageUtils.escapeKeyValue(`'${this._userId}-${expensesMonth}'`)}` } }))
                 expenses.push(this._mapExpenseEntity(expenseEntity, allExpenseTagsByName));
 
             return expenses;
@@ -46,14 +47,15 @@ export class AzureStorageExpensesRepository implements IExpensesRepository {
 
     public async addAsync(expense: WithoutAnyEtag<Omit<IExpense, "key" | "amount">>): Promise<void> {
         try {
-            const expenseMonth = AzureTableStorageUtils.getExpenseMonth(expense.date);
+            const expenseMonth = ExpensesUtils.getExpenseMonth(expense.date);
             const partitionKey = `${this._userId}-${expenseMonth}`;
             const expenseId = uuid();
 
             const expenseEntity: IExpenseEntity = {
-                partitionKey: partitionKey,
-                rowKey: expenseId,
+                partitionKey: AzureTableStorageUtils.escapeKeyValue(partitionKey),
+                rowKey: AzureTableStorageUtils.escapeKeyValue(expenseId),
                 month: expenseMonth,
+                id: expenseId,
                 name: expense.name,
                 shop: expense.shop,
                 tags: JSON.stringify(expense.tags.map(tag => tag.name)),
@@ -76,14 +78,15 @@ export class AzureStorageExpensesRepository implements IExpensesRepository {
 
         try {
             const partitionKey = `${this._userId}-${expense.key.month}`;
-            const newExpenseMonth = AzureTableStorageUtils.getExpenseMonth(expense.date);
+            const newExpenseMonth = ExpensesUtils.getExpenseMonth(expense.date);
 
             if (expense.key.month === newExpenseMonth)
                 await this._azureStorage.tables.expenses.updateEntity<IExpenseEntity>(
                     {
-                        partitionKey,
-                        rowKey: expense.key.id,
+                        partitionKey: AzureTableStorageUtils.escapeKeyValue(partitionKey),
+                        rowKey: AzureTableStorageUtils.escapeKeyValue(expense.key.id),
                         month: expense.key.month,
+                        id: expense.key.id,
                         name: expense.name,
                         shop: expense.shop,
                         tags: JSON.stringify(expense.tags.map(tag => tag.name)),
@@ -98,14 +101,15 @@ export class AzureStorageExpensesRepository implements IExpensesRepository {
             else {
                 const newPartitionKey = `${this._userId}-${newExpenseMonth}`;
 
-                await this._azureStorage.tables.expenses.deleteEntity(partitionKey, expense.key.id, { etag: expense.etag });
+                await this._azureStorage.tables.expenses.deleteEntity(AzureTableStorageUtils.escapeKeyValue(partitionKey), AzureTableStorageUtils.escapeKeyValue(expense.key.id), { etag: expense.etag });
                 await this._azureStorage.tables.expenses.createEntity<IExpenseEntity>({
-                    partitionKey: newPartitionKey,
-                    rowKey: expense.key.id,
+                    partitionKey: AzureTableStorageUtils.escapeKeyValue(newPartitionKey),
+                    rowKey: AzureTableStorageUtils.escapeKeyValue(expense.key.id),
                     month: newExpenseMonth,
+                    id: expense.key.id,
                     name: expense.name,
                     shop: expense.shop,
-                    tags: JSON.stringify(expense.tags),
+                    tags: JSON.stringify(expense.tags.map(tag => tag.name)),
                     currency: expense.currency,
                     price: expense.price,
                     quantity: expense.quantity,
@@ -125,7 +129,7 @@ export class AzureStorageExpensesRepository implements IExpensesRepository {
 
         try {
             const partitionKey = `${this._userId}-${expenseMonth}`;
-            await this._azureStorage.tables.expenses.deleteEntity(partitionKey, expenseId, { etag: expenseEtag });
+            await this._azureStorage.tables.expenses.deleteEntity(AzureTableStorageUtils.escapeKeyValue(partitionKey), AzureTableStorageUtils.escapeKeyValue(expenseId), { etag: expenseEtag });
         }
         catch (error) {
             throw new DataStorageError(error as RestError);
@@ -135,7 +139,7 @@ export class AzureStorageExpensesRepository implements IExpensesRepository {
     private async _getAllExpenseTagsByName(): Promise<Record<string, IExpenseTag>> {
         const allExpenseTagsByName: Record<string, IExpenseTag> = {};
 
-        for await (const tagEntity of this._azureStorage.tables.expenseTags.listEntities<IExpenseTagEntity>({ queryOptions: { filter: `PartitionKey eq '${this._userId}'` } }))
+        for await (const tagEntity of this._azureStorage.tables.expenseTags.listEntities<IExpenseTagEntity>({ queryOptions: { filter: `PartitionKey eq '${AzureTableStorageUtils.escapeKeyValue(this._userId)}'` } }))
             if (allExpenseTagsByName[tagEntity.name] === undefined)
                 allExpenseTagsByName[tagEntity.name] = {
                     name: tagEntity.name,
@@ -150,7 +154,7 @@ export class AzureStorageExpensesRepository implements IExpensesRepository {
         return {
             key: {
                 month: expenseEntity.month,
-                id: expenseEntity.rowKey
+                id: expenseEntity.id
             },
             name: expenseEntity.name,
             shop: expenseEntity.shop,
@@ -184,8 +188,8 @@ export class AzureStorageExpensesRepository implements IExpensesRepository {
                     }
                     currentTableTransaction.upsertEntity<IExpenseTagEntity>(
                         {
-                            partitionKey: this._userId,
-                            rowKey: tag.name,
+                            partitionKey: AzureTableStorageUtils.escapeKeyValue(this._userId),
+                            rowKey: AzureTableStorageUtils.escapeKeyValue(tag.name),
                             name: tag.name,
                             color: tag.color
                         },

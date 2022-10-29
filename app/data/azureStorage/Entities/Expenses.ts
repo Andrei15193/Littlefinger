@@ -2,6 +2,7 @@ import type { TableEntity } from "@azure/data-tables";
 
 export interface IExpenseEntity extends TableEntity {
     readonly month: string;
+    readonly id: string;
     readonly name: string;
     readonly shop: string;
     readonly tags: string;

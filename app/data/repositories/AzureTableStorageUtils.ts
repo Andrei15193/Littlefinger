@@ -1,6 +1,11 @@
 export class AzureTableStorageUtils {
-    public static getExpenseMonth(date: Date): string {
-        return date.toISOString().substring(0, "YYYY-MM".length);
+    public static escapeKeyValue(value: string): string {
+        return value.replace(
+            /(?<reserved>[@\\/#\?%])|(?<control>[\u0000-\u001F\u007F-\u009F\t\n\r]+)/g,
+            function (_, reserved) {
+                return reserved !== undefined ? `@${reserved.charCodeAt(0).toString(16)}` : "";
+            }
+        );
     }
 
     public static isValidEtag(etag: string | undefined | null): boolean {

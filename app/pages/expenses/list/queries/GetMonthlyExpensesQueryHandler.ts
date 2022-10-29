@@ -4,7 +4,7 @@ import type { ITranslation } from "../../../../translations/translation";
 import type { IRequestResult } from "../../../page/results";
 import type { IExpensesRepository } from "../../../../data/repositories/expenses/IExpensesRepository";
 import { QueryHandler } from "../../../page";
-import { AzureTableStorageUtils } from "../../../../data/repositories/AzureTableStorageUtils";
+import { ExpensesUtils } from "../../../../model/ExpensesUtils";
 
 export class GetMonthlyExpensesQueryHandler extends QueryHandler<IListExpensesRouteParams, IListExpensesViewOptions> {
     private readonly _translation: ITranslation;
@@ -17,7 +17,7 @@ export class GetMonthlyExpensesQueryHandler extends QueryHandler<IListExpensesRo
         this._expensesRepository = expensesRepository;
     }
 
-    public async executeQueryAsync({ month: expensesMonth = AzureTableStorageUtils.getExpenseMonth(new Date()) }: IListExpensesRouteParams, queryParmas: {}): Promise<IRequestResult> {
+    public async executeQueryAsync({ month: expensesMonth = ExpensesUtils.getExpenseMonth(new Date()) }: IListExpensesRouteParams, queryParmas: {}): Promise<IRequestResult> {
         const expenses = await this._expensesRepository.getAllAsync(expensesMonth);
         const totals: readonly ITotal[] = expenses
             .reduce<{ readonly currency: ITotal["currency"], amount: ITotal["amount"] }[]>(

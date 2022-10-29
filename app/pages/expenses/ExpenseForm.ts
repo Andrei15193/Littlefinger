@@ -131,15 +131,15 @@ export class ExpenseForm implements IForm {
     public etag: string | null;
 
     public validate(): void {
-        if (this.name.isBlank)
+        if (this.name.isBlank || this.name.value!.length > 250)
             this.name.error = this._translation.expenses.form.name.error.required;
-        if (this.shop.isBlank)
+        if (this.shop.isBlank || this.shop.value!.length > 250)
             this.shop.error = this._translation.expenses.form.shop.error.required;
-        if (this.tags.isBlank)
+        if (this.tags.isBlank || this.tags.value!.length > 25 || this.tags.value!.some(tag => tag.name.length > 250))
             this.tags.error = this._translation.expenses.form.tags.error.required;
         if (this.price.isBlank || this.price.value! <= 0 || !Number.isInteger(this.price.value! * 100))
             this.price.error = this._translation.expenses.form.price.error.required;
-        if (this.currency.isBlank)
+        if (this.currency.isBlank || this.currency.value!.length > 250)
             this.currency.error = this._translation.expenses.form.currency.error.required;
         if (this.quantity.isBlank || this.quantity.value! <= 0)
             this.quantity.error = this._translation.expenses.form.quantity.error.required;

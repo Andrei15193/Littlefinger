@@ -4,6 +4,7 @@ import type { IExpenseTagsRepository } from "../../expenses/IExpenseTagsReposito
 import type { IAzureStorage } from "../../../azureStorage";
 import type { IExpenseTagEntity } from "../../../azureStorage/Entities/Expenses";
 import { DataStorageError } from "../../../DataStorageError";
+import { AzureTableStorageUtils } from "../../AzureTableStorageUtils";
 
 export class AzureStorageExpenseTagsRepository implements IExpenseTagsRepository {
     private readonly _userId: string;
@@ -18,7 +19,7 @@ export class AzureStorageExpenseTagsRepository implements IExpenseTagsRepository
         try {
             const expenseTags: IExpenseTag[] = [];
 
-            for await (const expenseTagEntity of this._azureStorage.tables.expenseTags.listEntities<IExpenseTagEntity>({ queryOptions: { filter: `PartitionKey eq '${this._userId}'` } }))
+            for await (const expenseTagEntity of this._azureStorage.tables.expenseTags.listEntities<IExpenseTagEntity>({ queryOptions: { filter: `PartitionKey eq '${AzureTableStorageUtils.escapeKeyValue(this._userId)}'` } }))
                 expenseTags.push(this._mapExpenseTagEntity(expenseTagEntity));
 
             return expenseTags;
@@ -32,7 +33,7 @@ export class AzureStorageExpenseTagsRepository implements IExpenseTagsRepository
         try {
             const expenseTagsByName: Record<string, IExpenseTag> = {};
 
-            for await (const expenseTagEntity of this._azureStorage.tables.expenseTags.listEntities<IExpenseTagEntity>({ queryOptions: { filter: `PartitionKey eq '${this._userId}'` } }))
+            for await (const expenseTagEntity of this._azureStorage.tables.expenseTags.listEntities<IExpenseTagEntity>({ queryOptions: { filter: `PartitionKey eq '${AzureTableStorageUtils.escapeKeyValue(this._userId)}'` } }))
                 if (expenseTagsByName[expenseTagEntity.name] === undefined)
                     expenseTagsByName[expenseTagEntity.name] = this._mapExpenseTagEntity(expenseTagEntity);
 
@@ -47,8 +48,8 @@ export class AzureStorageExpenseTagsRepository implements IExpenseTagsRepository
         try {
             await this._azureStorage.tables.expenseTags.upsertEntity<IExpenseTagEntity>(
                 {
-                    partitionKey: this._userId,
-                    rowKey: expenseTag.name,
+                    partitionKey: AzureTableStorageUtils.escapeKeyValue(this._userId),
+                    rowKey: AzureTableStorageUtils.escapeKeyValue(expenseTag.name),
                     name: expenseTag.name,
                     color: expenseTag.color
                 },
