@@ -25,8 +25,8 @@ export class GetMonthlyExpensesQueryHandler extends QueryHandler<IListExpensesRo
                 return leftExpenseDate < rightExpenseDate
                     ? -1
                     : leftExpenseDate > rightExpenseDate
-                    ? 1
-                    : left.name.localeCompare(right.name, this._translation.locale)
+                        ? 1
+                        : left.name.localeCompare(right.name, this._translation.locale)
             }
         );
         const totals: readonly ITotal[] = expenses
@@ -59,9 +59,10 @@ export class GetMonthlyExpensesQueryHandler extends QueryHandler<IListExpensesRo
                 }
             },
             pagination: {
-                nextMonth: GetMonthlyExpensesQueryHandler._setUtcNextMonth(new Date(expensesMonth)).toISOString().substring(0, "YYYY-MM".length),
+                currentDateMonth: ExpensesUtils.getExpenseMonth(new Date()),
+                nextMonth: ExpensesUtils.getExpenseMonth(GetMonthlyExpensesQueryHandler._setUtcNextMonth(new Date(expensesMonth))),
                 currentMonth: expensesMonth,
-                previousMonth: GetMonthlyExpensesQueryHandler._setUtcPreviousMonth(new Date(expensesMonth)).toISOString().substring(0, "YYYY-MM".length)
+                previousMonth: ExpensesUtils.getExpenseMonth(GetMonthlyExpensesQueryHandler._setUtcPreviousMonth(new Date(expensesMonth)))
             }
         });
     }

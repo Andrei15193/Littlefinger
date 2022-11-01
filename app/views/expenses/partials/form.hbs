@@ -1,4 +1,4 @@
-{{#ifCompare state '==' 'changingMonth'}}
+{{#ifCompare state '===' 'changingMonth'}}
 <div class="alert alert-info p-2" role="alert">
     {{{ markdown @root.translation.expenses.states.changingMonth }}}
 </div>
@@ -22,7 +22,7 @@
     <label for="name" class="form-label">{{{ markdown translation.expenses.form.name.label }}}</label>
     <input type="text"
         class="form-control form-control-sm{{#if form.isValidated}}{{#if form.name.error}} is-invalid{{else}} is-valid{{/if}}{{/if}}"
-        id="name" name="name" value="{{ form.name.value }}" {{#unlessCompare state '==' 'ready' }}
+        id="name" name="name" value="{{ form.name.value }}" {{#unlessCompare state '===' 'ready' }}
         disabled{{/unlessCompare}}>
     <div class="invalid-feedback">{{{ markdown form.name.error }}}</div>
 </div>
@@ -30,7 +30,7 @@
     <label for="shop" class="form-label">{{{ markdown translation.expenses.form.shop.label }}}</label>
     <input type="text"
         class="form-control form-control-sm{{#if form.isValidated}}{{#if form.shop.error}} is-invalid{{else}} is-valid{{/if}}{{/if}}"
-        id="shop" name="shop" value="{{ form.shop.value }}" list="shopOptions" {{#unlessCompare state '==' 'ready' }}
+        id="shop" name="shop" value="{{ form.shop.value }}" list="shopOptions" {{#unlessCompare state '===' 'ready' }}
         disabled{{/unlessCompare}}>
     <datalist id="shopOptions">
         {{#each form.shop.options}}
@@ -47,14 +47,14 @@
             class="form-control form-control-sm{{#if form.isValidated}}{{#if form.tags.error}} is-invalid{{else}} is-valid{{/if}}{{/if}}"
             list="tagOptions" id="tags" name="tags"
             value="{{#each form.tags.value}}{{#if @first}}{{ this.name }}{{/if}}{{/each}}" {{#unlessCompare
-            state '==' 'ready' }} disabled{{/unlessCompare}}>
+            state '===' 'ready' }} disabled{{/unlessCompare}}>
         <datalist id="tagOptions">
             {{#each form.tags.options}}
             <option value="{{ this.name }}">
                 {{/each}}
         </datalist>
         <button class="btn btn-sm btn-outline-secondary rounded-end" type="submit" name="command" value="add-tag"
-            {{#unlessCompare state '==' 'ready' }} disabled{{/unlessCompare}}>{{{ markdown
+            {{#unlessCompare state '===' 'ready' }} disabled{{/unlessCompare}}>{{{ markdown
             translation.expenses.form.tags.addMoreButtonLabel }}}</button>
 
         <div class="invalid-feedback">{{{ markdown form.tags.error }}}</div>
@@ -68,7 +68,7 @@
             </div>
             <button type="submit" name="command" value="remove-tag:{{ this.name }}"
                 class="badge rounded-pill btn-danger px-2 py-0 border-0 d-flex flex-row align-items-center"
-                {{#unlessCompare state '==' 'ready' }} disabled{{/unlessCompare}}>
+                {{#unlessCompare state '===' 'ready' }} disabled{{/unlessCompare}}>
                 {{> icons/close-icon height='0.7rem' }}
             </button>
         </div>
@@ -88,7 +88,7 @@
         <input type="text"
             class="form-control form-control-sm currency-input{{#if form.isValidated}}{{#if form.currency.error}} is-invalid{{else}} is-valid{{/if}}{{/if}}"
             id="currency" name="currency" placeholder="Currency" value="{{ form.currency.value }}"
-            list="currencyOptions" {{#unlessCompare state '==' 'ready' }} disabled{{/unlessCompare}}>
+            list="currencyOptions" {{#unlessCompare state '===' 'ready' }} disabled{{/unlessCompare}}>
         <datalist id="currencyOptions">
             {{#each form.currency.options}}
             <option value="{{ this }}">
@@ -97,7 +97,7 @@
 
         <input type="number" lang="" step="any"
             class="form-control form-control-sm{{#if form.isValidated}}{{#if form.price.error}} is-invalid{{else}} is-valid{{/if}}{{/if}}"
-            id="price" name="price" value="{{ form.price.value }}" {{#unlessCompare state '==' 'ready' }}
+            id="price" name="price" value="{{ form.price.value }}" {{#unlessCompare state '===' 'ready' }}
             disabled{{/unlessCompare}}>
 
         {{#if form.currency.error }}<div class="invalid-feedback">{{{ markdown form.currency.error }}}</div>{{/if}}
@@ -108,7 +108,7 @@
     <label for="quantity" class="form-label">{{{ markdown translation.expenses.form.quantity.label }}}</label>
     <input type="number" step="any"
         class="form-control form-control-sm{{#if form.isValidated}}{{#if form.quantity.error}} is-invalid{{else}} is-valid{{/if}}{{/if}}"
-        id="quantity" name="quantity" value="{{ form.quantity.value }}" {{#unlessCompare state '==' 'ready' }}
+        id="quantity" name="quantity" value="{{ form.quantity.value }}" {{#unlessCompare state '===' 'ready' }}
         disabled{{/unlessCompare}}>
     <div class="invalid-feedback">{{{ markdown form.quantity.error }}}</div>
 </div>
@@ -116,7 +116,7 @@
     <label for="date" class="form-label">{{{ markdown translation.expenses.form.date.label }}}</label>
     <input type="date"
         class="form-control form-control-sm{{#if form.isValidated}}{{#if form.date.error}} is-invalid{{else}} is-valid{{/if}}{{/if}}"
-        id="date" name="date" value="{{ toInputDateValue form.date.value }}" {{#unlessCompare state '==' 'ready' }}
+        id="date" name="date" value="{{ toInputDateValue form.date.value }}" {{#unlessCompare state '===' 'ready' }}
         disabled{{/unlessCompare}}>
     <div class="invalid-feedback">{{{ markdown form.date.error }}}</div>
 </div>

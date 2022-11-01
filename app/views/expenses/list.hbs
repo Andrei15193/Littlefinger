@@ -2,7 +2,14 @@
     <h3>{{{ markdown translation.expenses.list.pageTitle }}}</h3>
     <a href="/expenses{{#if route.month}}/{{ route.month }}{{/if}}/add" class="ms-2 btn btn-sm btn-primary">{{{ markdown translation.expenses.list.addButtonLabel }}}</a>
     <nav class="ms-auto">
-        <ul class="pagination pagination-sm">
+        <ul class="pagination pagination-sm align-items-center">
+            <li class="page-item me-3">
+                {{#ifCompare pagination.currentDateMonth '===' pagination.currentMonth }}
+                <small class="text-decoration-underline">{{ @root.translation.expenses.list.currentMonthLabel }}</small>
+                {{else}}
+                <small><a href="/expenses/{{ pagination.currentDateMonth }}">{{ @root.translation.expenses.list.currentMonthLabel }}</a></small>
+                {{/ifCompare}}
+            </li>
             <li class="page-item">
                 <a class="page-link" href="/expenses/{{ pagination.nextMonth }}">
                     <span aria-hidden="true">&laquo;</span>

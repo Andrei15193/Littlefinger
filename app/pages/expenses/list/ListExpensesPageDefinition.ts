@@ -16,6 +16,7 @@ export interface IListExpensesViewOptions extends IBaseViewOptions {
         }
     },
     readonly pagination: {
+        readonly currentDateMonth: string;
         readonly nextMonth: string;
         readonly currentMonth: string;
         readonly previousMonth: string;
