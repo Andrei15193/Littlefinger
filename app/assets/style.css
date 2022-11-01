@@ -3,6 +3,22 @@
     width: 90px !important;
 }
 
+.tag-distributions {
+    width: 400px;
+    height: 6px;
+}
+
+.tag-distributions .tag:first-child {
+    border-top-left-radius: 50vh;
+    border-bottom-left-radius: 50vh;
+}
+
+.tag-distributions .tag:last-child {
+    border-top-right-radius: 50vh;
+    border-bottom-right-radius: 50vh;
+}
+
+.tag-distributions .tag,
 .tag.badge,
 .tag .badge {
     color: var(--lf-tag-text-color);

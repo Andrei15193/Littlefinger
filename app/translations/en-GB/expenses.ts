@@ -15,6 +15,7 @@ export const expensesTranslationLabels: IExpensesTranslationLabels = {
         pageTitle: "Expenses",
         addButtonLabel: "Add",
         currentMonthLabel: "Current Month",
+        untagged: "Untagged expenses",
 
         columns: {
             name: "Name",

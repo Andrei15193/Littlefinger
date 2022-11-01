@@ -43,6 +43,7 @@ export interface IExpensesTranslationLabels {
         readonly pageTitle: string;
         readonly addButtonLabel: string;
         readonly currentMonthLabel: string;
+        readonly untagged: string;
 
         readonly columns: {
             readonly name: string;

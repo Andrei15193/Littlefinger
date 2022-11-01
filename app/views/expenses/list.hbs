@@ -1,8 +1,42 @@
-<div class="d-flex flex-row align-items-center">
+<form method="GET" class="d-flex flex-row align-items-center">
     <h3>{{{ markdown translation.expenses.list.pageTitle }}}</h3>
     <a href="/expenses{{#if route.month}}/{{ route.month }}{{/if}}/add" class="ms-2 btn btn-sm btn-primary">{{{ markdown translation.expenses.list.addButtonLabel }}}</a>
+
+    {{#unlessCompare expenses.length '===' 0}}
+    <div class="ms-4 d-flex flex-column">
+        <div class="d-flex flex-row align-items-center">
+            <div class="tag-distributions d-flex flex-row">
+                {{#each currencyTagDistirbutions}}
+                    {{#if this.tag.color}}
+                    <div class="tag {{ expenseTagColorClass this.tag.color }}" style="width: {{ this.percentage }}%;" title="{{ this.tag.name }} ({{ this.percentage }}%, {{ this.amount }}{{ @root.filters.currency }})"></div>
+                    {{else}}
+                    <div class="tag bg-light" style="width: {{ this.percentage }}%;" title="{{ @root.translation.expenses.list.untagged }} ({{ this.percentage }}%, {{ this.amount }}{{ @root.filters.currency }})"></div>
+                    {{/if}}
+                {{/each}}
+            </div>
+            <div class="ms-2 btn-group">
+                <button class="btn btn-link btn-sm dropdown-toggle" type="submit" name="currency" value="{{ @root.filters.currency }}" data-bs-toggle="dropdown" aria-expanded="false">
+                    {{ @root.filters.currency }}
+                </button>
+                <ul class="dropdown-menu">
+                    {{#each @root.totals}}
+                    <li>
+                        {{#ifCompare currency '===' @root.filters.currency}}
+                        <button class="dropdown-item" disabled>{{ currency }}</button>
+                        {{else}}
+                        <button type="submit" name="currency" value="{{ currency }}" class="dropdown-item">{{ currency }}</button>
+                        {{/ifCompare}}
+                    </li>
+                    {{/each}}
+                </ul>
+            </div>
+        </div>
+        <hr class="w-100 m-0">
+    </div>
+    {{/unlessCompare}}
+
     <nav class="ms-auto">
-        <ul class="pagination pagination-sm align-items-center">
+        <ul class="pagination pagination-sm m-0">
             <li class="page-item me-3">
                 {{#ifCompare pagination.currentDateMonth '===' pagination.currentMonth }}
                 <small class="text-decoration-underline">{{ @root.translation.expenses.list.currentMonthLabel }}</small>
@@ -29,7 +63,7 @@
             </li>
         </ul>
     </nav>
-</div>
+</form>
 
 <table class="table table-sticky table-hover">
     <thead>
