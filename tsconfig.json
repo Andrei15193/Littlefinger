@@ -96,7 +96,7 @@
     "./app/index.d.ts"
   ],
   "include": [
-    "**/*",
+    "**/*"
   ],
   "exclude": [
     "./out"

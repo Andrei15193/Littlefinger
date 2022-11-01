@@ -4,9 +4,10 @@ import express from "express";
 import path from "path";
 import { createHandlebarsInstance } from "./handlebars";
 import { pages } from "./pages";
-import { ensureTableStorageAsync } from "./table-storage";
 import { translations } from "./translations";
 import { DependencyContainer } from "./dependencyContainer/DependencyContainer";
+import { AzureStorageManager } from "./data/azureStorage/AzureStorageManager";
+import { AzureStorage } from "./data/azureStorage/AzureStorage";
 
 (async function startApplicationAsync(): Promise<void> {
     const args = readCommandLineArguments(process.argv);
@@ -14,9 +15,13 @@ import { DependencyContainer } from "./dependencyContainer/DependencyContainer";
 
     const AzureTableStorageConnectionString = (process.env as any).CUSTOMCONNSTR_AZURE_STORAGE;
 
-    await ensureTableStorageAsync({
+    const azureStorageManager = new AzureStorageManager(new AzureStorage(AzureTableStorageConnectionString));
+    await azureStorageManager.ensureTableStorageAsync({
         recreateTables: args.flags["recreate-tables"],
         deleteExtraTables: args.flags["delete-extra-tables"]
+    });
+    await azureStorageManager.ensureQueueStorageAsync({
+        clearQueues: args.flags["clear-queues"]
     });
 
     const handlebars = createHandlebarsInstance(path.join(process.cwd(), "app", "views"));

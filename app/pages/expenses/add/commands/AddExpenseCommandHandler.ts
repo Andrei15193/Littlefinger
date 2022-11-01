@@ -9,6 +9,7 @@ import type { PageRequestBody } from "../../../page/IBasePageRequestBody";
 import type { IExpenseFormData } from "../../ExpenseForm";
 import { CommandHandler } from "../../../page";
 import { ExpenseForm } from "../../ExpenseForm";
+import { ExpensesUtils } from "../../../../model/ExpensesUtils";
 
 export class AddExpenseCommandHandler extends CommandHandler<IAddExpenseRouteParams, PageRequestBody<IExpenseFormData>, IExpenseFormViewOptions> {
     private readonly _translation: ITranslation;
@@ -37,7 +38,7 @@ export class AddExpenseCommandHandler extends CommandHandler<IAddExpenseRoutePar
                     quantity: form.quantity.value!,
                     date: form.date.value!
                 });
-                return this.redirect("/expenses");
+                return this.redirect(`/expenses/${ExpensesUtils.getExpenseMonth(form.date.value!)}`);
             }
             catch {
                 form.error = this._translation.expenses.form.error.unknown;
@@ -45,6 +46,7 @@ export class AddExpenseCommandHandler extends CommandHandler<IAddExpenseRoutePar
                 return this.render("expenses/add", {
                     title: this._translation.expenses.add.title,
                     tab: "expenses",
+                    state: "ready",
                     form
                 });
             }
@@ -52,6 +54,7 @@ export class AddExpenseCommandHandler extends CommandHandler<IAddExpenseRoutePar
             return this.render("expenses/add", {
                 title: this._translation.expenses.add.title,
                 tab: "expenses",
+                state: "ready",
                 form
             });
         }

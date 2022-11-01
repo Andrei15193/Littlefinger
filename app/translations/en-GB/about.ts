@@ -31,7 +31,8 @@ export const aboutTranslationLabels: IAboutTranslationLabels = {
             {
                 description: "SVG icons from [UX Wing](https://uxwing.com/){target=\"_blank\"}",
                 resources: [
-                    "[Close icon](https://uxwing.com/close-icon/)"
+                    "[Close icon](https://uxwing.com/close-icon/)",
+                    "[Exclamation round icon](https://uxwing.com/exclamation-round-icon/)"
                 ]
             },
             {

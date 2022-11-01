@@ -1,6 +1,8 @@
 import type { TableEntity } from "@azure/data-tables";
+import type { IStatefulEntity } from "./StatefulEntity";
+import type { ExpenseState } from "../../../model/Expenses";
 
-export interface IExpenseEntity extends TableEntity {
+export interface IExpenseEntity extends TableEntity, IStatefulEntity<ExpenseState> {
     readonly month: string;
     readonly id: string;
     readonly name: string;

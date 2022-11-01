@@ -1,6 +1,15 @@
 import type { IExpensesTranslationLabels } from "../translation";
 
 export const expensesTranslationLabels: IExpensesTranslationLabels = {
+    states: {
+        changingMonth: "There is a pending request for changing the month of this expense."
+    },
+    warnings: {
+        monthChange(expenseDate: string): string {
+            return `An attempt was made to change the expense date to ${new Date(expenseDate).toLocaleDateString("en-GB")}, however the operation failed.`;
+        },
+    },
+
     list: {
         title: "Expenses",
         pageTitle: "Expenses",
@@ -92,6 +101,9 @@ export const expensesTranslationLabels: IExpensesTranslationLabels = {
             }
         },
         error: {
+            notEditable: "The current expense has a pending request and cannot be updated.\n"
+                + "\n"
+                + "Please wait for the request to complete or expire to be able to edit this expense.",
             unknown: "An unknown error has occurred, please reload the page and retry the operation",
             invalidEtag: "The expense has already been edited or deleted",
             notFound(expensesMonth: string) {

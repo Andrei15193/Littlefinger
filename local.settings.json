@@ -3,5 +3,8 @@
   "Values": {
     "FUNCTIONS_WORKER_RUNTIME": "node",
     "AzureWebJobsStorage": "UseDevelopmentStorage=true"
+  },
+  "ConnectionStrings": {
+    "CUSTOMCONNSTR_AZURE_STORAGE": "UseDevelopmentStorage=true"
   }
 }

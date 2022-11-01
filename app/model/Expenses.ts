@@ -1,3 +1,5 @@
+import type { IExpensesTranslationLabels } from "../translations/translation";
+
 export interface IExpenseKey {
     readonly month: string;
     readonly id: string;
@@ -15,7 +17,17 @@ export interface IExpense {
     readonly amount: number;
     readonly date: Date;
 
+    readonly warning?: IExpenseWarning;
+    readonly state: ExpenseState;
+
     readonly etag: string;
+}
+
+export type ExpenseState = "ready" | "changingMonth";
+
+export interface IExpenseWarning {
+    readonly key: keyof IExpensesTranslationLabels["warnings"];
+    readonly arguments: readonly (string | number | object)[];
 }
 
 export interface IExpenseTag {

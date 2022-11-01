@@ -1,19 +1,24 @@
 <h3>Expense {{ expense.name }}</h3>
 
-{{#if form.error}}
-<div class="alert alert-danger p-2" role="alert">
-    {{ form.error }}
-</div>
-{{/if}}
-
 <form method="POST">
     <input type="hidden" id="etag" name="etag" value="{{ form.etag }}">
     <input type="hidden" id="deleteFlag" name="deleteFlag" value="">
 
-    {{> expenses/form expenseId=route.id}}
+    {{> expenses/form expenseId=route.id state=state warning=warning }}
 
     <div class="d-flex flex-row">
-        <button type="submit" name="command" value="edit" class="btn btn-sm btn-primary">{{{ markdown translation.expenses.edit.updateButtonLabel  }}}</button>
+        {{#ifCompare this.state '===' 'changingMonth'}}
+        <span title="{{ @root.translation.expenses.states.changingMonth }}">
+            <button type="submit" name="command" value="edit" class="btn btn-sm btn-primary" disabled>
+                <div class="spinner-grow spinner-grow-sm"></div>
+                {{{ markdown translation.expenses.edit.updateButtonLabel  }}}
+            </button>
+        </span>
+        {{else}}
+        <button type="submit" name="command" value="edit" class="btn btn-sm btn-primary">
+            {{{ markdown translation.expenses.edit.updateButtonLabel  }}}
+        </button>
+        {{/ifCompare}}
         <button type="button" class="ms-2 btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#confirmationModal">{{{ markdown translation.expenses.edit.deleteButtonLabel  }}}</button>
         <a href="/expenses/{{ route.month }}" class="ms-2 btn btn-sm btn-secondary">{{{ markdown translation.expenses.edit.cancelButtonLabel  }}}</a>
     </div>

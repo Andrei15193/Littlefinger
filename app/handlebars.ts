@@ -1,10 +1,11 @@
+import type { ITranslation } from "./translations/translation";
 import fs from "fs";
 import hbs from "hbs";
 import Markdown from "markdown-it";
 import markdownItAttrs from "markdown-it-attrs";
 import path from "path";
 import { Enum } from "./global/Enum";
-import { ExpenseTagColor } from "./model/Expenses";
+import { ExpenseTagColor, IExpenseWarning } from "./model/Expenses";
 
 type IHandlebars = ReturnType<typeof hbs.create>;
 
@@ -150,6 +151,14 @@ export function createHandlebarsInstance(viewsDirectoryPath: string): IHandlebar
             } while (toVisit.length > 0);
         }
     }
+
+    handlebars.registerHelper("expenseWarning", function (this: any, translation: ITranslation, expenseWarning: IExpenseWarning) {
+        const translationLabelOrSelector: string | ((...args: readonly any[]) => string) = translation.expenses.warnings[expenseWarning.key];
+        if (typeof translationLabelOrSelector === "string")
+            return translationLabelOrSelector;
+        else
+            return translationLabelOrSelector.apply(translation.expenses.warnings, expenseWarning.arguments as any[]);
+    });
 
     handlebars.registerHelper("expenseTagColorClass", function (this: any, expenseTagColor: ExpenseTagColor): string {
         return `tag-${Enum.getKey(ExpenseTagColor, expenseTagColor)}`;

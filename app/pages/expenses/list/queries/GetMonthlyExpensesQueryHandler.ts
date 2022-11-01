@@ -18,7 +18,17 @@ export class GetMonthlyExpensesQueryHandler extends QueryHandler<IListExpensesRo
     }
 
     public async executeQueryAsync({ month: expensesMonth = ExpensesUtils.getExpenseMonth(new Date()) }: IListExpensesRouteParams, queryParmas: {}): Promise<IRequestResult> {
-        const expenses = await this._expensesRepository.getAllAsync(expensesMonth);
+        const expenses = [...await this._expensesRepository.getAllAsync(expensesMonth)].sort(
+            (left, right) => {
+                const leftExpenseDate = new Date(left.date.getUTCFullYear(), left.date.getUTCMonth(), left.date.getUTCDate());
+                const rightExpenseDate = new Date(right.date.getUTCFullYear(), right.date.getUTCMonth(), right.date.getUTCDate());
+                return leftExpenseDate < rightExpenseDate
+                    ? -1
+                    : leftExpenseDate > rightExpenseDate
+                    ? 1
+                    : left.name.localeCompare(right.name, this._translation.locale)
+            }
+        );
         const totals: readonly ITotal[] = expenses
             .reduce<{ readonly currency: ITotal["currency"], amount: ITotal["amount"] }[]>(
                 (result, expense) => {

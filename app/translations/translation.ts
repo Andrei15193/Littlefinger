@@ -31,6 +31,13 @@ export interface IHomeTranslationLabels {
 }
 
 export interface IExpensesTranslationLabels {
+    readonly states: {
+        readonly changingMonth: string;
+    }
+    readonly warnings: {
+        monthChange(expenseDate: string): string;
+    }
+
     readonly list: {
         readonly title: string;
         readonly pageTitle: string;
@@ -127,6 +134,7 @@ export interface IExpensesTranslationLabels {
         };
 
         readonly error: {
+            readonly notEditable: string;
             readonly unknown: string;
             readonly invalidEtag: string;
             readonly notFound: IFormErrorCallback<(expenseMonth: string) => readonly string[]>;

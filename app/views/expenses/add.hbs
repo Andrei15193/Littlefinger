@@ -1,11 +1,5 @@
 <h3>{{{ markdown translation.expenses.add.pageTitle }}}</h3>
 
-{{#if form.error}}
-<div class="alert alert-danger p-2" role="alert">
-    {{ form.error }}
-</div>
-{{/if}}
-
 <form method="POST">
     {{> expenses/form}}
 

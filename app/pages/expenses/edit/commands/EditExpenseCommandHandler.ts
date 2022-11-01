@@ -1,7 +1,7 @@
 import type { IExpensesRepository } from "../../../../data/repositories/expenses/IExpensesRepository";
 import type { IExpenseTagsRepository } from "../../../../data/repositories/expenses/IExpenseTagsRepository";
 import type { IDependencyContainer } from "../../../../dependencyContainer";
-import type { ITranslation } from "../../../../translations/translation";
+import type { IFormError, ITranslation } from "../../../../translations/translation";
 import type { IEditExpenseRouteParams } from "../EditExpensePageDefinition";
 import type { IExpenseFormViewOptions } from "../../IExpenseFormViewOptions";
 import type { IRequestResult } from "../../../page/results";
@@ -25,45 +25,81 @@ export class EditExpenseCommandHandler extends CommandHandler<IEditExpenseRouteP
     }
 
     public async executeCommandAsync({ month: expenseMonth, id: expenseId }: IEditExpenseRouteParams, requestBody: PageRequestBody<IExpenseFormData>, queryParmas: {}): Promise<IRequestResult> {
-        const form = await ExpenseForm.initializeAsync(requestBody, this._translation, this._expenseTagsRepository);
-        form.validate();
+        try {
+            const form = await ExpenseForm.initializeAsync(requestBody, this._translation, this._expenseTagsRepository);
 
-        if (form.isValid)
-            try {
-                await this._expensesRepository.updateAsync({
-                    key: {
-                        month: expenseMonth,
-                        id: expenseId
-                    },
-                    name: form.name.value!,
-                    shop: form.shop.value!,
-                    tags: form.tags.value,
-                    price: form.price.value!,
-                    currency: form.currency.value!,
-                    quantity: form.quantity.value!,
-                    date: form.date.value!,
-                    etag: form.etag!
-                });
+            console.log(form);
 
-                return this.redirect(`/expenses/${ExpensesUtils.getExpenseMonth(form.date.value!)}`);
-            }
-            catch (error) {
-                const dataStorageError = error as DataStorageError;
-                form.error = dataStorageError.map({
-                    invalidEtag: this._translation.expenses.form.error.invalidEtag,
-                    unknown: this._translation.expenses.form.error.unknown
-                });
-
+            const expense = await this._expensesRepository.getAsync({ month: expenseMonth, id: expenseId });
+            if (expense.state !== "ready") {
+                form.error = this._translation.expenses.form.error.notEditable;
                 return this.render("expenses/edit", {
                     title: this._translation.expenses.edit.title(expenseId),
                     tab: "expenses",
+                    state: expense.state,
+                    warning: expense.warning,
                     form
                 });
             }
-        else {
-            return this.render("expenses/edit", {
+
+            form.validate();
+            if (form.isValid)
+                try {
+                    await this._expensesRepository.updateAsync({
+                        key: {
+                            month: expenseMonth,
+                            id: expenseId
+                        },
+                        name: form.name.value!,
+                        shop: form.shop.value!,
+                        tags: form.tags.value,
+                        price: form.price.value!,
+                        currency: form.currency.value!,
+                        quantity: form.quantity.value!,
+                        date: form.date.value!,
+                        etag: form.etag!
+                    });
+
+                    return this.redirect(`/expenses/${expenseMonth}`);
+                }
+                catch (error) {
+                    const dataStorageError = error as DataStorageError;
+                    form.error = dataStorageError.map({
+                        invalidEtag: this._translation.expenses.form.error.invalidEtag,
+                        unknown: this._translation.expenses.form.error.unknown
+                    });
+
+                    return this.render("expenses/edit", {
+                        title: this._translation.expenses.edit.title(expenseId),
+                        tab: "expenses",
+                        state: expense.state,
+                        warning: expense.warning,
+                        form
+                    });
+                }
+            else {
+                return this.render("expenses/edit", {
+                    title: this._translation.expenses.edit.title(expenseId),
+                    tab: "expenses",
+                    state: expense.state,
+                    warning: expense.warning,
+                    form
+                });
+            }
+        }
+        catch (error) {
+            const dataStorageError = error as DataStorageError;
+            const form = ExpenseForm.initializeFaulted(
+                dataStorageError.map<IFormError>({
+                    notFound: this._translation.expenses.form.error.notFound(expenseMonth),
+                    unknown: this._translation.expenses.form.error.unknown
+                }),
+                this._translation
+            );
+            return this.render("expenses/edit-not-found", {
                 title: this._translation.expenses.edit.title(expenseId),
                 tab: "expenses",
+                state: "ready",
                 form
             });
         }

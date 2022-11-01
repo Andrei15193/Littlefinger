@@ -53,7 +53,25 @@
     <tbody>
         {{#each expenses}}
         <tr{{#unlessOdd @index}} class="table-light" {{/unlessOdd}}>
-            <td><a href="/expenses/{{ key.month }}/{{ key.id }}">{{ name }}</a></td>
+            <td>
+                {{#if this.warning}}
+                <a href="/expenses/{{ key.month }}/{{ key.id }}" class="link-warning" title="{{ expenseWarning @root.translation this.warning }}">
+                    {{> icons/exclamation-round-icon height='1.1rem' }}
+                    {{ name }}
+                </a>
+                {{else}}
+                    {{#ifCompare this.state '===' 'changingMonth'}}
+                    <a href="/expenses/{{ key.month }}/{{ key.id }}" class="link-info" title="{{ @root.translation.expenses.states.changingMonth }}">
+                        <div class="spinner-grow spinner-grow-sm"></div>
+                        {{ name }}
+                    </a>
+                    {{else}}
+                    <a href="/expenses/{{ key.month }}/{{ key.id }}">
+                        {{ name }}
+                    </a>
+                    {{/ifCompare}}
+                {{/if}}
+            </td>
             <td>{{ shop }}</td>
             <td>
                 {{#each tags}}

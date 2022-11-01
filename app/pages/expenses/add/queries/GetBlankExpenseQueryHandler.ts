@@ -42,6 +42,7 @@ export class GetBlankExpenseQueryHandler extends QueryHandler<IAddExpenseRoutePa
         return this.render("expenses/add", {
             title: this._translation.expenses.add.title,
             tab: "expenses",
+            state: "ready",
             form
         });
     }

@@ -1,11 +1,18 @@
 import type { TableClient } from "@azure/data-tables";
+import type { QueueClient } from "@azure/storage-queue";
 
 export interface IAzureStorage {
     readonly tables: IAzureStorageTables;
+
+    readonly queues: IAzureStorageQueues;
 }
 
-export interface IAzureStorageTables extends Readonly<Array<TableClient>> {
+export interface IAzureStorageTables {
     readonly users: TableClient;
     readonly expenses: TableClient;
     readonly expenseTags: TableClient;
+}
+
+export interface IAzureStorageQueues {
+    readonly expensesMonthChangeRequests: QueueClient;
 }

@@ -15,6 +15,7 @@
         {
             "label": "npm run watch",
             "detail": "typescript --watch",
+            "dependsOn": "npm run build",
             "type": "npm",
             "script": "watch",
             "problemMatcher": [],
@@ -31,6 +32,7 @@
         {
             "label": "npm run host:app",
             "detail": "nodemon",
+            "dependsOn": "npm run build",
             "type": "npm",
             "script": "host:app",
             "problemMatcher": [],
@@ -47,6 +49,7 @@
         {
             "label": "npm run host:storage",
             "detail": "azurite",
+            "dependsOn": "npm run build",
             "type": "npm",
             "script": "host:storage",
             "problemMatcher": [],
@@ -63,6 +66,7 @@
         {
             "label": "npm run host:functionsApp",
             "detail": "func start",
+            "dependsOn": "npm run build",
             "type": "npm",
             "script": "host:functionsApp",
             "problemMatcher": [],
@@ -79,13 +83,13 @@
         {
             "label": "dev",
             "detail": "run local development services",
-            "type": "shell",
             "dependsOn": [
                 "npm run watch",
                 "npm run host:app",
                 "npm run host:storage",
                 "npm run host:functionsApp"
             ],
+            "type": "shell",
             "group": {
                 "kind": "build",
                 "isDefault": true

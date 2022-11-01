@@ -15,12 +15,24 @@ export class AzureStorageManager {
         else if (deleteExtraTables) {
             const tableNames: readonly string[] = await this._getTableNamesAsync();
             await Promise.all(tableNames
-                .filter(tableName => this._azureStorage.tables.every(table => table.tableName !== tableName))
+                .filter(tableName => this._azureStorage.tables.all.every(table => table.tableName !== tableName))
                 .map(tableName => this._azureStorage.tables.tableService.deleteTable(tableName))
             );
         }
 
-        await Promise.all(this._azureStorage.tables.map(table => table.createTable()));
+        await Promise.all(this._azureStorage.tables.all.map(table => table.createTable()));
+    }
+
+    public async ensureQueueStorageAsync({ clearQueues = false }: IEnsureQueueStorageOptions): Promise<void> {
+        await Promise.all(
+            this._azureStorage.queues.all.map(
+                async queue => {
+                    const { succeeded } = await queue.createIfNotExists();
+                    if (clearQueues && !succeeded)
+                        await queue.clearMessages();
+                }
+            )
+        );
     }
 
     private async _getTableNamesAsync(): Promise<readonly string[]> {
@@ -37,4 +49,8 @@ export class AzureStorageManager {
 export interface IEnsureTableStorageOptions {
     readonly recreateTables?: boolean;
     readonly deleteExtraTables?: boolean;
+}
+
+export interface IEnsureQueueStorageOptions {
+    readonly clearQueues?: boolean;
 }

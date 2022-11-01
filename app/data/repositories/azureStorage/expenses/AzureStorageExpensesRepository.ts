@@ -1,13 +1,16 @@
 import type { RestError, TableEntityResult } from "@azure/data-tables";
-import type { IExpense, IExpenseKey, IExpenseTag } from "../../../../model/Expenses";
+import type { IStatefulEntity } from "../../../azureStorage/Entities/StatefulEntity";
+import type { ExpenseState, IExpense, IExpenseKey, IExpenseTag, IExpenseWarning } from "../../../../model/Expenses";
 import type { IExpensesRepository } from "../../expenses/IExpensesRepository";
 import type { IAzureStorage } from "../../../azureStorage";
 import type { IExpenseEntity, IExpenseTagEntity } from "../../../azureStorage/Entities/Expenses";
+import type { IExpenseMonthChangeRequest } from "../../../azureStorage/Requests/IExpenseMonthChangeRequest";
 import { TableTransaction } from "@azure/data-tables";
 import { v4 as uuid } from "uuid";
 import { DataStorageError } from "../../../DataStorageError";
 import { AzureTableStorageUtils } from "../../AzureTableStorageUtils";
 import { ExpensesUtils } from "../../../../model/ExpensesUtils";
+import { AzureQueueStorageUtils } from "../../AzureQueueStorageUtils";
 
 export class AzureStorageExpensesRepository implements IExpensesRepository {
     private readonly _userId: string;
@@ -62,7 +65,9 @@ export class AzureStorageExpensesRepository implements IExpensesRepository {
                 currency: expense.currency.toUpperCase(),
                 price: expense.price,
                 quantity: expense.quantity,
-                date: expense.date
+                date: expense.date,
+
+                state: "ready"
             };
             await this._azureStorage.tables.expenses.createEntity(expenseEntity);
             await this._indexTags(expense.tags);
@@ -93,28 +98,37 @@ export class AzureStorageExpensesRepository implements IExpensesRepository {
                         currency: expense.currency.toUpperCase(),
                         price: expense.price,
                         quantity: expense.quantity,
-                        date: expense.date
+                        date: expense.date,
+
+                        state: "ready"
                     },
                     "Replace",
                     { etag: expense.etag }
                 );
             else {
-                const newPartitionKey = `${this._userId}-${newExpenseMonth}`;
+                const warningActivation = new Date();
+                warningActivation.setHours(warningActivation.getHours() + 1);
 
-                await this._azureStorage.tables.expenses.deleteEntity(AzureTableStorageUtils.escapeKeyValue(partitionKey), AzureTableStorageUtils.escapeKeyValue(expense.key.id), { etag: expense.etag });
-                await this._azureStorage.tables.expenses.createEntity<IExpenseEntity>({
-                    partitionKey: AzureTableStorageUtils.escapeKeyValue(newPartitionKey),
-                    rowKey: AzureTableStorageUtils.escapeKeyValue(expense.key.id),
-                    month: newExpenseMonth,
-                    id: expense.key.id,
-                    name: expense.name,
-                    shop: expense.shop,
-                    tags: JSON.stringify(expense.tags.map(tag => tag.name)),
-                    currency: expense.currency,
-                    price: expense.price,
-                    quantity: expense.quantity,
-                    date: expense.date
-                });
+                await this._azureStorage.tables.expenses.updateEntity<IStatefulEntity<ExpenseState>>(
+                    {
+                        partitionKey: AzureTableStorageUtils.escapeKeyValue(partitionKey),
+                        rowKey: AzureTableStorageUtils.escapeKeyValue(expense.key.id),
+
+                        state: "changingMonth",
+                        warning: JSON.stringify({
+                            key: "monthChange",
+                            arguments: [expense.date.toISOString()]
+                        } as IExpenseWarning),
+                        warningActivation
+                    },
+                    "Merge",
+                    { etag: expense.etag }
+                );
+                await this._azureStorage.queues.expensesMonthChangeRequests.sendMessage(AzureQueueStorageUtils.encodeMessage<IExpenseMonthChangeRequest>({
+                    userId: this._userId,
+                    expenseKey: expense.key,
+                    newExpenseDateString: expense.date.toISOString()
+                }));
             }
             await this._indexTags(expense.tags);
         }
@@ -151,6 +165,12 @@ export class AzureStorageExpensesRepository implements IExpensesRepository {
     }
 
     private _mapExpenseEntity(expenseEntity: TableEntityResult<IExpenseEntity>, allExpenseTagsByName: Record<string, IExpenseTag>): IExpense {
+        let warning: IExpenseWarning | undefined =
+            expenseEntity.warning !== undefined && expenseEntity.warning !== null && expenseEntity.warningActivation !== undefined && expenseEntity.warningActivation !== null
+                && expenseEntity.warningActivation < new Date()
+                ? JSON.parse(expenseEntity.warning)
+                : undefined;
+
         return {
             key: {
                 month: expenseEntity.month,
@@ -173,6 +193,10 @@ export class AzureStorageExpensesRepository implements IExpensesRepository {
             quantity: expenseEntity.quantity,
             amount: expenseEntity.price * 100 * expenseEntity.quantity / 100,
             date: expenseEntity.date,
+
+            warning,
+            state: warning === undefined ? expenseEntity.state : "ready",
+
             etag: expenseEntity.etag
         };
     }

@@ -23,19 +23,19 @@ export class GetExpenseQueryHandler extends QueryHandler<IEditExpenseRouteParams
 
     public async executeQueryAsync({ month: expenseMonth, id: expenseId }: IEditExpenseRouteParams, queryParmas: {}): Promise<IRequestResult> {
         try {
-            const expenseEntity = await this._expensesRepository.getAsync({ month: expenseMonth, id: expenseId });
+            const expense = await this._expensesRepository.getAsync({ month: expenseMonth, id: expenseId });
             const form = await ExpenseForm.initializeAsync(
                 {
                     validated: "false",
-                    etag: expenseEntity.etag,
+                    etag: expense.etag,
 
-                    name: expenseEntity.name,
-                    shop: expenseEntity.shop,
-                    tags: expenseEntity.tags.map(tag => tag.name),
-                    price: expenseEntity.price,
-                    currency: expenseEntity.currency,
-                    quantity: expenseEntity.quantity,
-                    date: expenseEntity.date.toISOString()
+                    name: expense.name,
+                    shop: expense.shop,
+                    tags: expense.tags.map(tag => tag.name),
+                    price: expense.price,
+                    currency: expense.currency,
+                    quantity: expense.quantity,
+                    date: expense.date.toISOString()
                 },
                 this._translation,
                 this._expenseTagsRepository
@@ -44,6 +44,8 @@ export class GetExpenseQueryHandler extends QueryHandler<IEditExpenseRouteParams
             return this.render("expenses/edit", {
                 title: this._translation.expenses.edit.title(expenseId),
                 tab: "expenses",
+                state: expense.state,
+                warning: expense.warning,
                 form
             });
         }
@@ -59,6 +61,7 @@ export class GetExpenseQueryHandler extends QueryHandler<IEditExpenseRouteParams
             return this.render("expenses/edit-not-found", {
                 title: this._translation.expenses.edit.title(expenseId),
                 tab: "expenses",
+                state: "ready",
                 form
             });
         }

@@ -1,0 +1,11 @@
+{
+  "bindings": [
+    {
+      "name": "expensesMonthChangeRequest",
+      "type": "queueTrigger",
+      "direction": "in",
+      "queueName": "expenses-month-change-requests"
+    }
+  ],
+  "scriptFile": "../out/expensesMonthChangeRequestConsumer/index.js"
+}

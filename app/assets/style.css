@@ -308,3 +308,7 @@ table.table-sticky:not(.table-sm)>tfoot>tr>td>div {
 table.table-sticky.table-sm>tfoot>tr>td>div {
     padding: .25rem;
 }
+
+a > svg {
+    fill: var(--bs-warning);
+}
