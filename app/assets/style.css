@@ -13,6 +13,10 @@
     border-bottom-left-radius: 50vh;
 }
 
+.tag-distributions .tag:not(:first-child) {
+    margin-left: calc(var(--bs-body-font-size) / 4);
+}
+
 .tag-distributions .tag:last-child {
     border-top-right-radius: 50vh;
     border-bottom-right-radius: 50vh;
