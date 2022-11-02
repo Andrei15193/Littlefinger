@@ -1,6 +1,5 @@
 import type { RestError, TableEntityResult } from "@azure/data-tables";
-import type { IStatefulEntity } from "../../../azureStorage/Entities/StatefulEntity";
-import type { ExpenseState, IExpense, IExpenseKey, IExpenseTag, IExpenseWarning } from "../../../../model/Expenses";
+import type { IExpense, IExpenseKey, IExpenseTag, IExpenseWarning } from "../../../../model/Expenses";
 import type { IExpensesRepository } from "../../expenses/IExpensesRepository";
 import type { IAzureStorage } from "../../../azureStorage";
 import type { IExpenseEntity, IExpenseTagEntity } from "../../../azureStorage/Entities/Expenses";
@@ -109,10 +108,19 @@ export class AzureStorageExpensesRepository implements IExpensesRepository {
                 const warningActivation = new Date();
                 warningActivation.setHours(warningActivation.getHours() + 1);
 
-                await this._azureStorage.tables.expenses.updateEntity<IStatefulEntity<ExpenseState>>(
+                await this._azureStorage.tables.expenses.updateEntity<IExpenseEntity>(
                     {
                         partitionKey: AzureTableStorageUtils.escapeKeyValue(partitionKey),
                         rowKey: AzureTableStorageUtils.escapeKeyValue(expense.key.id),
+                        month: expense.key.month,
+                        id: expense.key.id,
+                        name: expense.name,
+                        shop: expense.shop,
+                        tags: JSON.stringify(expense.tags.map(tag => tag.name)),
+                        currency: expense.currency.toUpperCase(),
+                        price: expense.price,
+                        quantity: expense.quantity,
+                        date: expense.date,
 
                         state: "changingMonth",
                         warning: JSON.stringify({
