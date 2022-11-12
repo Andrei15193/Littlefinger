@@ -1,6 +1,5 @@
 import type { IListExpensesRouteParams, IListExpensesQueryParams, IListExpensesViewOptions, ICurrencyTotal, ITagTotal, ITagDistribution } from "../ListExpensesPageDefinition";
 import type { IUser } from "../../../../model/Users";
-import type { IExpenseTag } from "../../../../model/Expenses";
 import type { IDependencyContainer } from "../../../../dependencyContainer";
 import type { ITranslation } from "../../../../translations/translation";
 import type { IRequestResult } from "../../../page/results";
@@ -16,7 +15,7 @@ export class GetMonthlyExpensesQueryHandler extends QueryHandler<IListExpensesRo
     public constructor({ user, translation, expensesRepository }: IDependencyContainer) {
         super();
 
-        this._user = user;
+        this._user = user!;
         this._translation = translation;
         this._expensesRepository = expensesRepository;
     }

@@ -4,4 +4,5 @@ export interface IHomeRouteParams {
 }
 
 export interface IHomeViewOptions extends IBaseViewOptions {
+    readonly signInUrl: string;
 }

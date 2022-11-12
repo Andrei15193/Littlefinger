@@ -38,15 +38,17 @@
             {{ translation.locale }} | {{ translation.name }}
         </div>
 
+    {{#if user}}
         <div class="user mt-4 p-2">
             <div class="info py-1 px-2 text-end">
                 <h3 class="m-0">{{ user.displayName }}</h3>
             </div>
-            <div class="btn-group d-flex" role="group">
+            <form action="/" method="POST" class="btn-group d-flex" role="group">
                 <a href="/expenses/add" class="btn btn-light btn-sm">{{{ markdown translation.site.logExpenseButtonLabel }}}</a>
-                <a href="#" class="btn btn-light btn-sm">{{{ markdown translation.site.logoutButtonLabel }}}</a>
-            </div>
+                <button type="submit" name="command" value="end-session" class="btn btn-light btn-sm">{{{ markdown translation.site.logoutButtonLabel }}}</button>
+            </form>
         </div>
+    {{/if}}
     </div>
 
     <ul class="px-4 mb-3 nav nav-tabs">

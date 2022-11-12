@@ -28,8 +28,6 @@ export class EditExpenseCommandHandler extends CommandHandler<IEditExpenseRouteP
         try {
             const form = await ExpenseForm.initializeAsync(requestBody, this._translation, this._expenseTagsRepository);
 
-            console.log(form);
-
             const expense = await this._expensesRepository.getAsync({ month: expenseMonth, id: expenseId });
             if (expense.state !== "ready") {
                 form.error = this._translation.expenses.form.error.notEditable;

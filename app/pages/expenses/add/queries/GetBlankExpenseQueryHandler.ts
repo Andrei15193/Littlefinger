@@ -17,7 +17,7 @@ export class GetBlankExpenseQueryHandler extends QueryHandler<IAddExpenseRoutePa
         super();
 
         this._translation = translation;
-        this._user = user;
+        this._user = user!;
         this._expenseTagsRepository = expenseTagsRepository;
     }
 

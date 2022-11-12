@@ -5,7 +5,7 @@ import type { IApplicationTabs } from "./applicationTabs";
 declare global {
     namespace Express {
         export interface Response {
-            readonly dependencies: IDependencyContainer;
+            // readonly dependencies: IDependencyContainer;
         }
 
         export interface ViewOptions {

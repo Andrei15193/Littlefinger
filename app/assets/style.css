@@ -255,17 +255,17 @@ div.user>div.info {
     background-color: var(--bs-light);
 }
 
-div.user>div.btn-group>.btn {
+div.user>form.btn-group>.btn {
     border-color: var(--bs-orange);
     border-width: 1px 0 0;
 }
 
-div.user>div.btn-group>.btn {
+div.user>form.btn-group>.btn {
     border-top-left-radius: 0;
     border-top-right-radius: 0;
 }
 
-div.user>div.btn-group>.btn:not(:first-child) {
+div.user>form.btn-group>.btn:not(:first-child) {
     border-left-width: 1px;
     border-color: var(--bs-orange);
 }

@@ -8,7 +8,7 @@ export interface IAzureStorage {
 }
 
 export interface IAzureStorageTables {
-    readonly users: TableClient;
+    readonly userSessions: TableClient;
     readonly expenses: TableClient;
     readonly expenseTags: TableClient;
 }
