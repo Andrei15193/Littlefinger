@@ -1,5 +1,5 @@
 import type { IDependencyContainer } from "../../../dependencyContainer";
-import type { ITranslation } from "../../../translations/translation";
+import type { ITranslation } from "../../../translations/Translation";
 import type { IAboutRouteParams, IAboutViewOptions } from "../AboutPageDefinition";
 import type { IRequestResult } from "../../page/results";
 import { QueryHandler } from "../../page";

@@ -1,15 +1,16 @@
 export const config: IApplicationConfiguration = {
     http: {
-        cookieSecret: process.env.HTTP_COOKIE_SECRET!
+        port: Number(process.env.PORT!),
+        cookieSecret: process.env.APPSETTING_HTTP_COOKIE_SECRET!
     },
 
     azureActiveDirecotry: {
-        tenantName: process.env.AZURE_AD_TENANT_NAME!,
-        clientId: process.env.AZURE_AD_CLIENT_ID!,
-        clientSecret: process.env.AZURE_AD_CLIENT_SECRET!,
-        authenticationFlowName: process.env.AZURE_AD_AUTHENTICATION_FLOW_NAME!,
-        returnUrl: process.env.AZURE_AD_RETURN_URL!,
-        tokenLifeInMinutes: Number(process.env.AZURE_AD_TOKEN_LIFE_MINUTES!)
+        tenantName: process.env.APPSETTING_AZURE_AD_TENANT_NAME!,
+        clientId: process.env.APPSETTING_AZURE_AD_CLIENT_ID!,
+        clientSecret: process.env.APPSETTING_AZURE_AD_CLIENT_SECRET!,
+        authenticationFlowName: process.env.APPSETTING_AZURE_AD_AUTHENTICATION_FLOW_NAME!,
+        returnUrl: process.env.APPSETTING_AZURE_AD_RETURN_URL!,
+        tokenLifeInMinutes: Number(process.env.APPSETTING_AZURE_AD_TOKEN_LIFE_MINUTES!)
     },
 
     connectionStrings: {
@@ -19,6 +20,7 @@ export const config: IApplicationConfiguration = {
 
 export interface IApplicationConfiguration {
     readonly http: {
+        readonly port: number;
         readonly cookieSecret: string;
     };
 

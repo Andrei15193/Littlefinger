@@ -1,5 +1,5 @@
 import type { IDependencyContainer } from "../../../../dependencyContainer";
-import type { ITranslation } from "../../../../translations/translation";
+import type { ITranslation } from "../../../../translations/Translation";
 import type { IExpensesRepository } from "../../../../data/repositories/expenses/IExpensesRepository";
 import type { IExpenseTagsRepository } from "../../../../data/repositories/expenses/IExpenseTagsRepository";
 import type { IAddExpenseRouteParams } from "../AddExpensePageDefinition";

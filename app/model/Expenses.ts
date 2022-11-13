@@ -1,4 +1,4 @@
-import type { IExpensesTranslationLabels } from "../translations/translation";
+import type { IExpensesTranslationLabels } from "../translations/Translation";
 
 export interface IExpenseKey {
     readonly month: string;

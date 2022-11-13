@@ -1,4 +1,4 @@
-import type { IExpensesTranslationLabels } from "../translation";
+import type { IExpensesTranslationLabels } from "../Translation";
 
 export const expensesTranslationLabels: IExpensesTranslationLabels = {
     states: {

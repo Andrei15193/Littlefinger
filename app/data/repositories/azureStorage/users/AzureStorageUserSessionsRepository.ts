@@ -2,7 +2,7 @@ import type { RestError } from "@azure/data-tables";
 import type { IAzureStorage } from "../../../azureStorage";
 import type { IUserSessionData } from "../../../../model/Users";
 import type { IUserSessionsRepository } from "../../users/IUserSessionsRepository";
-import type { IUserSessionEntity } from "../../../azureStorage/Entities/UserSession";
+import type { IUserSessionEntity } from "../../../azureStorage/entities/UserSession";
 import { DataStorageError } from "../../../DataStorageError";
 import { AzureTableStorageUtils } from "../../AzureTableStorageUtils";
 

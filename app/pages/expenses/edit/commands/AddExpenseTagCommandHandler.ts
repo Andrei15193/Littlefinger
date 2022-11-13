@@ -1,6 +1,6 @@
 import type { IExpenseTagsRepository } from "../../../../data/repositories/expenses/IExpenseTagsRepository";
 import type { IDependencyContainer } from "../../../../dependencyContainer";
-import type { IFormError, ITranslation } from "../../../../translations/translation";
+import type { IFormError, ITranslation } from "../../../../translations/Translation";
 import type { IEditExpenseRouteParams } from "../EditExpensePageDefinition";
 import type { PageRequestBody } from "../../../page/IBasePageRequestBody";
 import type { IExpenseFormViewOptions } from "../../IExpenseFormViewOptions";

@@ -1,4 +1,4 @@
-import type { ITranslation } from "./translations/translation";
+import type { ITranslation } from "./translations/Translation";
 import fs from "fs";
 import hbs from "hbs";
 import Markdown from "markdown-it";

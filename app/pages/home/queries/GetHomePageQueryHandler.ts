@@ -1,5 +1,5 @@
 import type { IDependencyContainer } from "../../../dependencyContainer";
-import type { ITranslation } from "../../../translations/translation";
+import type { ITranslation } from "../../../translations/Translation";
 import type { IHomeRouteParams, IHomeViewOptions } from "../HomePageDefinition";
 import type { IRequestResult } from "../../page/results";
 import type { ISessionService } from "../../../services/ISessionService";

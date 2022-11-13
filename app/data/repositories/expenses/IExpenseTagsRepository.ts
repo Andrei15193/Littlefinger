@@ -1,4 +1,4 @@
-import { IExpenseTag } from "../../../model/Expenses";
+import type { IExpenseTag } from "../../../model/Expenses";
 
 export interface IExpenseTagsRepository {
     getAllAsync(): Promise<readonly IExpenseTag[]>;

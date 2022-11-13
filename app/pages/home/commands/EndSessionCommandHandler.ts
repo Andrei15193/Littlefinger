@@ -2,7 +2,7 @@ import type { IHomeRouteParams, IHomeViewOptions } from "../HomePageDefinition";
 import type { PageRequestBody } from "../../page/IBasePageRequestBody";
 import type { IRequestResult } from "../../page/results";
 import type { IDependencyContainer } from "../../../dependencyContainer";
-import type { IAzureActiveDirectoryAuthenticationFormBody } from "../../../services/AzureActiveDirectory/AzureActiveDirectorySessionService";
+import type { IAzureActiveDirectoryAuthenticationFormBody } from "../../../services/azureActiveDirectory/AzureActiveDirectorySessionService";
 import type { ISessionService } from "../../../services/ISessionService";
 import { CommandHandler } from "../../page";
 

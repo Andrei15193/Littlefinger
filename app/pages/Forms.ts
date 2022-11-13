@@ -1,4 +1,4 @@
-import type { IFormError } from "../translations/translation";
+import type { IFormError } from "../translations/Translation";
 
 export interface IForm {
     isValidated: boolean;

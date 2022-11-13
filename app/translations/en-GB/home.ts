@@ -1,4 +1,4 @@
-import type { IHomeTranslationLabels } from "../translation";
+import type { IHomeTranslationLabels } from "../Translation";
 
 export const homeTranslationLabels: IHomeTranslationLabels = {
     title: "Home",

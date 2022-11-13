@@ -1,4 +1,4 @@
-import type { ITranslation } from "../translation";
+import type { ITranslation } from "../Translation";
 import { siteTranslationLabels } from "./site";
 import { homeTranslationLabels } from "./home";
 import { expensesTranslationLabels } from "./expenses";

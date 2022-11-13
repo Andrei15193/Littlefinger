@@ -1,4 +1,4 @@
-import type { IApplicationTabs } from "../../applicationTabs";
+import type { IApplicationTabs } from "../../ApplicationTabs";
 
 export interface IBaseViewOptions {
     readonly title: string;

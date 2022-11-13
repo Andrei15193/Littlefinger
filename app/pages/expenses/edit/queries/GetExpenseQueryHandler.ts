@@ -1,7 +1,7 @@
 import type { IExpensesRepository } from "../../../../data/repositories/expenses/IExpensesRepository";
 import type { IExpenseTagsRepository } from "../../../../data/repositories/expenses/IExpenseTagsRepository";
 import type { IDependencyContainer } from "../../../../dependencyContainer";
-import type { IFormError, ITranslation } from "../../../../translations/translation";
+import type { IFormError, ITranslation } from "../../../../translations/Translation";
 import type { IEditExpenseRouteParams } from "../EditExpensePageDefinition";
 import type { IExpenseFormViewOptions } from "../../IExpenseFormViewOptions";
 import type { IRequestResult } from "../../../page/results";
