@@ -1,0 +1,70 @@
+on:
+  push:
+    branches:
+    - gh-24-deploy-to-azure-test-environment
+
+env:
+  NODE_VERSION: '16.x'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      name: Checkout Source
+
+    - name: Set up NodeJS
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+
+    - name: Restore
+      run: npm install
+
+    - name: Build
+      run: npm run build -- --mode=production
+
+    - name: Create Web App Deployment Package
+      uses: ihiroky/archive-action@v1
+      with:
+        root_dir: ./out/app
+        file_path: ./package/WebApp.zip
+
+    - name: Create Functions App Deployment Package
+      uses: ihiroky/archive-action@v1
+      with:
+        root_dir: ./out/functions
+        file_path: ./package/FunctionsApp.zip
+
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: Application
+        path: ./package/*.zip
+
+  deploy:
+    permissions:
+      contents: none
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: 'Test'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+    - name: Download Build Artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: Application
+
+    - name: 'Deploy Azure WebApp'
+      id: deploy-to-webapp
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: littlefinger-test
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        package: WebApp.zip
