@@ -19,9 +19,7 @@ import { ExpressPage } from "./ExpressPage";
 
     const args = readCommandLineArguments(process.argv);
 
-    const AzureTableStorageConnectionString = config.connectionStrings.azureStorage
-
-    const azureStorageManager = new AzureStorageManager(new AzureStorage(AzureTableStorageConnectionString));
+    const azureStorageManager = new AzureStorageManager(new AzureStorage(config.connectionStrings.azureStorage));
     await azureStorageManager.ensureTableStorageAsync({
         recreateTables: args.flags["recreate-tables"],
         deleteExtraTables: args.flags["delete-extra-tables"]
