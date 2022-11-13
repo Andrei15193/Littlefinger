@@ -1,5 +1,5 @@
 import type { IDependencyContainer } from "../../../../dependencyContainer";
-import type { ITranslation } from "../../../../translations/translation";
+import type { ITranslation } from "../../../../translations/Translation";
 import type { IUser } from "../../../../model/Users";
 import type { IExpenseTagsRepository } from "../../../../data/repositories/expenses/IExpenseTagsRepository";
 import type { IExpenseFormViewOptions } from "../../IExpenseFormViewOptions";

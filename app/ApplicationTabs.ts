@@ -1,4 +1,4 @@
-import type { ITranslation } from "./translations/translation";
+import type { ITranslation } from "./translations/Translation";
 
 export interface IApplicationTabs {
     readonly home: IApplicationTab;

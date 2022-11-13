@@ -1,4 +1,4 @@
-import { ISiteTranslationTabels } from "../translation";
+import type { ISiteTranslationTabels } from "../Translation";
 
 export const siteTranslationLabels: ISiteTranslationTabels = {
     title: "Littlefinger",

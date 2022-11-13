@@ -7,5 +7,5 @@
       "queueName": "expenses-month-change-requests"
     }
   ],
-  "scriptFile": "../out/expensesMonthChangeRequestConsumer/index.js"
+  "scriptFile": "../out/functions/expensesMonthChangeRequestConsumer/index.js"
 }

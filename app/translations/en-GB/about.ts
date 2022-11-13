@@ -1,4 +1,4 @@
-import type { IAboutTranslationLabels } from "../translation";
+import type { IAboutTranslationLabels } from "../Translation";
 
 export const aboutTranslationLabels: IAboutTranslationLabels = {
     title: "About",

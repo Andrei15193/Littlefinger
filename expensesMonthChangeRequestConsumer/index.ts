@@ -1,11 +1,11 @@
 import type { Context } from "@azure/functions"
-import type { IExpenseEntity } from "../app/data/azureStorage/Entities/Expenses";
-import type { IExpenseMonthChangeRequest } from "../app/data/azureStorage/Requests/IExpenseMonthChangeRequest";
+import type { IExpenseEntity } from "../app/data/azureStorage/entities/Expenses";
+import type { IExpenseMonthChangeRequest } from "../app/data/azureStorage/requests/IExpenseMonthChangeRequest";
+import type { RestError } from "@azure/data-tables";
 import { ExpensesUtils } from "../app/model/ExpensesUtils";
 import { AzureStorage } from "../app/data/azureStorage/AzureStorage";
 import { AzureTableStorageUtils } from "../app/data/repositories/AzureTableStorageUtils";
 import { DataStorageError } from "../app/data/DataStorageError";
-import { RestError } from "@azure/data-tables";
 
 export default async function expensesMonthChangeRequestConsumer(context: Context, { userId, expenseKey: { month: expenseMonth, id: expenseId }, newExpenseDateString }: IExpenseMonthChangeRequest): Promise<void> {
     try {
@@ -21,7 +21,7 @@ export default async function expensesMonthChangeRequestConsumer(context: Contex
         const warningActivation = new Date(expenseEntity.warningActivation!);
         warningActivation.setMinutes(warningActivation.getMinutes() - 5);
         if (warningActivation < new Date())
-        context.log(`The time allocated for processing the month change request for ExpenseEntity('${userId}-${expenseMonth}', '${expenseId}') has elapsed. Skipping.`);
+            context.log(`The time allocated for processing the month change request for ExpenseEntity('${userId}-${expenseMonth}', '${expenseId}') has elapsed. Skipping.`);
         else {
             const newExpenseDate = new Date(newExpenseDateString);
             const newExpenseMonth = ExpensesUtils.getExpenseMonth(newExpenseDate);

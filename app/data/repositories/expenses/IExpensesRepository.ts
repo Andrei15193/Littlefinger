@@ -1,4 +1,5 @@
-import { IExpense, IExpenseKey } from "../../../model/Expenses";
+import type { WithoutAnyEtag, WithoutRelatedEtags } from "../../../model/Common";
+import type { IExpense, IExpenseKey } from "../../../model/Expenses";
 
 export interface IExpensesRepository {
     getAsync(expenseKey: IExpenseKey): Promise<IExpense>;

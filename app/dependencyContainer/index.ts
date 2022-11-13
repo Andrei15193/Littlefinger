@@ -1,5 +1,5 @@
-import type { ITranslation } from "../translations/translation";
-import type { IApplicationTabs } from "../applicationTabs";
+import type { ITranslation } from "../translations/Translation";
+import type { IApplicationTabs } from "../ApplicationTabs";
 import type { IExpensesRepository } from "../data/repositories/expenses/IExpensesRepository";
 import type { IExpenseTagsRepository } from "../data/repositories/expenses/IExpenseTagsRepository";
 import type { ISessionService } from "../services/ISessionService";

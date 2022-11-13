@@ -1,7 +1,7 @@
 import type { IListExpensesRouteParams, IListExpensesQueryParams, IListExpensesViewOptions, ICurrencyTotal, ITagTotal, ITagDistribution } from "../ListExpensesPageDefinition";
 import type { IUser } from "../../../../model/Users";
 import type { IDependencyContainer } from "../../../../dependencyContainer";
-import type { ITranslation } from "../../../../translations/translation";
+import type { ITranslation } from "../../../../translations/Translation";
 import type { IRequestResult } from "../../../page/results";
 import type { IExpensesRepository } from "../../../../data/repositories/expenses/IExpensesRepository";
 import { QueryHandler } from "../../../page";

@@ -2,7 +2,7 @@ import type { RestError, TableEntityResult } from "@azure/data-tables";
 import type { IExpenseTag } from "../../../../model/Expenses";
 import type { IExpenseTagsRepository } from "../../expenses/IExpenseTagsRepository";
 import type { IAzureStorage } from "../../../azureStorage";
-import type { IExpenseTagEntity } from "../../../azureStorage/Entities/Expenses";
+import type { IExpenseTagEntity } from "../../../azureStorage/entities/Expenses";
 import { DataStorageError } from "../../../DataStorageError";
 import { AzureTableStorageUtils } from "../../AzureTableStorageUtils";
 

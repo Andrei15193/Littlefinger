@@ -1,5 +1,6 @@
 export const config: IApplicationConfiguration = {
     http: {
+        port: Number(process.env.PORT!),
         cookieSecret: process.env.HTTP_COOKIE_SECRET!
     },
 
@@ -19,6 +20,7 @@ export const config: IApplicationConfiguration = {
 
 export interface IApplicationConfiguration {
     readonly http: {
+        readonly port: number;
         readonly cookieSecret: string;
     };
 

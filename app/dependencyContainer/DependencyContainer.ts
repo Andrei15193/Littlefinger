@@ -1,6 +1,6 @@
 import type { IDependencyContainer } from "./index";
-import type { ITranslation } from "../translations/translation";
-import type { IApplicationTabs } from "../applicationTabs";
+import type { ITranslation } from "../translations/Translation";
+import type { IApplicationTabs } from "../ApplicationTabs";
 import type { IAzureStorage } from "../data/azureStorage";
 import type { IUserSessionsRepository } from "../data/repositories/users/IUserSessionsRepository";
 import type { IExpensesRepository } from "../data/repositories/expenses/IExpensesRepository";
@@ -8,11 +8,11 @@ import type { IExpenseTagsRepository } from "../data/repositories/expenses/IExpe
 import type { IUser } from "../model/Users";
 import type { ISessionService } from "../services/ISessionService";
 import { AzureStorageUserSessionsRepository } from "../data/repositories/azureStorage/users/AzureStorageUserSessionsRepository";
-import { AzureActiveDirectorySessionService } from "../services/AzureActiveDirectory/AzureActiveDirectorySessionService";
+import { AzureActiveDirectorySessionService } from "../services/azureActiveDirectory/AzureActiveDirectorySessionService";
 import { AzureStorageExpensesRepository } from "../data/repositories/azureStorage/expenses/AzureStorageExpensesRepository";
 import { AzureStorageExpenseTagsRepository } from "../data/repositories/azureStorage/expenses/AzureStorageExpenseTagsRepository";
 import { AzureStorage } from "../data/azureStorage/AzureStorage";
-import { ApplicationTabs } from "../applicationTabs";
+import { ApplicationTabs } from "../ApplicationTabs";
 
 export class DependencyContainer implements IDependencyContainer {
     private readonly _instances: Record<string, any>;
