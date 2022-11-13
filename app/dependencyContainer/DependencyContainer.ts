@@ -65,7 +65,7 @@ export class DependencyContainer implements IDependencyContainer {
         if (session === null)
             throw new Error("User is not authenticated");
         else
-            return session.id;
+            return session.user.id;
     }
 
     private _getInstance<TItem, TArgs extends readonly any[]>(name: string, replacement: TItem | undefined | null, type: { new(...args: TArgs): TItem }, ...args: TArgs): TItem {
