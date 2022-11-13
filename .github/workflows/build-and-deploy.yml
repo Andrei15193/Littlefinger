@@ -46,13 +46,48 @@ jobs:
         name: Application
         path: ./package/*.zip
 
-  deploy:
+  deploy-test:
+    name: Deploy on Test Environment
+    if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
     permissions:
       contents: none
     runs-on: ubuntu-latest
     needs: build
     environment:
       name: Test
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+    - name: Download Build Artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: Application
+
+    - name: Deploy Azure WebApp
+      id: deploy-to-webapp
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: littlefinger-test
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        package: WebApp.zip
+
+    - name: Deploy Azure Functions App
+      uses: Azure/functions-action@v1
+      with:
+        app-name: littlefinger-functions-test
+        publish-profile: ${{ secrets.AZURE_FUNCTIONS_APP_PUBLISH_PROFILE }}
+        package: FunctionsApp.zip
+
+
+  deploy:
+    name: Deploy on Live Environment
+    if: github.event_name == 'push' && github.ref == 'refs/heads/dev' && contains(toJSON(github.event.commits.*.message), '[release]')
+    permissions:
+      contents: none
+    runs-on: ubuntu-latest
+    needs: deploy-test
+    environment:
+      name: Live
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
