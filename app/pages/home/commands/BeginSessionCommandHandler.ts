@@ -1,12 +1,12 @@
-import type { IHomeRouteParams, IHomeViewOptions } from "../HomePageDefinition";
+import type { IAuthenticationFormBody, IHomeRouteParams, IHomeViewOptions } from "../HomePageDefinition";
 import type { IDependencyContainer } from "../../../dependencyContainer";
 import type { IRequestResult } from "../../page/results";
-import type { IAzureActiveDirectoryAuthenticationFormBody } from "../../../services/azureActiveDirectory/AzureActiveDirectorySessionService";
 import type { ISessionService } from "../../../services/ISessionService";
 import { CommandHandler } from "../../page";
 import { PageRequestBody } from "../../page/IBasePageRequestBody";
+import { AuthenticationFormBodyHelper } from "../HomePageDefinition";
 
-export class BeginSessionCommandHandler extends CommandHandler<IHomeRouteParams, PageRequestBody<IAzureActiveDirectoryAuthenticationFormBody>, IHomeViewOptions> {
+export class BeginSessionCommandHandler extends CommandHandler<IHomeRouteParams, PageRequestBody<IAuthenticationFormBody>, IHomeViewOptions> {
     private readonly _sessionService: ISessionService;
 
     public constructor({ sessionService }: IDependencyContainer) {
@@ -14,8 +14,26 @@ export class BeginSessionCommandHandler extends CommandHandler<IHomeRouteParams,
         this._sessionService = sessionService;
     }
 
-    public async executeCommandAsync(routeParams: IHomeRouteParams, { code, state }: PageRequestBody<IAzureActiveDirectoryAuthenticationFormBody>, queryParmas: {}): Promise<IRequestResult> {
-        await this._sessionService.beginSessionAsync(code);
-        return this.redirect(state);
+    public async executeCommandAsync(routeParams: IHomeRouteParams, body: PageRequestBody<IAuthenticationFormBody>, queryParmas: {}): Promise<IRequestResult> {
+        const originalUrl = this._sessionService.getOriginalUrl(body.state);
+
+        if (AuthenticationFormBodyHelper.isSuccessful(body)) {
+            await this._sessionService.beginSessionAsync(body.code, body.state);
+            return this.redirect(originalUrl);
+        }
+        else {
+            const errorCode = body.error_description.split(':', 2)[0]?.toUpperCase();
+            switch (errorCode) {
+                case "AADB2C90118":
+                    return this.redirect(this._sessionService.getPasswordResetUrl(originalUrl));
+
+                case "AADB2C90091":
+                    return this.redirect(originalUrl);
+
+                default:
+                    console.log(`Unhandled Azure Active Directory error code ${errorCode}`);
+                    return this.redirect(originalUrl);
+            }
+        }
     }
 }

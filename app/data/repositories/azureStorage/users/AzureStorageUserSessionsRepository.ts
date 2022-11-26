@@ -5,6 +5,8 @@ import type { IUserSessionsRepository } from "../../users/IUserSessionsRepositor
 import type { IUserSessionEntity } from "../../../azureStorage/entities/UserSession";
 import { DataStorageError } from "../../../DataStorageError";
 import { AzureTableStorageUtils } from "../../AzureTableStorageUtils";
+import { Enum } from "../../../../global/Enum";
+import { AuthenticationFlow } from "../../../../services/ISessionService";
 
 export class AzureStorageUserSessionsRepository implements IUserSessionsRepository {
     private readonly _azureStorage: IAzureStorage;
@@ -16,6 +18,11 @@ export class AzureStorageUserSessionsRepository implements IUserSessionsReposito
     public async getAsync(userId: string, sessionId: string): Promise<IUserSessionData> {
         try {
             const userSessionEntity = await this._azureStorage.tables.userSessions.getEntity<IUserSessionEntity>(userId, sessionId);
+
+            const authenticationFlow = Enum.getValue(AuthenticationFlow, userSessionEntity.authenticationFlow);
+            if (authenticationFlow === undefined || authenticationFlow === null)
+                throw new DataStorageError("NotFound");
+
             return {
                 sessionId: userSessionEntity.sessionId,
                 user: {
@@ -24,6 +31,7 @@ export class AzureStorageUserSessionsRepository implements IUserSessionsReposito
                     defaultCurrency: userSessionEntity.userDefaultCurrency
                 },
                 expiration: userSessionEntity.expiration,
+                authenticationFlow,
                 serializedMsalTokenCache: userSessionEntity.serializedMsalTokenCache
             }
         }
@@ -42,6 +50,7 @@ export class AzureStorageUserSessionsRepository implements IUserSessionsReposito
                 userDisplayName: userSessionData.user.displayName,
                 userDefaultCurrency: userSessionData.user.defaultCurrency,
                 expiration: userSessionData.expiration,
+                authenticationFlow: Enum.getKey(AuthenticationFlow, userSessionData.authenticationFlow)!,
                 serializedMsalTokenCache: userSessionData.serializedMsalTokenCache
             });
         }
@@ -61,6 +70,7 @@ export class AzureStorageUserSessionsRepository implements IUserSessionsReposito
                     userDisplayName: userSessionData.user.displayName,
                     userDefaultCurrency: userSessionData.user.defaultCurrency,
                     expiration: userSessionData.expiration,
+                    authenticationFlow: Enum.getKey(AuthenticationFlow, userSessionData.authenticationFlow)!,
                     serializedMsalTokenCache: userSessionData.serializedMsalTokenCache
                 },
                 "Replace",

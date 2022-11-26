@@ -6,8 +6,6 @@ import type { ISessionService } from "../../../services/ISessionService";
 import { QueryHandler } from "../../page";
 
 export class GetHomePageQueryHandler extends QueryHandler<IHomeRouteParams, IHomeViewOptions> {
-    private static _signInUrl: string | null = null;
-
     private readonly _translation: ITranslation;
     private readonly _sessionService: ISessionService;
 
@@ -18,13 +16,10 @@ export class GetHomePageQueryHandler extends QueryHandler<IHomeRouteParams, IHom
     }
 
     public async executeQueryAsync(routeParams: IHomeRouteParams, queryParmas: {}): Promise<IRequestResult> {
-        if (GetHomePageQueryHandler._signInUrl === null)
-            GetHomePageQueryHandler._signInUrl = await this._sessionService.getSignInUrlAsync("/");
-
         return this.render("index", {
             title: this._translation.home.title,
             tab: "home",
-            signInUrl: GetHomePageQueryHandler._signInUrl
+            signInUrl: this._sessionService.getSignInUrl("/")
         });
     }
 }

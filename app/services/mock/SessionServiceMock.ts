@@ -10,15 +10,23 @@ export class SessionServiceMock implements ISessionService {
 
     public readonly sessionUpdated: boolean = false;
 
-    public getSignInUrlAsync(originalUrl: string): Promise<string> {
-        return Promise.resolve(originalUrl);
+    public getSignInUrl(originalUrl: string): string {
+        return originalUrl;
     }
 
-    public getSignOutUrlAsync(): Promise<string> {
-        return Promise.resolve("/");
+    public getPasswordResetUrl(originalUrl: string): string {
+        return originalUrl;
     }
 
-    public beginSessionAsync(authenticationCode: string): Promise<void> {
+    public getOriginalUrl(state: string): string {
+        return "/";
+    }
+
+    public getSignOutUrl(): string {
+        return "/";
+    }
+
+    public beginSessionAsync(authenticationCode: string, state: string): Promise<void> {
         return Promise.resolve();
     }
 

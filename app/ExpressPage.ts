@@ -35,7 +35,7 @@ export class ExpressPage {
         await sessionService.tryLoadSessionAsync(req.signedCookies.userId, req.signedCookies.sessionId);
 
         if (queryHandlerDefinition.allowAnonymousRequests !== true && sessionService.session === null)
-            res.redirect(await sessionService.getSignInUrlAsync(req.originalUrl));
+            res.redirect(sessionService.getSignInUrl(req.originalUrl));
         else {
             const start = new Date();
             if (sessionService.session === null)
@@ -82,7 +82,7 @@ export class ExpressPage {
         await sessionService.tryLoadSessionAsync(req.signedCookies.userId, req.signedCookies.sessionId);
 
         if (commandHandlerDefinition.allowAnonymousRequests !== true && sessionService.session === null)
-            res.redirect(await sessionService.getSignInUrlAsync(req.originalUrl));
+            res.redirect(sessionService.getSignInUrl(req.originalUrl));
         else {
             const start = new Date();
             if (sessionService.session === null)
@@ -97,6 +97,10 @@ export class ExpressPage {
                         ? `Executing command '${commandHandlerDefinition.name}' without argument`
                         : `Executing command '${commandHandlerDefinition.name}' with argument '${commandArgument}`
                 );
+                console.log("Request body");
+                console.log("-".repeat(80));
+                console.log(JSON.stringify(req.body, undefined, 4));
+                console.log("-".repeat(80));
 
                 const CommandHandlerType = commandHandlerDefinition.handlerType;
                 const commandHandler = new CommandHandlerType(dependencies);

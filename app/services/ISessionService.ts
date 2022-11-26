@@ -5,11 +5,15 @@ export interface ISessionService {
 
     readonly sessionUpdated: boolean;
 
-    getSignInUrlAsync(originalUrl: string): Promise<string>;
+    getSignInUrl(originalUrl: string): string;
 
-    getSignOutUrlAsync(): Promise<string>;
+    getPasswordResetUrl(originalUrl: string): string;
 
-    beginSessionAsync(authenticationCode: string): Promise<void>;
+    getOriginalUrl(state: string): string;
+
+    getSignOutUrl(): string;
+
+    beginSessionAsync(authenticationCode: string, state: string): Promise<void>;
 
     tryLoadSessionAsync(userId: string, sessionId: string): Promise<boolean>;
 
@@ -19,4 +23,9 @@ export interface ISessionService {
 export interface ILoadSessionResult {
     readonly successful: boolean;
     readonly tokenRefreshed: boolean;
+}
+
+export enum AuthenticationFlow {
+    Login,
+    PasswordChange
 }

@@ -3,15 +3,11 @@ import type { ISessionService } from "../ISessionService";
 import type { IUser, IUserSession, IUserSessionData } from "../../model/Users";
 import type { IUserSessionsRepository } from "../../data/repositories/users/IUserSessionsRepository";
 import { ConfidentialClientApplication, LogLevel, ResponseMode, InteractionRequiredAuthError } from "@azure/msal-node";
+import { AuthenticationFlow } from "../ISessionService";
 import { v4 as uuid } from "uuid";
 import { DataStorageError } from "../../data/DataStorageError";
 import { config } from "../../config";
-
-export interface IAzureActiveDirectoryAuthenticationFormBody {
-    readonly client_info: string;
-    readonly code: string;
-    readonly state: string;
-}
+import { Enum } from "../../global/Enum";
 
 export class AzureActiveDirectorySessionService implements ISessionService {
     private _userSession: IUserSession | null;
@@ -32,21 +28,27 @@ export class AzureActiveDirectorySessionService implements ISessionService {
         return this._sessionUpdated;
     }
 
-    public async getSignInUrlAsync(originalUrl: string): Promise<string> {
-        const confidentialClientApplication = new ConfidentialClientApplication(confidentialClientApplicationConfig);
-
-        return await confidentialClientApplication.getAuthCodeUrl({
-            ...authorizationRequest,
-            state: originalUrl
-        });
+    public getSignInUrl(originalUrl: string): string {
+        return this._getUserFlowUrl(AuthenticationFlow.Login, originalUrl);
     }
 
-    public getSignOutUrlAsync(): Promise<string> {
-        return Promise.resolve(logoutUrl);
+    public getPasswordResetUrl(originalUrl: string): string {
+        return this._getUserFlowUrl(AuthenticationFlow.PasswordChange, originalUrl);
     }
 
-    public async beginSessionAsync(authenticationCode: string): Promise<void> {
-        const confidentialClientApplication = new ConfidentialClientApplication(confidentialClientApplicationConfig);
+    public getOriginalUrl(state: string): string {
+        return this._deserializeState(state).originalUrl;
+    }
+
+    public getSignOutUrl(): string {
+        return AzureActiveDirectorySessionService._getLogoutUrl(this.session!.authenticationFlow);
+    }
+
+    public async beginSessionAsync(authenticationCode: string, state: string): Promise<void> {
+        const { authenticationFlow } = this._deserializeState(state);
+
+        const confidentialClientApplication = new ConfidentialClientApplication(AzureActiveDirectorySessionService._getConfidentialClientApplicationConfig(authenticationFlow));
+        const authorizationRequest = AzureActiveDirectorySessionService._getAuthorizationRequest(authenticationFlow);
         const token = await confidentialClientApplication.acquireTokenByCode({
             code: authenticationCode,
             scopes: authorizationRequest.scopes,
@@ -68,12 +70,14 @@ export class AzureActiveDirectorySessionService implements ISessionService {
             sessionId,
             expiration: sessionExpiration,
             user,
+            authenticationFlow,
             serializedMsalTokenCache: confidentialClientApplication.getTokenCache().serialize()
         })
 
         this._userSession = {
             id: sessionId,
             user,
+            authenticationFlow,
             expiration: sessionExpiration
         };
         this._sessionUpdated = true;
@@ -96,6 +100,7 @@ export class AzureActiveDirectorySessionService implements ISessionService {
                 this._userSession = {
                     id: sessionId,
                     user: userSessionData.user,
+                    authenticationFlow: userSessionData.authenticationFlow,
                     expiration: userSessionData.expiration
                 };
 
@@ -120,10 +125,23 @@ export class AzureActiveDirectorySessionService implements ISessionService {
         }
     }
 
-    private async _tryRefreshSessionData(userSessionData: IUserSessionData): Promise<IUserSessionData | null> {
-        console.log(`Reaquiring access token for ${userSessionData.user.id}`);
+    private _deserializeState(state: string): IAuthenticationResponseState {
+        const indexOfSeparator = state.indexOf('/');
+        const authenticationFlowName = indexOfSeparator === -1 ? state : state.substring(0, indexOfSeparator);
+        const originalUrl = indexOfSeparator === -1 || (indexOfSeparator + 1) === state.length ? "/" : state.substring(indexOfSeparator + 1);
 
-        const confidentialClientApplication = new ConfidentialClientApplication(confidentialClientApplicationConfig);
+        return {
+            authenticationFlow: Enum.getValue(AuthenticationFlow, authenticationFlowName) || AuthenticationFlow.Login,
+            originalUrl
+        };
+    }
+
+    private _serializeState({ authenticationFlow, originalUrl }: IAuthenticationResponseState): string {
+        return `${Enum.getKey(AuthenticationFlow, authenticationFlow)}/${originalUrl}`;
+    }
+
+    private async _tryRefreshSessionData(userSessionData: IUserSessionData): Promise<IUserSessionData | null> {
+        const confidentialClientApplication = new ConfidentialClientApplication(AzureActiveDirectorySessionService._getConfidentialClientApplicationConfig(AuthenticationFlow.Login));
         const tokenCache = confidentialClientApplication.getTokenCache();
         tokenCache.deserialize(userSessionData.serializedMsalTokenCache);
 
@@ -131,6 +149,7 @@ export class AzureActiveDirectorySessionService implements ISessionService {
         if (userAccount === undefined || userAccount === null)
             return null;
 
+        const authorizationRequest = AzureActiveDirectorySessionService._getAuthorizationRequest(AuthenticationFlow.Login);
         const token = await confidentialClientApplication.acquireTokenSilent({
             account: userAccount,
             scopes: authorizationRequest.scopes,
@@ -145,6 +164,7 @@ export class AzureActiveDirectorySessionService implements ISessionService {
             sessionId: userSessionData.sessionId,
             user: userSessionData.user,
             expiration: this._getTokenExpiration(),
+            authenticationFlow: userSessionData.authenticationFlow,
             serializedMsalTokenCache: tokenCache.serialize()
         };
     }
@@ -153,6 +173,81 @@ export class AzureActiveDirectorySessionService implements ISessionService {
         const sessionExpiration = new Date();
         sessionExpiration.setMinutes(sessionExpiration.getMinutes() + config.azureActiveDirecotry.tokenLifeInMinutes - 15);
         return sessionExpiration;
+    }
+
+    private _getUserFlowUrl(authenticationFlow: AuthenticationFlow, originalUrl: string): string {
+        const azureActiveDirecotryUserFlowName = AzureActiveDirectorySessionService._getAzureActiveDirectoryUserFlowName(authenticationFlow);
+        const state = this._serializeState({ authenticationFlow, originalUrl });
+        return `https://${config.azureActiveDirecotry.tenantName}.b2clogin.com/${config.azureActiveDirecotry.tenantName}.onmicrosoft.com/${azureActiveDirecotryUserFlowName}/oauth2/v2.0/authorize?client_id=${config.azureActiveDirecotry.clientId}&scope=openid&redirect_uri=${config.azureActiveDirecotry.returnUrl}&response_mode=form_post&response_type=code&state=${state}`
+    }
+
+
+    private static readonly _azureActiveDirectoryUserFlowMapping: { readonly [key in AuthenticationFlow]: string } = {
+        [AuthenticationFlow.Login]: config.azureActiveDirecotry.authenticationFlowName,
+        [AuthenticationFlow.PasswordChange]: config.azureActiveDirecotry.passwordResetFlowName
+    };
+
+    private static _getAzureActiveDirectoryUserFlowName(authenticationFlow: AuthenticationFlow): string {
+        const azureActiveDirecotryUserFlowName = AzureActiveDirectorySessionService._azureActiveDirectoryUserFlowMapping[authenticationFlow];
+        if (azureActiveDirecotryUserFlowName === undefined || azureActiveDirecotryUserFlowName === null)
+            throw Error(`Unknown authentication flow: '${Enum.getKey(AuthenticationFlow, authenticationFlow)}'.`);
+
+        return azureActiveDirecotryUserFlowName;
+    }
+
+    private static _getConfidentialClientApplicationConfig(authenticationFlow: AuthenticationFlow): Configuration {
+        const azureActiveDirecotryUserFlowName = AzureActiveDirectorySessionService._getAzureActiveDirectoryUserFlowName(authenticationFlow);
+        return {
+            auth: {
+                clientId: config.azureActiveDirecotry.clientId,
+                clientSecret: config.azureActiveDirecotry.clientSecret,
+                authority: `https://${config.azureActiveDirecotry.tenantName}.b2clogin.com/${config.azureActiveDirecotry.tenantName}.onmicrosoft.com/${azureActiveDirecotryUserFlowName}`,
+                knownAuthorities: [
+                    `https://${config.azureActiveDirecotry.tenantName}.b2clogin.com`
+                ]
+            },
+            system: {
+                loggerOptions: {
+                    loggerCallback(logLevel: LogLevel, message: string) {
+                        switch (logLevel) {
+                            case LogLevel.Error:
+                                console.error(message);
+                                break;
+                            case LogLevel.Warning:
+                                console.warn(message);
+                                break;
+                            case LogLevel.Info:
+                                console.info(message);
+                                break;
+                            case LogLevel.Verbose:
+                                console.log(message);
+                                break;
+                            case LogLevel.Trace:
+                                console.trace(message);
+                                break;
+                        }
+                    },
+                    piiLoggingEnabled: false,
+                    logLevel: LogLevel.Verbose
+                }
+            }
+        };
+    }
+
+    private static _getAuthorizationRequest(authenticationFlow: AuthenticationFlow): AuthorizationUrlRequest {
+        const azureActiveDirecotryUserFlowName = AzureActiveDirectorySessionService._getAzureActiveDirectoryUserFlowName(authenticationFlow);
+        return {
+            redirectUri: config.azureActiveDirecotry.returnUrl,
+            authority: `https://${config.azureActiveDirecotry.tenantName}.b2clogin.com/${config.azureActiveDirecotry.tenantName}.onmicrosoft.com/${azureActiveDirecotryUserFlowName}`,
+            scopes: [],
+            responseMode: ResponseMode.FORM_POST,
+            maxAge: (config.azureActiveDirecotry.tokenLifeInMinutes * 60)
+        };
+    }
+
+    private static _getLogoutUrl(authenticationFlow: AuthenticationFlow): string {
+        const azureActiveDirecotryUserFlowName = AzureActiveDirectorySessionService._getAzureActiveDirectoryUserFlowName(authenticationFlow);
+        return `https://${config.azureActiveDirecotry.tenantName}.b2clogin.com/${config.azureActiveDirecotry.tenantName}.onmicrosoft.com/${azureActiveDirecotryUserFlowName}/oauth2/v2.0/logout?post_logout_redirect_uri=${config.azureActiveDirecotry.returnUrl}`
     }
 }
 
@@ -167,52 +262,10 @@ interface IAzureActiveDirectoryClaims {
     readonly auth_time: number,
     readonly oid: string,
     readonly name: string,
-    readonly emails: readonly string[],
     readonly tfp: string
 }
 
-const confidentialClientApplicationConfig: Configuration = {
-    auth: {
-        clientId: config.azureActiveDirecotry.clientId,
-        clientSecret: config.azureActiveDirecotry.clientSecret,
-        authority: `https://${config.azureActiveDirecotry.tenantName}.b2clogin.com/${config.azureActiveDirecotry.tenantName}.onmicrosoft.com/${config.azureActiveDirecotry.authenticationFlowName}`,
-        knownAuthorities: [
-            `https://${config.azureActiveDirecotry.tenantName}.b2clogin.com`
-        ]
-    },
-    system: {
-        loggerOptions: {
-            loggerCallback(logLevel: LogLevel, message: string) {
-                switch (logLevel) {
-                    case LogLevel.Error:
-                        console.error(message);
-                        break;
-                    case LogLevel.Warning:
-                        console.warn(message);
-                        break;
-                    case LogLevel.Info:
-                        console.info(message);
-                        break;
-                    case LogLevel.Verbose:
-                        console.log(message);
-                        break;
-                    case LogLevel.Trace:
-                        console.trace(message);
-                        break;
-                }
-            },
-            piiLoggingEnabled: false,
-            logLevel: LogLevel.Verbose
-        }
-    }
-};
-
-const authorizationRequest: AuthorizationUrlRequest = {
-    redirectUri: config.azureActiveDirecotry.returnUrl,
-    authority: `https://${config.azureActiveDirecotry.tenantName}.b2clogin.com/${config.azureActiveDirecotry.tenantName}.onmicrosoft.com/${config.azureActiveDirecotry.authenticationFlowName}`,
-    scopes: [],
-    responseMode: ResponseMode.FORM_POST,
-    maxAge: (config.azureActiveDirecotry.tokenLifeInMinutes * 60)
-};
-
-const logoutUrl = `https://${config.azureActiveDirecotry.tenantName}.b2clogin.com/${config.azureActiveDirecotry.tenantName}.onmicrosoft.com/${config.azureActiveDirecotry.authenticationFlowName}/oauth2/v2.0/logout?post_logout_redirect_uri=${config.azureActiveDirecotry.returnUrl}`
+export interface IAuthenticationResponseState {
+    readonly authenticationFlow: AuthenticationFlow;
+    readonly originalUrl: string;
+}

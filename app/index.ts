@@ -9,6 +9,7 @@ import { AzureStorage } from "./data/azureStorage/AzureStorage";
 import { config } from "./config";
 import { SessionServiceMock } from "./services/mock/SessionServiceMock";
 import { ExpressPage } from "./ExpressPage";
+import { AuthenticationFlow } from "./services/ISessionService";
 
 (async function startApplicationAsync(): Promise<void> {
     console = new console.Console({
@@ -41,12 +42,13 @@ import { ExpressPage } from "./ExpressPage";
     const dependencyReplacements: Partial<Omit<DependencyContainer, "user">> = {
         sessionService: args.flags["use-default-user"]
             ? new SessionServiceMock({
-                id: "00000000-0000-0000-0000-000000000000",
+                id: "#session-id",
                 user: {
-                    id: "00000000-0000-0000-0000-000000000000",
+                    id: "#user-id",
                     displayName: "Andrei",
                     defaultCurrency: "RON"
                 },
+                authenticationFlow: AuthenticationFlow.Login,
                 expiration: new Date()
             })
             : undefined

@@ -6,5 +6,6 @@ export interface IUserSessionEntity extends TableEntity {
     readonly expiration: Date;
     readonly userDisplayName: string;
     readonly userDefaultCurrency: string;
+    readonly authenticationFlow: string;
     readonly serializedMsalTokenCache: string;
 }

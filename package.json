@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack",
     "watch": "webpack --watch",
-    "host:app": "nodemon --require dotenv/config --delay 1s --watch app/assets --watch app/views --watch out/app --ext js,css,png,svg,hbs ./out/app/index.js --delete-extra-tables --clear-queues --use-default-user",
+    "host:app": "nodemon --require dotenv/config --delay 1s --watch app/assets --watch app/views --watch out/app --ext js,css,png,svg,hbs ./out/app/index.js --delete-extra-tables --clear-queues ",
     "host:functionsApp": "func start --enable-json-output",
     "host:storage": "azurite --location .data"
   },
