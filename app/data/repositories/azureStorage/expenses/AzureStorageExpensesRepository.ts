@@ -24,7 +24,7 @@ export class AzureStorageExpensesRepository implements IExpensesRepository {
     public async getAsync(expenseKey: IExpenseKey): Promise<IExpense> {
         try {
             const allExpenseTagsByName = await this._getAllExpenseTagsByName();
-            const expenseEntity = await this._azureStorage.tables.expenses.getEntity<IExpenseEntity>(`${this._userId}-${expenseKey.month}`, expenseKey.id);
+            const expenseEntity = await this._azureStorage.tables.expenses.getEntity<IExpenseEntity>(AzureTableStorageUtils.escapeKeyValue(`${this._userId}-${expenseKey.month}`), AzureTableStorageUtils.escapeKeyValue(expenseKey.id));
 
             return this._mapExpenseEntity(expenseEntity, allExpenseTagsByName);
         }

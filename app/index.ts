@@ -11,6 +11,8 @@ import { SessionServiceMock } from "./services/mock/SessionServiceMock";
 import { ExpressPage } from "./ExpressPage";
 import { AuthenticationFlow } from "./services/ISessionService";
 
+import "./assets/style.scss";
+
 (async function startApplicationAsync(): Promise<void> {
     console = new console.Console({
         stdout: process.stdout,

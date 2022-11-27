@@ -17,7 +17,7 @@ export class AzureStorageUserSessionsRepository implements IUserSessionsReposito
 
     public async getAsync(userId: string, sessionId: string): Promise<IUserSessionData> {
         try {
-            const userSessionEntity = await this._azureStorage.tables.userSessions.getEntity<IUserSessionEntity>(userId, sessionId);
+            const userSessionEntity = await this._azureStorage.tables.userSessions.getEntity<IUserSessionEntity>(AzureTableStorageUtils.escapeKeyValue(userId), AzureTableStorageUtils.escapeKeyValue(sessionId));
 
             const authenticationFlow = Enum.getValue(AuthenticationFlow, userSessionEntity.authenticationFlow);
             if (authenticationFlow === undefined || authenticationFlow === null)

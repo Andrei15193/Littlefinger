@@ -13,10 +13,7 @@ export default async function expensesMonthChangeRequestConsumer(context: Contex
 
         const azureStorage = new AzureStorage(process.env.AzureWebJobsStorage as string);
 
-        const expenseEntity = await azureStorage.tables.expenses.getEntity<IExpenseEntity>(
-            AzureTableStorageUtils.escapeKeyValue(`${userId}-${expenseMonth}`),
-            AzureTableStorageUtils.escapeKeyValue(expenseId)
-        );
+        const expenseEntity = await azureStorage.tables.expenses.getEntity<IExpenseEntity>(AzureTableStorageUtils.escapeKeyValue(`${userId}-${expenseMonth}`), AzureTableStorageUtils.escapeKeyValue(expenseId));
 
         const warningActivation = new Date(expenseEntity.warningActivation!);
         warningActivation.setMinutes(warningActivation.getMinutes() - 5);

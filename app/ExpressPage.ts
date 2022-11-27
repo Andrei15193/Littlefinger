@@ -97,10 +97,6 @@ export class ExpressPage {
                         ? `Executing command '${commandHandlerDefinition.name}' without argument`
                         : `Executing command '${commandHandlerDefinition.name}' with argument '${commandArgument}`
                 );
-                console.log("Request body");
-                console.log("-".repeat(80));
-                console.log(JSON.stringify(req.body, undefined, 4));
-                console.log("-".repeat(80));
 
                 const CommandHandlerType = commandHandlerDefinition.handlerType;
                 const commandHandler = new CommandHandlerType(dependencies);

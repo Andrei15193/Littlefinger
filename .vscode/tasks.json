@@ -58,7 +58,6 @@
         {
             "label": "npm run host:storage",
             "detail": "azurite",
-            "dependsOn": "npm run build",
             "type": "npm",
             "script": "host:storage",
             "problemMatcher": [],

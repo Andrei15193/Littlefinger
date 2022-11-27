@@ -28,7 +28,7 @@ jobs:
       run: npm install
 
     - name: Build
-      run: npm run build --mode=production
+      run: npm run build -- --mode=production
 
     - name: Create Web App Deployment Package
       uses: ihiroky/archive-action@v1
