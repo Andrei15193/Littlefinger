@@ -68,7 +68,7 @@
             </div>
             <button type="submit" name="command" value="remove-tag:{{ this.name }}"
                 class="badge rounded-pill btn-danger px-2 py-0 border-0 d-flex flex-row align-items-center"
-                {{#unlessCompare state '===' 'ready' }} disabled{{/unlessCompare}}>
+                {{#unlessCompare @root.state '===' 'ready' }} disabled{{/unlessCompare}}>
                 {{> icons/close-icon height='0.7rem' }}
             </button>
         </div>
