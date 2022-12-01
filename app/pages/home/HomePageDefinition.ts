@@ -1,10 +1,4 @@
-import type { IBaseViewOptions } from "../page";
-
 export interface IHomeRouteParams {
-}
-
-export interface IHomeViewOptions extends IBaseViewOptions {
-    readonly signInUrl: string;
 }
 
 export type IAuthenticationFormBody = ISuccessfulAuthenticationFormBody | IFaultedAuthenticationFormBody;

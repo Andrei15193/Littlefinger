@@ -8,7 +8,8 @@ export const config: IApplicationConfiguration = {
         tenantName: process.env.APPSETTING_AZURE_AD_TENANT_NAME!,
         clientId: process.env.APPSETTING_AZURE_AD_CLIENT_ID!,
         clientSecret: process.env.APPSETTING_AZURE_AD_CLIENT_SECRET!,
-        authenticationFlowName: process.env.APPSETTING_AZURE_AD_AUTHENTICATION_FLOW_NAME!,
+        signUpFlowName: process.env.APPSETTING_AZURE_AD_SIGNUP_FLOW_NAME!,
+        signInOrSignUpFlowName: process.env.APPSETTING_AZURE_AD_SIGNIN_OR_SIGNUP_FLOW_NAME!,
         passwordResetFlowName: process.env.APPSETTING_AZURE_AD_PASSWORD_RESET_FLOW_NAME!,
         returnUrl: process.env.APPSETTING_AZURE_AD_RETURN_URL!,
         tokenLifeInMinutes: Number(process.env.APPSETTING_AZURE_AD_TOKEN_LIFE_MINUTES!)
@@ -29,7 +30,8 @@ export interface IApplicationConfiguration {
         readonly tenantName: string;
         readonly clientId: string;
         readonly clientSecret: string;
-        readonly authenticationFlowName: string;
+        readonly signUpFlowName: string;
+        readonly signInOrSignUpFlowName: string;
         readonly passwordResetFlowName: string;
         readonly returnUrl: string;
         readonly tokenLifeInMinutes: number;

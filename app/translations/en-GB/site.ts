@@ -4,6 +4,8 @@ export const siteTranslationLabels: ISiteTranslationTabels = {
     title: "Littlefinger",
     headerSubtitle: "_master of coin_",
     logExpenseButtonLabel: "Log expense",
+    loginButtonLabel: "Sing in",
+    registerButtonLabel: "Create account",
     logoutButtonLabel: "Logout",
 
     tabs: {

@@ -10,6 +10,10 @@ export class SessionServiceMock implements ISessionService {
 
     public readonly sessionUpdated: boolean = false;
 
+    public getSignUpUrl(originalUrl: string): string {
+        return originalUrl;
+    }
+
     public getSignInUrl(originalUrl: string): string {
         return originalUrl;
     }

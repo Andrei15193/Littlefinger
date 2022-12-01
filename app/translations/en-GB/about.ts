@@ -2,6 +2,7 @@ import type { IAboutTranslationLabels } from "../Translation";
 
 export const aboutTranslationLabels: IAboutTranslationLabels = {
     title: "About",
+    titleGuest: "About Littlefinger",
     skit:
         "_Sometimes, when I try to understand my budget I play a little game. I assume the worst. " +
         "What's the worst reason I could possibly have for spending money and not saving as I should? " +
@@ -13,6 +14,10 @@ export const aboutTranslationLabels: IAboutTranslationLabels = {
         "Game of Thrones. Petyr \"Littlefinger\" Baelish is shreud and cunning, a very smart person " +
         "that has built his fortune from just about nothing. He made himself what he is through sheer " +
         "discipline and intellect, as one should with their finances if they wish to have better security.",
+    trackingNotification:
+        "Keep in mind that this application uses cookies and tracks IP addresses for each request for debug " +
+        "information once you sign-up and log into the application. If you create an account you automatically " +
+        "consent to these terms.",
     externalResources: {
         title: "External Resources",
         websites: [

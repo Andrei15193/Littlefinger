@@ -1,0 +1,21 @@
+<form action="/" method="POST" class="centered-view text-justify">
+    <div class="text-center">
+        {{> icons/logo width='10rem' class='text-center'}}
+    </div>
+
+    <div action="/" method="POST" class="mt-4 mb-2">
+        <h3 class="d-inline m-0">{{{ markdown translation.about.titleGuest }}} | </h3>
+        <button type="submit" name="command" value="authenticate" class="btn btn-link p-0 fs-5 fw-semibold align-baseline">{{{ markdown translation.site.loginButtonLabel }}}</button>
+    </div>
+
+    <p>{{{ markdown translation.about.skit }}}</p>
+
+    <p>{{{ markdown translation.about.description }}}</p>
+
+    <p>{{{ markdown translation.about.trackingNotification }}}</p>
+
+    <hr>
+
+    <button type="submit" name="command" value="authenticate" class="btn btn-primary">{{{ markdown translation.site.loginButtonLabel }}}</button>
+    <button type="submit" name="command" value="register" class="btn btn-link">{{{ markdown translation.site.registerButtonLabel }}}</button>
+</form>

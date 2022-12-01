@@ -1,4 +1,4 @@
-import type { IAuthenticationFormBody, IHomeRouteParams, IHomeViewOptions } from "../HomePageDefinition";
+import type { IAuthenticationFormBody, IHomeRouteParams } from "../HomePageDefinition";
 import type { IDependencyContainer } from "../../../dependencyContainer";
 import type { IRequestResult } from "../../page/results";
 import type { ISessionService } from "../../../services/ISessionService";
@@ -6,7 +6,7 @@ import { CommandHandler } from "../../page";
 import { PageRequestBody } from "../../page/IBasePageRequestBody";
 import { AuthenticationFormBodyHelper } from "../HomePageDefinition";
 
-export class BeginSessionCommandHandler extends CommandHandler<IHomeRouteParams, PageRequestBody<IAuthenticationFormBody>, IHomeViewOptions> {
+export class BeginSessionCommandHandler extends CommandHandler<IHomeRouteParams, PageRequestBody<IAuthenticationFormBody>> {
     private readonly _sessionService: ISessionService;
 
     public constructor({ sessionService }: IDependencyContainer) {
@@ -28,6 +28,7 @@ export class BeginSessionCommandHandler extends CommandHandler<IHomeRouteParams,
                     return this.redirect(this._sessionService.getPasswordResetUrl(originalUrl));
 
                 case "AADB2C90091":
+                case "AADB2C99002":
                     return this.redirect(originalUrl);
 
                 default:

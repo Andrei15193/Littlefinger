@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" class="h-100">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ translation.site.title }}{{#if title}} - {{ title }}{{/if}}</title>
+    <link href="/favicon.ico" rel="icon" type="image/x-icon">
+    <%= htmlWebpackPlugin.tags.headTags %>
+</head>
+
+<body class="h-100 d-flex flex-column" dir="ltr" lang="{{ translation.locale }}">
+    {{#if user}}
+        {{#> layouts/member}}
+            {{{ body }}}
+        {{/layouts/member}}
+    {{else}}
+        {{#> layouts/guest}}
+            {{{ body }}}
+        {{/layouts/guest}}
+    {{/if}}
+
+    <%= htmlWebpackPlugin.tags.bodyTags %>
+</body>
+
+</html>

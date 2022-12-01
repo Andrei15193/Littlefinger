@@ -88,7 +88,7 @@ const config: readonly Configuration[] = [
                         from: "views/**/*.hbs",
                         globOptions: {
                             ignore: [
-                                "**/layouts/default.hbs"
+                                "**/layouts/base.hbs"
                             ]
                         }
                     },
@@ -111,8 +111,8 @@ const config: readonly Configuration[] = [
             }),
             new HtmlWebpackPlugin({
                 inject: false,
-                template: path.join(__dirname, "app", "views", "layouts", "default.hbs"),
-                filename: path.join("views", "layouts", "default.hbs"),
+                template: path.join(__dirname, "app", "views", "layouts", "base.hbs"),
+                filename: path.join("views", "layouts", "base.hbs"),
                 hash: true,
                 minify: false,
                 scriptLoading: "blocking",

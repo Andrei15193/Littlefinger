@@ -39,8 +39,7 @@ export class ExpressPage {
         else {
             const start = new Date();
             if (sessionService.session === null)
-                console.log(`Anonymous request for '${req.originalUrl}' from '${req.ip}'`);
-
+                console.log(`Anonymous request for '${req.originalUrl}'`);
             else
                 console.log(`Authenticated request for '${req.originalUrl}' from '${sessionService.session.user.id}' ('${req.ip}')`);
 
@@ -86,7 +85,7 @@ export class ExpressPage {
         else {
             const start = new Date();
             if (sessionService.session === null)
-                console.log(`Anonymous command request for '${req.originalUrl}' from '${req.ip}'`);
+                console.log(`Anonymous command request for '${req.originalUrl}'`);
 
             else
                 console.log(`Authenticated command request for '${req.originalUrl}' from '${sessionService.session.user.id}' ('${req.ip}')`);
@@ -125,7 +124,9 @@ export class ExpressPage {
 
     private _handleSessionCookies(req: Request, res: Response, sessionService: ISessionService): void {
         const { session, sessionUpdated } = sessionService;
+        const signInUrl = sessionService.getSignInUrl(req.originalUrl);
 
+        res.locals.signInUrl = signInUrl;
         if (session === null) {
             res.clearCookie("userId");
             res.clearCookie("sessionId");

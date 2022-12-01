@@ -5,6 +5,8 @@ export interface ISessionService {
 
     readonly sessionUpdated: boolean;
 
+    getSignUpUrl(originalUrl: string): string;
+
     getSignInUrl(originalUrl: string): string;
 
     getPasswordResetUrl(originalUrl: string): string;
@@ -26,6 +28,7 @@ export interface ILoadSessionResult {
 }
 
 export enum AuthenticationFlow {
-    Login,
+    Register,
+    AuthenticateOrRegister,
     PasswordChange
 }

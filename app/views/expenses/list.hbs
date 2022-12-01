@@ -5,10 +5,10 @@
     {{#unlessCompare expenses.length '===' 0}}
     <div class="ms-4 d-flex flex-column">
         <div class="d-flex flex-row align-items-center">
-            <div class="tag-distributions d-flex flex-row">
+            <div class="tag-group tag-distributions d-flex flex-row">
                 {{#each currencyTagDistirbutions}}
-                    {{#if this.tag.color}}
-                    <div class="tag {{ expenseTagColorClass this.tag.color }}" style="width: {{ this.percentage }}%;" title="{{ this.tag.name }} ({{ this.percentage }}%, {{ this.amount }}{{ @root.filters.currency }})"></div>
+                    {{#if this.tag}}
+                    <div class="tag {{ expenseTagColorClass this.tag.color }} badge d-inline" style="width: {{ this.percentage }}%;" title="{{ this.tag.name }} ({{ this.percentage }}%, {{ this.amount }}{{ @root.filters.currency }})"></div>
                     {{else}}
                     <div class="tag bg-light" style="width: {{ this.percentage }}%;" title="{{ @root.translation.expenses.list.untagged }} ({{ this.percentage }}%, {{ this.amount }}{{ @root.filters.currency }})"></div>
                     {{/if}}

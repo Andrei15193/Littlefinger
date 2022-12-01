@@ -1,0 +1,38 @@
+@import "./tagColors";
+
+.tag-distributions {
+    width: 400px;
+    height: 6px;
+
+    .tag:not(:first-child) {
+        margin-left: $font-size-base / 4;
+    }
+}
+
+.tag-group .tag {
+    &:first-child {
+        border-top-right-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+    }
+
+    &:not(:first-child):not(:last-child) {
+        border-radius: 0 !important;
+    }
+
+    &:last-child {
+        border-top-left-radius: 0 !important;
+        border-bottom-left-radius: 0 !important;
+    }
+}
+
+@each $tagColors in $tagsColors {
+    .tag-#{map_get($tagColors, "key")} {
+        color: map_get($tagColors, "textColor");
+        fill: map_get($tagColors, "textColor");
+
+        &.btn:not(:hover),
+        &:not(.btn) {
+            background-color: map_get($tagColors, "backgroundColor");
+        }
+    }
+}

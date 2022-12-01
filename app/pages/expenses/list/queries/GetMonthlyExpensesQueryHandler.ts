@@ -32,6 +32,7 @@ export class GetMonthlyExpensesQueryHandler extends QueryHandler<IListExpensesRo
                         : left.name.localeCompare(right.name, this._translation.locale)
             }
         );
+
         const totals: readonly ICurrencyTotal[] = expenses
             .reduce<{ readonly currency: ICurrencyTotal["currency"], amount: ICurrencyTotal["amount"] }[]>(
                 (result, expense) => {
@@ -87,6 +88,7 @@ export class GetMonthlyExpensesQueryHandler extends QueryHandler<IListExpensesRo
                 },
                 []
             )
+            .sort((left, right) => left.tag === null ? -1 : right.tag === null ? 1 : 0);
 
         return this.render("expenses/list", {
             title: this._translation.expenses.list.title,

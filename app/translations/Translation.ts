@@ -15,6 +15,8 @@ export interface ISiteTranslationTabels {
     readonly footerSubtitle: string;
 
     readonly logExpenseButtonLabel: string;
+    readonly loginButtonLabel: string;
+    readonly registerButtonLabel: string;
     readonly logoutButtonLabel: string;
 
     readonly tabs: {
@@ -146,8 +148,10 @@ export interface IExpensesTranslationLabels {
 
 export interface IAboutTranslationLabels {
     readonly title: string;
+    readonly titleGuest: string;
     readonly skit: string;
     readonly description: string;
+    readonly trackingNotification: string;
     readonly externalResources: {
         readonly title: string;
         readonly websites: readonly {

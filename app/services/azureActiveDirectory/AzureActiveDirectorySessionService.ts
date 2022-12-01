@@ -28,8 +28,12 @@ export class AzureActiveDirectorySessionService implements ISessionService {
         return this._sessionUpdated;
     }
 
+    public getSignUpUrl(originalUrl: string): string {
+        return this._getUserFlowUrl(AuthenticationFlow.Register, originalUrl);
+    }
+
     public getSignInUrl(originalUrl: string): string {
-        return this._getUserFlowUrl(AuthenticationFlow.Login, originalUrl);
+        return this._getUserFlowUrl(AuthenticationFlow.AuthenticateOrRegister, originalUrl);
     }
 
     public getPasswordResetUrl(originalUrl: string): string {
@@ -125,23 +129,24 @@ export class AzureActiveDirectorySessionService implements ISessionService {
         }
     }
 
+    private _serializeState({ authenticationFlow, originalUrl }: IAuthenticationResponseState): string {
+        return `${Enum.getKey(AuthenticationFlow, authenticationFlow)}/${originalUrl}`;
+    }
+
     private _deserializeState(state: string): IAuthenticationResponseState {
         const indexOfSeparator = state.indexOf('/');
         const authenticationFlowName = indexOfSeparator === -1 ? state : state.substring(0, indexOfSeparator);
         const originalUrl = indexOfSeparator === -1 || (indexOfSeparator + 1) === state.length ? "/" : state.substring(indexOfSeparator + 1);
 
+        const authenticationFlow = Enum.getValue(AuthenticationFlow, authenticationFlowName);
         return {
-            authenticationFlow: Enum.getValue(AuthenticationFlow, authenticationFlowName) || AuthenticationFlow.Login,
+            authenticationFlow: authenticationFlow === undefined || authenticationFlow === null ? AuthenticationFlow.AuthenticateOrRegister : authenticationFlow,
             originalUrl
         };
     }
 
-    private _serializeState({ authenticationFlow, originalUrl }: IAuthenticationResponseState): string {
-        return `${Enum.getKey(AuthenticationFlow, authenticationFlow)}/${originalUrl}`;
-    }
-
     private async _tryRefreshSessionData(userSessionData: IUserSessionData): Promise<IUserSessionData | null> {
-        const confidentialClientApplication = new ConfidentialClientApplication(AzureActiveDirectorySessionService._getConfidentialClientApplicationConfig(AuthenticationFlow.Login));
+        const confidentialClientApplication = new ConfidentialClientApplication(AzureActiveDirectorySessionService._getConfidentialClientApplicationConfig(userSessionData.authenticationFlow));
         const tokenCache = confidentialClientApplication.getTokenCache();
         tokenCache.deserialize(userSessionData.serializedMsalTokenCache);
 
@@ -149,7 +154,7 @@ export class AzureActiveDirectorySessionService implements ISessionService {
         if (userAccount === undefined || userAccount === null)
             return null;
 
-        const authorizationRequest = AzureActiveDirectorySessionService._getAuthorizationRequest(AuthenticationFlow.Login);
+        const authorizationRequest = AzureActiveDirectorySessionService._getAuthorizationRequest(userSessionData.authenticationFlow);
         const token = await confidentialClientApplication.acquireTokenSilent({
             account: userAccount,
             scopes: authorizationRequest.scopes,
@@ -181,9 +186,9 @@ export class AzureActiveDirectorySessionService implements ISessionService {
         return `https://${config.azureActiveDirecotry.tenantName}.b2clogin.com/${config.azureActiveDirecotry.tenantName}.onmicrosoft.com/${azureActiveDirecotryUserFlowName}/oauth2/v2.0/authorize?client_id=${config.azureActiveDirecotry.clientId}&scope=openid&redirect_uri=${config.azureActiveDirecotry.returnUrl}&response_mode=form_post&response_type=code&state=${state}`
     }
 
-
     private static readonly _azureActiveDirectoryUserFlowMapping: { readonly [key in AuthenticationFlow]: string } = {
-        [AuthenticationFlow.Login]: config.azureActiveDirecotry.authenticationFlowName,
+        [AuthenticationFlow.Register]: config.azureActiveDirecotry.signUpFlowName,
+        [AuthenticationFlow.AuthenticateOrRegister]: config.azureActiveDirecotry.signInOrSignUpFlowName,
         [AuthenticationFlow.PasswordChange]: config.azureActiveDirecotry.passwordResetFlowName
     };
 

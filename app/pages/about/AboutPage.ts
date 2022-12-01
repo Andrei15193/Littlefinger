@@ -7,9 +7,6 @@ export class AboutPage extends Page<IAboutRouteParams, never, IAboutViewOptions>
     public readonly route: string = "/about";
 
     public handlers: [QueryHandlerConfiguration<IAboutRouteParams, IAboutViewOptions>, ...ICommandHandlerDefinition<IAboutRouteParams, never, IAboutViewOptions>[]] = [
-        {
-            allowAnonymousRequests: true,
-            handlerType: GetAboutPageQueryHandler
-        }
+        GetAboutPageQueryHandler
     ];
 }

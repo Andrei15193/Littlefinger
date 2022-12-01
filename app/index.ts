@@ -1,4 +1,5 @@
 import express from "express";
+import compression from "compression";
 import cookieParser from "cookie-parser";
 import path from "path";
 import { createHandlebarsInstance } from "./Handlebars";
@@ -36,13 +37,14 @@ import "./assets/style.scss";
         .engine("hbs", handlebars.__express)
         .set("view engine", "hbs")
         .set("views", path.join(__dirname, "views"))
-        .set("view options", { layout: "layouts/default" })
+        .set("view options", { layout: "layouts/base" })
+        .use(compression())
         .use(express.static(path.join(__dirname, "assets")))
         .use(express.urlencoded({ extended: true }))
         .use(cookieParser(config.http.cookieSecret));
 
     const dependencyReplacements: Partial<Omit<DependencyContainer, "user">> = {
-        sessionService: args.flags["use-default-user"]
+        sessionService: args.flags["use-default-user"] && false
             ? new SessionServiceMock({
                 id: "#session-id",
                 user: {
@@ -50,7 +52,7 @@ import "./assets/style.scss";
                     displayName: "Andrei",
                     defaultCurrency: "RON"
                 },
-                authenticationFlow: AuthenticationFlow.Login,
+                authenticationFlow: AuthenticationFlow.AuthenticateOrRegister,
                 expiration: new Date()
             })
             : undefined
