@@ -1,0 +1,111 @@
+div#api.azure-active-directory-user-flow {
+
+    h1,
+    div.intro p {
+        @extend h3;
+        @extend .mt-4;
+        @extend .mb-2;
+    }
+
+    form {
+        h2 {
+            display: none;
+        }
+
+        ul {
+            @extend .list-unstyled;
+        }
+
+        a.helpLink[href^="javascript"] {
+            @extend .d-none;
+        }
+
+        div.error.pageLevel[aria-hidden="false"] {
+            @extend .invalid-feedback;
+        }
+
+        div.working[aria-hidden="false"] {
+            @extend .d-flex;
+            @extend .flex-column;
+            @extend .align-items-center;
+            @extend .mb-3;
+
+            div.spinner {
+                @extend .spinner-grow;
+                @extend .text-primary;
+            }
+        }
+
+        div.attrEntry,
+        div.entry-item {
+            label:empty {
+                display: none;
+            }
+
+            div.verificationSuccessText {
+                @extend .valid-feedback;
+                @extend .d-block;
+            }
+
+            div.verificationErrorText {
+                @extend .invalid-feedback;
+                @extend .d-block;
+            }
+
+            &:not(:has(div.attrEntry)) {
+                @extend .mb-3;
+
+                &:has(>input)>label {
+                    @extend .form-label;
+                }
+
+                >input {
+                    @extend .form-control;
+                    @extend .form-control-sm;
+                }
+
+                div.error.show,
+                div.error.itemLevel {
+                    @extend .invalid-feedback;
+                    @extend .d-block;
+                }
+            }
+        }
+
+        .buttons {
+            @extend .mb-3;
+
+            &:has(button[type="submit"]) {
+                @extend .mb-0;
+            }
+
+            button {
+                @extend .btn;
+                @extend .btn-sm;
+                @extend .btn-primary;
+
+                &[aria-hidden="false"],
+                &:not([aria-hidden]),
+                #emailVerificationControl_but_change_claims {
+                    ~button {
+                        @extend .ms-2;
+                        @extend .btn-light;
+                    }
+                }
+            }
+        }
+
+        div.divider {
+            @extend hr;
+
+            h2 {
+                @extend .d-none;
+            }
+        }
+
+        div.create > p {
+            @extend .mt-3;
+            @extend .mb-0;
+        }
+    }
+}

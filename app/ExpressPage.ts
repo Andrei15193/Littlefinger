@@ -3,7 +3,7 @@ import type { ITranslation } from "./translations/Translation";
 import type { ISessionService } from "./services/ISessionService";
 import type { ICommandHandlerDefinition, IQueryHandlerDefinition, Page, QueryHandlerConfiguration } from "./pages/page";
 import { config } from "./config";
-import { translations } from "./translations";
+import { TranslationResolver } from "./translations/TranslationResolver";
 import { DependencyContainer } from "./dependencyContainer/DependencyContainer";
 
 export class ExpressPage {
@@ -117,8 +117,8 @@ export class ExpressPage {
     }
 
     private _getDependencyContainer(req: Request, res: Response): DependencyContainer {
-        const responseLocale = req.acceptsLanguages(...translations.map(translation => translation.locale)) || translations[0]?.locale;
-        const translation: ITranslation = translations.filter(translation => translation.locale === responseLocale)[0]!;
+        const responseLocale = req.acceptsLanguages(...TranslationResolver.getLocales()) || null;
+        const translation: ITranslation = TranslationResolver.resolve(responseLocale);
         return new DependencyContainer(config.connectionStrings.azureStorage, translation, this._dependencyReplacements);
     }
 

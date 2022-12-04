@@ -1,0 +1,25 @@
+<div class="centered-view">
+    <div class="text-center">
+        {{> icons/logo width='10rem'}}
+    </div>
+
+    <div id="api" class="azure-active-directory-user-flow"></div>
+</div>
+
+<script>
+    $(function() {
+        $("div.attrEntry:has(>div.error.itemLevel)>input").each(function(attrEntryInputElementIndex, attrEntryInputElement) {
+            return $(attrEntryInputElement).after($(attrEntryInputElement).parent().find(">div.error.itemLevel"));
+        });
+
+        $("div.entry-item:has(>div.error.itemLevel)>input").each(function(attrEntryInputElementIndex, attrEntryInputElement) {
+            return $(attrEntryInputElement).after($(attrEntryInputElement).parent().find(">div.error.itemLevel"));
+        });
+
+        $("ul:has(>li.TextBox.displayName_li)").each(function (listElementIndex, listElement) {
+            $(listElement).find(">li").first().before($("ul>li.TextBox.displayName_li"));
+        });
+
+        $("div.working").append("<div class=\"spinner\"></div>");
+    });
+</script>

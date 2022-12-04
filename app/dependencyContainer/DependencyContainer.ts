@@ -37,7 +37,7 @@ export class DependencyContainer implements IDependencyContainer {
     }
 
     public get sessionService(): ISessionService {
-        return this._getInstance("ISessionService", this._replacements.sessionService, AzureActiveDirectorySessionService, this.userSessionsRepository);
+        return this._getInstance("ISessionService", this._replacements.sessionService, AzureActiveDirectorySessionService, this.translation, this.userSessionsRepository);
     }
 
     public get userSessionsRepository(): IUserSessionsRepository {

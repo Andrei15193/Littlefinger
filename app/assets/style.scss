@@ -2,6 +2,17 @@
 @import "./style/header";
 @import "./style/tables";
 @import "./style/tags";
+@import "./style/azureActiveDirectory";
+
+html {
+    @extend .h-100;
+}
+
+body {
+    @extend .h-100;
+    @extend .d-flex;
+    @extend .flex-column;
+}
 
 .currency-input {
     flex: initial !important;

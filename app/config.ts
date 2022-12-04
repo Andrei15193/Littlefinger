@@ -1,4 +1,6 @@
 export const config: IApplicationConfiguration = {
+    absolutePublicPathRoot: process.env.APPSETTING_ABSOLUTE_PUBLIC_PATH_ROOT!,
+
     http: {
         port: Number(process.env.PORT!),
         cookieSecret: process.env.APPSETTING_HTTP_COOKIE_SECRET!
@@ -21,6 +23,8 @@ export const config: IApplicationConfiguration = {
 };
 
 export interface IApplicationConfiguration {
+    readonly absolutePublicPathRoot: string;
+
     readonly http: {
         readonly port: number;
         readonly cookieSecret: string;

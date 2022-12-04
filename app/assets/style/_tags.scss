@@ -5,7 +5,7 @@
     height: 6px;
 
     .tag:not(:first-child) {
-        margin-left: $font-size-base / 4;
+        margin-left: calc($font-size-base / 4);
     }
 }
 
@@ -27,7 +27,7 @@
 
 @each $tagColors in $tagsColors {
     .tag-#{map_get($tagColors, "key")} {
-        color: map_get($tagColors, "textColor");
+        color: map_get($tagColors, "textColor") !important;
         fill: map_get($tagColors, "textColor");
 
         &.btn:not(:hover),

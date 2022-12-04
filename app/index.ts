@@ -44,11 +44,11 @@ import "./assets/style.scss";
         .use(cookieParser(config.http.cookieSecret));
 
     const dependencyReplacements: Partial<Omit<DependencyContainer, "user">> = {
-        sessionService: args.flags["use-default-user"] && false
+        sessionService: args.flags["use-default-user"]
             ? new SessionServiceMock({
-                id: "#session-id",
+                id: "@session-id",
                 user: {
-                    id: "#user-id",
+                    id: "@user-id",
                     displayName: "Andrei",
                     defaultCurrency: "RON"
                 },

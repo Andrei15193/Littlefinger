@@ -1,4 +1,5 @@
 import type { Configuration, AuthorizationUrlRequest } from "@azure/msal-node";
+import type { ITranslation } from "../../translations/Translation";
 import type { ISessionService } from "../ISessionService";
 import type { IUser, IUserSession, IUserSessionData } from "../../model/Users";
 import type { IUserSessionsRepository } from "../../data/repositories/users/IUserSessionsRepository";
@@ -12,11 +13,13 @@ import { Enum } from "../../global/Enum";
 export class AzureActiveDirectorySessionService implements ISessionService {
     private _userSession: IUserSession | null;
     private _sessionUpdated: boolean;
+    private readonly _translation: ITranslation;
     private readonly _userSessionsRepository: IUserSessionsRepository;
 
-    public constructor(userSessionsRepository: IUserSessionsRepository) {
+    public constructor(translation: ITranslation, userSessionsRepository: IUserSessionsRepository) {
         this._userSession = null;
         this._sessionUpdated = false;
+        this._translation = translation;
         this._userSessionsRepository = userSessionsRepository;
     }
 
@@ -183,7 +186,7 @@ export class AzureActiveDirectorySessionService implements ISessionService {
     private _getUserFlowUrl(authenticationFlow: AuthenticationFlow, originalUrl: string): string {
         const azureActiveDirecotryUserFlowName = AzureActiveDirectorySessionService._getAzureActiveDirectoryUserFlowName(authenticationFlow);
         const state = this._serializeState({ authenticationFlow, originalUrl });
-        return `https://${config.azureActiveDirecotry.tenantName}.b2clogin.com/${config.azureActiveDirecotry.tenantName}.onmicrosoft.com/${azureActiveDirecotryUserFlowName}/oauth2/v2.0/authorize?client_id=${config.azureActiveDirecotry.clientId}&scope=openid&redirect_uri=${config.azureActiveDirecotry.returnUrl}&response_mode=form_post&response_type=code&state=${state}`
+        return `https://${config.azureActiveDirecotry.tenantName}.b2clogin.com/${config.azureActiveDirecotry.tenantName}.onmicrosoft.com/${azureActiveDirecotryUserFlowName}/oauth2/v2.0/authorize?client_id=${config.azureActiveDirecotry.clientId}&scope=openid&redirect_uri=${config.azureActiveDirecotry.returnUrl}&response_mode=form_post&response_type=code&ui_locales=${this._translation.locale}&state=${state}`
     }
 
     private static readonly _azureActiveDirectoryUserFlowMapping: { readonly [key in AuthenticationFlow]: string } = {
