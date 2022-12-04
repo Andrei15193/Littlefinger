@@ -14,5 +14,11 @@ export const siteTranslationLabels: ISiteTranslationTabels = {
         about: "About"
     },
 
+    userFlowTitles: {
+        signIn: "Sign In",
+        signUp: "Sign Up",
+        passwordReset: "Recover Account"
+    },
+
     footerSubtitle: "__Littlefinger__, _book keeper_"
 };

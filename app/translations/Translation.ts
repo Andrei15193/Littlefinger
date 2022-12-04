@@ -24,6 +24,12 @@ export interface ISiteTranslationTabels {
         readonly expenses: string;
         readonly about: string;
     }
+
+    readonly userFlowTitles: {
+        readonly signIn: string;
+        readonly signUp: string;
+        readonly passwordReset: string;
+    }
 }
 
 export interface IHomeTranslationLabels {

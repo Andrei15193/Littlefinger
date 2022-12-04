@@ -8,11 +8,26 @@ export class GetAzureActiveDirectoryUserFlowTemplateQueryHandler extends QueryHa
         super();
     }
 
-    public executeQueryAsync({ locale }: IAzureActiveDirectoryUserFlowTemplateRouteParams, queryParmas: {}): Promise<IRequestResult> {
+    public executeQueryAsync({ locale, userFlow }: IAzureActiveDirectoryUserFlowTemplateRouteParams, queryParmas: {}): Promise<IRequestResult> {
         const translation = TranslationResolver.resolve(locale);
 
+        let title: string;
+        switch (userFlow) {
+            case "signIn":
+                title = translation.site.userFlowTitles.signIn;
+                break;
+
+            case "signUp":
+                title = translation.site.userFlowTitles.signUp;
+                break;
+
+            case "passwordReset":
+                title = translation.site.userFlowTitles.passwordReset;
+                break;
+        }
+
         return Promise.resolve(this.render("azureActiveDirectoryUserFlowTemplate", {
-            title: translation.about.title,
+            title,
             tab: "about",
             translation: translation,
             absolutePublicPath: true
