@@ -1,14 +1,5 @@
 @import "./tagColors";
 
-.tag-distributions {
-    width: 400px;
-    height: 6px;
-
-    .tag:not(:first-child) {
-        margin-left: calc($font-size-base / 4);
-    }
-}
-
 .tag-group .tag {
     &:first-child {
         border-top-right-radius: 0 !important;

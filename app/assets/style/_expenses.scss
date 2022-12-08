@@ -1,0 +1,47 @@
+.expenses-list-view {
+    $expenses-header-height: 2.2rem;
+    $expenses-header-height-md: 2.5rem;
+
+    .expenses-list-header {
+        position: sticky;
+        top: $app-navigation-height;
+        height: $expenses-header-height;
+        z-index: 100;
+
+        @include media-breakpoint-up(md) {
+            top: $app-navigation-height-md;
+            height: $expenses-header-height-md;
+        }
+
+        .tag-distributions {
+            max-width: 400px;
+            display: none;
+
+            @include media-breakpoint-up(md) {
+                display: block;
+            }
+
+            .tag-group {
+                height: 6px;
+
+                .tag:not(:first-child) {
+                    margin-left: calc($font-size-base / 4);
+                }
+            }
+
+            .dropdown-menu {
+                z-index: 1300;
+            }
+        }
+    }
+
+    .expenses-table-header {
+        position: sticky;
+        top: calc($app-navigation-height + $expenses-header-height);
+        background-color: white;
+
+        @include media-breakpoint-up(md) {
+            top: calc($app-navigation-height-md + $expenses-header-height-md);
+        }
+    }
+}

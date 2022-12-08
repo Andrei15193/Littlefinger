@@ -3,16 +3,14 @@ table.table-sticky {
         >tr {
             position: sticky;
             top: 0;
-            z-index: 100;
-            background-color: white;
+            // z-index: 100;
+            @extend .bg-white;
 
             >th {
                 padding: 0;
-                height: 1px;
                 border-bottom: 0;
 
                 >div {
-                    height: 100%;
                     border-bottom-width: 1px;
                     border-bottom-style: solid;
                     border-bottom-color: $table-border-color;
@@ -22,7 +20,7 @@ table.table-sticky {
     }
 
     >tbody {
-        :last-of-type:not(:last-child) tr:last-child td {
+        &:last-of-type:not(:last-child) tr:last-child td {
             border-bottom: 0;
         }
     }
@@ -31,15 +29,13 @@ table.table-sticky {
         >tr {
             position: sticky;
             bottom: 0;
-            z-index: 100;
-            background-color: white;
+            // z-index: 100;
+            @extend .bg-white;
 
             >td {
                 padding: 0;
-                height: 1px;
 
                 >div {
-                    height: 100%;
                     border-top-width: 1px;
                     border-top-style: solid;
                     border-top-color: $table-border-color;

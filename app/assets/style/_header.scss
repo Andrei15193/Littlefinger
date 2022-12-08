@@ -1,3 +1,6 @@
+$app-navigation-height: 56px;
+$app-navigation-height-md: 42px;
+
 div.translation {
     cursor: default;
     font-size: 0.65rem;
@@ -41,4 +44,14 @@ div.user>form.btn-group>.btn {
 div.user>form.btn-group>.btn:not(:first-child) {
     border-left-width: 1px;
     border-color: $orange;
+}
+
+.app-navigation {
+    position: sticky;
+    top: 0;
+    height: $app-navigation-height;
+
+    @include media-breakpoint-up(md) {
+        height: $app-navigation-height-md;
+    }
 }

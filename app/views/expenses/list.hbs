@@ -1,119 +1,205 @@
-<form method="GET" class="d-flex flex-row align-items-center">
-    <h3>{{{ markdown translation.expenses.list.pageTitle }}}</h3>
-    <a href="/expenses{{#if route.month}}/{{ route.month }}{{/if}}/add" class="ms-2 btn btn-sm btn-primary">{{{ markdown translation.expenses.list.addButtonLabel }}}</a>
-
-    {{#unlessCompare expenses.length '===' 0}}
-    <div class="ms-4 d-flex flex-column">
+<div class="expenses-list-view">
+    <form method="GET" class="expenses-list-header mb-2 mb-md-0 bg-white">
         <div class="d-flex flex-row align-items-center">
-            <div class="tag-group tag-distributions d-flex flex-row">
-                {{#each currencyTagDistirbutions}}
-                    {{#if this.tag}}
-                    <div class="tag {{ expenseTagColorClass this.tag.color }} badge d-inline" style="width: {{ this.percentage }}%;" title="{{ this.tag.name }} ({{ this.percentage }}%, {{ this.amount }}{{ @root.filters.currency }})"></div>
-                    {{else}}
-                    <div class="tag bg-light" style="width: {{ this.percentage }}%;" title="{{ @root.translation.expenses.list.untagged }} ({{ this.percentage }}%, {{ this.amount }}{{ @root.filters.currency }})"></div>
-                    {{/if}}
-                {{/each}}
+            <h3>{{{ markdown translation.expenses.list.pageTitle }}}</h3>
+            <a href="/expenses{{#if route.month}}/{{ route.month }}{{/if}}/add" class="ms-2 btn btn-sm btn-primary">{{{ markdown translation.expenses.list.addButtonLabel }}}</a>
+
+            <div class="ms-4 d-flex flex-column flex-fill">
+                {{#unlessCompare expenses.length '===' 0}}
+                <div class="tag-distributions">
+                    <div class="d-flex flex-row align-items-center">
+                        <div class="tag-group d-flex flex-row w-100">
+                            {{#each currencyTagDistirbutions}}
+                                {{#if this.tag}}
+                                <div class="tag {{ expenseTagColorClass this.tag.color }} badge d-inline" style="width: {{ this.percentage }}%;" title="{{ this.tag.name }} ({{ this.percentage }}%, {{ this.amount }}{{ @root.filters.currency }})"></div>
+                                {{else}}
+                                <div class="tag bg-light" style="width: {{ this.percentage }}%;" title="{{ @root.translation.expenses.list.untagged }} ({{ this.percentage }}%, {{ this.amount }}{{ @root.filters.currency }})"></div>
+                                {{/if}}
+                            {{/each}}
+                        </div>
+                        <div class="ms-2 btn-group">
+                            <button class="btn btn-link btn-sm dropdown-toggle" type="submit" name="currency" value="{{ @root.filters.currency }}" data-bs-toggle="dropdown" aria-expanded="false">
+                                {{ @root.filters.currency }}
+                            </button>
+                            <ul class="dropdown-menu">
+                                {{#each @root.totals}}
+                                <li>
+                                    {{#ifCompare currency '===' @root.filters.currency}}
+                                    <button class="dropdown-item" disabled>{{ currency }}</button>
+                                    {{else}}
+                                    <button type="submit" name="currency" value="{{ currency }}" class="dropdown-item">{{ currency }}</button>
+                                    {{/ifCompare}}
+                                </li>
+                                {{/each}}
+                            </ul>
+                        </div>
+                    </div>
+                    <hr class="m-0">
+                </div>
+                {{/unlessCompare}}
             </div>
-            <div class="ms-2 btn-group">
-                <button class="btn btn-link btn-sm dropdown-toggle" type="submit" name="currency" value="{{ @root.filters.currency }}" data-bs-toggle="dropdown" aria-expanded="false">
-                    {{ @root.filters.currency }}
-                </button>
-                <ul class="dropdown-menu">
-                    {{#each @root.totals}}
-                    <li>
-                        {{#ifCompare currency '===' @root.filters.currency}}
-                        <button class="dropdown-item" disabled>{{ currency }}</button>
+
+            <nav class="ms-4">
+                <ul class="pagination pagination-sm m-0 align-items-center">
+                    <li class="page-item me-3">
+                        {{#ifCompare pagination.currentDateMonth '===' pagination.currentMonth }}
+                        <small class="d-none d-md-inline text-decoration-underline">{{ @root.translation.expenses.list.currentMonthLabel }}</small>
                         {{else}}
-                        <button type="submit" name="currency" value="{{ currency }}" class="dropdown-item">{{ currency }}</button>
+                        <small><a href="/expenses/{{ pagination.currentDateMonth }}" class="d-none d-md-inline">{{ @root.translation.expenses.list.currentMonthLabel }}</a></small>
                         {{/ifCompare}}
                     </li>
-                    {{/each}}
+                    <li class="page-item">
+                        <a class="page-link" href="/expenses/{{ pagination.nextMonth }}">
+                            <span aria-hidden="true">&laquo;</span>
+                            <span class="d-none d-md-inline">{{ pagination.nextMonth }}</span>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="/expenses/{{ pagination.currentMonth }}">
+                            {{ pagination.currentMonth }}
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="/expenses/{{ pagination.previousMonth }}">
+                            <span class="d-none d-md-inline">{{ pagination.previousMonth }}</span>
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
                 </ul>
-            </div>
+            </nav>
         </div>
-        <hr class="w-100 m-0">
-    </div>
-    {{/unlessCompare}}
+    </form>
 
-    <nav class="ms-auto">
-        <ul class="pagination pagination-sm m-0 align-items-center">
-            <li class="page-item me-3">
-                {{#ifCompare pagination.currentDateMonth '===' pagination.currentMonth }}
-                <small class="text-decoration-underline">{{ @root.translation.expenses.list.currentMonthLabel }}</small>
-                {{else}}
-                <small><a href="/expenses/{{ pagination.currentDateMonth }}">{{ @root.translation.expenses.list.currentMonthLabel }}</a></small>
-                {{/ifCompare}}
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="/expenses/{{ pagination.nextMonth }}">
-                    <span aria-hidden="true">&laquo;</span>
-                    {{ pagination.nextMonth }}
-                </a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="/expenses/{{ pagination.currentMonth }}">
-                    {{ pagination.currentMonth }}
-                </a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="/expenses/{{ pagination.previousMonth }}">
-                    {{ pagination.previousMonth }}
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
-</form>
+    <hr class="expenses-table-header d-md-none mt-3">
 
-<table class="table table-sticky table-hover">
-    <thead>
-        <tr>
-            <th>
-                <div>{{{ markdown translation.expenses.list.columns.name }}}</div>
-            </th>
-            <th>
-                <div>{{{ markdown translation.expenses.list.columns.shop }}}</div>
-            </th>
-            <th>
-                <div>{{{ markdown translation.expenses.list.columns.tags }}}</div>
-            </th>
-            <th>
-                <div>{{{ markdown translation.expenses.list.columns.price }}}</div>
-            </th>
-            <th>
-                <div>{{{ markdown translation.expenses.list.columns.quantity }}}</div>
-            </th>
-            <th>
-                <div>{{{ markdown translation.expenses.list.columns.amount }}}</div>
-            </th>
-            <th>
-                <div>{{{ markdown translation.expenses.list.columns.date }}}</div>
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        {{#each expenses}}
-        <tr{{#unlessOdd @index}} class="table-light" {{/unlessOdd}}>
-            <td>
-                {{#if this.warning}}
-                <a href="/expenses/{{ key.month }}/{{ key.id }}" class="link-warning" title="{{ expenseWarning @root.translation this.warning }}">
-                    {{> icons/exclamation-round-icon height='1.1rem' }}
-                    {{ name }}
-                </a>
-                {{else}}
-                    {{#ifCompare this.state '===' 'changingMonth'}}
-                    <a href="/expenses/{{ key.month }}/{{ key.id }}" class="link-info" title="{{ @root.translation.expenses.states.changingMonth }}">
-                        <div class="spinner-grow spinner-grow-sm"></div>
+    <table class="d-none d-md-table table table-sticky table-hover">
+        <thead>
+            <tr class="expenses-table-header">
+                <th>
+                    <div>{{{ markdown translation.expenses.list.columns.name }}}</div>
+                </th>
+                <th>
+                    <div>{{{ markdown translation.expenses.list.columns.shop }}}</div>
+                </th>
+                <th>
+                    <div>{{{ markdown translation.expenses.list.columns.tags }}}</div>
+                </th>
+                <th>
+                    <div>{{{ markdown translation.expenses.list.columns.price }}}</div>
+                </th>
+                <th>
+                    <div>{{{ markdown translation.expenses.list.columns.quantity }}}</div>
+                </th>
+                <th>
+                    <div>{{{ markdown translation.expenses.list.columns.amount }}}</div>
+                </th>
+                <th>
+                    <div>{{{ markdown translation.expenses.list.columns.date }}}</div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each expenses}}
+            <tr{{#unlessOdd @index}} class="table-light" {{/unlessOdd}}>
+                <td>
+                    {{#if this.warning}}
+                    <a href="/expenses/{{ key.month }}/{{ key.id }}" class="link-warning" title="{{ expenseWarning @root.translation this.warning }}">
+                        {{> icons/exclamation-round-icon height='1.1rem' }}
                         {{ name }}
                     </a>
                     {{else}}
-                    <a href="/expenses/{{ key.month }}/{{ key.id }}">
-                        {{ name }}
-                    </a>
-                    {{/ifCompare}}
-                {{/if}}
-            </td>
-            <td>{{ shop }}</td>
+                        {{#ifCompare this.state '===' 'changingMonth'}}
+                        <a href="/expenses/{{ key.month }}/{{ key.id }}" class="link-info" title="{{ @root.translation.expenses.states.changingMonth }}">
+                            <div class="spinner-grow spinner-grow-sm"></div>
+                            {{ name }}
+                        </a>
+                        {{else}}
+                        <a href="/expenses/{{ key.month }}/{{ key.id }}">
+                            {{ name }}
+                        </a>
+                        {{/ifCompare}}
+                    {{/if}}
+                </td>
+                <td>{{ shop }}</td>
+                <td>
+                    {{#each tags}}
+                    <div class="tag {{ expenseTagColorClass this.color }} badge rounded-pill">{{ this.name }}</div>
+                    {{/each}}
+                </td>
+                <td>
+                    {{ currency }}<span class="ms-2 invisible">{{ getLeadingZeros @root.translation.locale amount @root.format.integerDigitsCount.price }}</span>{{ formatNumber @root.translation.locale price }}
+                </td>
+                <td><span class="invisible">{{ getLeadingZeros @root.translation.locale quantity @root.format.integerDigitsCount.quantity }}</span>{{ formatIntegerNumber @root.translation.locale quantity }}</td>
+                <td>
+                    {{ currency }}<span class="ms-2 invisible">{{ getLeadingZeros @root.translation.locale amount @root.format.integerDigitsCount.amount }}</span>{{ formatNumber @root.translation.locale amount }}
+                </td>
+                <td>{{ formatDate @root.translation.locale date }}</td>
+            </tr>
+            {{/each}}
+        </tbody>
+        {{#each expenses}}
+            {{#if @first}}
+            <tfoot>
+                <tr>
+                    <td>
+                        <div>{{{ markdown @root.translation.expenses.list.totalsRow.total }}}</div>
+                    </td>
+                    <td>
+                        <div><span class="invisible">&nbsp;</span></div>
+                    </td>
+                    <td>
+                        <div><span class="invisible">&nbsp;</span></div>
+                    </td>
+                    <td>
+                        <div><span class="invisible">&nbsp;</span></div>
+                    </td>
+                    <td>
+                        <div><span class="invisible">&nbsp;</span></div>
+                    </td>
+                    <td>
+                        <div>
+                            {{#each @root.totals}}
+                            <div>
+                                {{ currency }}<span class="ms-2 invisible">{{ getLeadingZeros @root.translation.locale amount @root.format.integerDigitsCount.amount }}</span>{{ formatNumber @root.translation.locale amount }}
+                            </div>
+                            {{/each}}
+                        </div>
+                    </td>
+                    <td>
+                        <div><span class="invisible">&nbsp;</span></div>
+                    </td>
+                </tr>
+            </tfoot>
+            {{/if}}
+        {{/each}}
+    </table>
+
+    <div class="d-md-none">
+        {{#each expenses}}
+        <h5 class="mb-1">
+            {{#if this.warning}}
+            <a href="/expenses/{{ key.month }}/{{ key.id }}" class="link-warning" title="{{ expenseWarning @root.translation this.warning }}">{{> icons/exclamation-round-icon height='1.1rem' }} {{ name }}</a>
+            {{else}}
+                {{#ifCompare this.state '===' 'changingMonth'}}
+                <a href="/expenses/{{ key.month }}/{{ key.id }}" class="link-info" title="{{ @root.translation.expenses.states.changingMonth }}"><div class="spinner-grow spinner-grow-sm"></div> {{ name }}</a>
+                {{else}}
+                <a href="/expenses/{{ key.month }}/{{ key.id }}">{{ name }}</a>
+                {{/ifCompare}}
+            {{/if}}
+
+            {{#ifCompare quantity '>' 1}}
+            <small>(x{{ formatIntegerNumber @root.translation.locale quantity }})</small>
+            {{/ifCompare}}
+        </h5>
+        <div class="mb-1">
+            {{ shop }} | {{ currency }} {{ formatNumber @root.translation.locale amount }} | {{ formatDate @root.translation.locale date }}
+        </div>
+        <div>
+            {{#each tags}}
+            <div class="tag {{ expenseTagColorClass this.color }} badge rounded-pill">{{ this.name }}</div>
+            {{/each}}
+        </div>
+            {{!-- <td>{{ shop }}</td>
             <td>
                 {{#each tags}}
                 <div class="tag {{ expenseTagColorClass this.color }} badge rounded-pill">{{ this.name }}</div>
@@ -126,48 +212,13 @@
             <td>
                 {{ currency }}<span class="ms-2 invisible">{{ getLeadingZeros @root.translation.locale amount @root.format.integerDigitsCount.amount }}</span>{{ formatNumber @root.translation.locale amount }}
             </td>
-            <td>{{ formatDate @root.translation.locale date }}</td>
-        </tr>
+            <td>{{ formatDate @root.translation.locale date }}</td> --}}
+        <hr>
         {{/each}}
-    </tbody>
-    {{#each expenses}}
-        {{#if @first}}
-        <tfoot>
-            <tr>
-                <td>
-                    <div>{{{ markdown @root.translation.expenses.list.totalsRow.total }}}</div>
-                </td>
-                <td>
-                    <div><span class="invisible">&nbsp;</span></div>
-                </td>
-                <td>
-                    <div><span class="invisible">&nbsp;</span></div>
-                </td>
-                <td>
-                    <div><span class="invisible">&nbsp;</span></div>
-                </td>
-                <td>
-                    <div><span class="invisible">&nbsp;</span></div>
-                </td>
-                <td>
-                    <div>
-                        {{#each @root.totals}}
-                        <div>
-                            {{ currency }}<span class="ms-2 invisible">{{ getLeadingZeros @root.translation.locale amount @root.format.integerDigitsCount.amount }}</span>{{ formatNumber @root.translation.locale amount }}
-                        </div>
-                        {{/each}}
-                    </div>
-                </td>
-                <td>
-                    <div><span class="invisible">&nbsp;</span></div>
-                </td>
-            </tr>
-        </tfoot>
-        {{/if}}
-    {{/each}}
-</table>
+    </div>
 
-{{#each expenses}}
-{{else}}
-<div class="p-2 alert alert-secondary text-center" role="alert">{{{ markdown @root.translation.expenses.list.empty }}}</div>
-{{/each}}
+    {{#each expenses}}
+    {{else}}
+    <div class="p-2 alert alert-secondary text-center" role="alert">{{{ markdown @root.translation.expenses.list.empty }}}</div>
+    {{/each}}
+</div>
