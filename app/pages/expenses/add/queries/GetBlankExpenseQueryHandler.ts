@@ -7,6 +7,7 @@ import type { IAddExpenseRouteParams } from "../AddExpensePageDefinition";
 import type { IRequestResult } from "../../../page/results";
 import { QueryHandler } from "../../../page";
 import { ExpenseForm } from "../../ExpenseForm";
+import { ExpensesUtils } from "../../../../model/ExpensesUtils";
 
 export class GetBlankExpenseQueryHandler extends QueryHandler<IAddExpenseRouteParams, IExpenseFormViewOptions> {
     private readonly _translation: ITranslation;
@@ -33,7 +34,9 @@ export class GetBlankExpenseQueryHandler extends QueryHandler<IAddExpenseRoutePa
                 price: 0,
                 currency: this._user.defaultCurrency,
                 quantity: 1,
-                date: routeMonth === null || routeMonth === undefined ? new Date().toISOString() : routeMonth
+                date: routeMonth === null || routeMonth === undefined || ExpensesUtils.getExpenseMonth(new Date()) === ExpensesUtils.getExpenseMonth(new Date(routeMonth))
+                    ? new Date().toISOString()
+                    : routeMonth
             },
             this._translation,
             this._expenseTagsRepository
