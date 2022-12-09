@@ -19,10 +19,9 @@ export interface ISiteTranslationTabels {
     readonly registerButtonLabel: string;
     readonly logoutButtonLabel: string;
 
-    readonly tabs: {
-        readonly home: string;
-        readonly expenses: string;
-        readonly about: string;
+    readonly environments: {
+        readonly development: IEnvironmentTranslationLabels;
+        readonly test: IEnvironmentTranslationLabels;
     }
 
     readonly userFlowTitles: {
@@ -30,6 +29,17 @@ export interface ISiteTranslationTabels {
         readonly signUp: string;
         readonly passwordReset: string;
     }
+
+    readonly tabs: {
+        readonly home: string;
+        readonly expenses: string;
+        readonly about: string;
+    }
+}
+
+export interface IEnvironmentTranslationLabels {
+    readonly name: string;
+    readonly description: string | null;
 }
 
 export interface IHomeTranslationLabels {

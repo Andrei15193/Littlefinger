@@ -13,7 +13,7 @@ export class RenderRequestResult<TOptions extends IBaseViewOptions> implements I
         this._options = options;
     }
 
-    public apply({ params, protocol, headers: { host } }: Request, res: Response<unknown, Record<string, any>>, dependencies: IDependencyContainer): void {
+    public apply({ params }: Request, res: Response<unknown, Record<string, any>>, dependencies: IDependencyContainer): void {
         const { translation, tabs, user } = dependencies;
         const { tab, absolutePublicPath, ...remainingOptions } = this._options;
 
@@ -21,6 +21,7 @@ export class RenderRequestResult<TOptions extends IBaseViewOptions> implements I
             translation,
             publicPath: absolutePublicPath ? config.absolutePublicPathRoot : "",
             ...remainingOptions,
+            environment: config.environment,
             tab: tabs[tab],
             tabs: tabs.all,
             user,

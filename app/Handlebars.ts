@@ -1,11 +1,13 @@
-import type { ITranslation } from "./translations/Translation";
+import type { IEnvironmentTranslationLabels, ISiteTranslationTabels, ITranslation } from "./translations/Translation";
+import type { IExpenseWarning } from "./model/Expenses";
 import fs from "fs";
 import hbs from "hbs";
 import Markdown from "markdown-it";
 import markdownItAttrs from "markdown-it-attrs";
 import path from "path";
 import { Enum } from "./global/Enum";
-import { ExpenseTagColor, IExpenseWarning } from "./model/Expenses";
+import { ExpenseTagColor } from "./model/Expenses";
+import { EnvironmentType } from "./config";
 
 type IHandlebars = ReturnType<typeof hbs.create>;
 
@@ -163,6 +165,27 @@ export function createHandlebarsInstance(viewsDirectoryPath: string): IHandlebar
     handlebars.registerHelper("expenseTagColorClass", function (this: any, expenseTagColor: ExpenseTagColor): string {
         return `tag-${Enum.getKey(ExpenseTagColor, expenseTagColor)}`;
     });
+
+    handlebars.registerHelper("environmentNameTranslation", function (this: any, translation: ITranslation, { name: environmentName }: { readonly name: keyof ISiteTranslationTabels["environments"] }): string {
+        return (translation.site.environments[environmentName] as IEnvironmentTranslationLabels).name;
+    });
+
+    handlebars.registerHelper("environmentDescriptionTranslation", function (this: any, translation: ITranslation, { name: environmentName }: { readonly name: keyof ISiteTranslationTabels["environments"] }): string | null {
+        return (translation.site.environments[environmentName] as IEnvironmentTranslationLabels).description;
+    });
+
+    handlebars.registerHelper("environmentTypeColorClass", function (this: any, environmentType: EnvironmentType): string | null {
+        switch (environmentType) {
+            case EnvironmentType.Development:
+                return "text-info";
+
+            case EnvironmentType.Test:
+                return "text-success";
+
+            default:
+                return null;
+        }
+    })
 
     return handlebars;
 }

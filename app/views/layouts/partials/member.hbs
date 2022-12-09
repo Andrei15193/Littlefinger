@@ -1,7 +1,5 @@
 <div class="mx-4 d-flex flex-row-reverse">
-    <div class="translation d-md-none  px-2 pb-1" title="{{ translation.description }}">
-        {{ translation.locale }} | {{ translation.name }}
-    </div>
+    {{> layouts/app-info class='d-md-none' }}
 </div>
 <div class="mx-4 mb-4 d-flex flex-row align-items-center">
     <div class="logo mt-md-4">
@@ -13,9 +11,7 @@
         <h5>{{{ markdown translation.site.headerSubtitle }}}</h5>
     </div>
 
-    <div class="translation d-none d-md-block mx-4 px-2 pb-1 align-self-start" title="{{ translation.description }}">
-        {{ translation.locale }} | {{ translation.name }}
-    </div>
+    {{> layouts/app-info class='d-none d-md-block mx-4 align-self-start' }}
 
     <div class="user d-none d-md-block mt-md-4 p-2">
         <div class="info py-1 px-2 text-end">
