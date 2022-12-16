@@ -15,10 +15,10 @@ export interface IFormField<TValue, TOption> {
     readonly isBlank: boolean;
 }
 
-export class FormField<TValue> implements IFormField<TValue | null, TValue> {
+export class FormField<TValue, TOption = TValue> implements IFormField<TValue | null, TOption> {
     public value: TValue | null = null;
 
-    public options: readonly TValue[] = [];
+    public options: readonly TOption[] = [];
 
     public error: string | null = null;
 

@@ -2,6 +2,7 @@ import type { IDependencyContainer } from "../../../../dependencyContainer";
 import type { ITranslation } from "../../../../translations/Translation";
 import type { IUser } from "../../../../model/Users";
 import type { IExpenseTagsRepository } from "../../../../data/repositories/expenses/IExpenseTagsRepository";
+import type { IExpenseShopsRepository } from "../../../../data/repositories/expenses/IExpenseShopsRepository";
 import type { IExpenseFormViewOptions } from "../../IExpenseFormViewOptions";
 import type { IAddExpenseRouteParams } from "../AddExpensePageDefinition";
 import type { IRequestResult } from "../../../page/results";
@@ -13,13 +14,15 @@ export class GetBlankExpenseQueryHandler extends QueryHandler<IAddExpenseRoutePa
     private readonly _translation: ITranslation;
     private readonly _user: IUser;
     private readonly _expenseTagsRepository: IExpenseTagsRepository;
+    private readonly _expenseShopsRepository : IExpenseShopsRepository;
 
-    public constructor({ translation, user, expenseTagsRepository }: IDependencyContainer) {
+    public constructor({ translation, user, expenseTagsRepository, expenseShopsRepository }: IDependencyContainer) {
         super();
 
         this._translation = translation;
         this._user = user!;
         this._expenseTagsRepository = expenseTagsRepository;
+        this._expenseShopsRepository = expenseShopsRepository;
     }
 
     public async executeQueryAsync({ month: routeMonth }: IAddExpenseRouteParams, queryParmas: {}): Promise<IRequestResult> {
@@ -39,7 +42,8 @@ export class GetBlankExpenseQueryHandler extends QueryHandler<IAddExpenseRoutePa
                     : routeMonth
             },
             this._translation,
-            this._expenseTagsRepository
+            this._expenseTagsRepository,
+            this._expenseShopsRepository
         );
 
         return this.render("expenses/add", {

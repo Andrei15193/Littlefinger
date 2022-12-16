@@ -2,7 +2,7 @@ import type { RestError, TableEntityResult } from "@azure/data-tables";
 import type { IExpense, IExpenseKey, IExpenseTag, IExpenseWarning } from "../../../../model/Expenses";
 import type { IExpensesRepository } from "../../expenses/IExpensesRepository";
 import type { IAzureStorage } from "../../../azureStorage";
-import type { IExpenseEntity, IExpenseTagEntity } from "../../../azureStorage/entities/Expenses";
+import type { IExpenseEntity, IExpenseShopEntity, IExpenseTagEntity } from "../../../azureStorage/entities/Expenses";
 import type { IExpenseMonthChangeRequest } from "../../../azureStorage/requests/IExpenseMonthChangeRequest";
 import type { WithoutAnyEtag, WithoutRelatedEtags } from "../../../../model/Common";
 import { TableTransaction } from "@azure/data-tables";
@@ -23,7 +23,7 @@ export class AzureStorageExpensesRepository implements IExpensesRepository {
 
     public async getAsync(expenseKey: IExpenseKey): Promise<IExpense> {
         try {
-            const allExpenseTagsByName = await this._getAllExpenseTagsByName();
+            const allExpenseTagsByName = await this._getAllExpenseTagsByNameAsync();
             const expenseEntity = await this._azureStorage.tables.expenses.getEntity<IExpenseEntity>(AzureTableStorageUtils.escapeKeyValue(`${this._userId}-${expenseKey.month}`), AzureTableStorageUtils.escapeKeyValue(expenseKey.id));
 
             return this._mapExpenseEntity(expenseEntity, allExpenseTagsByName);
@@ -35,7 +35,7 @@ export class AzureStorageExpensesRepository implements IExpensesRepository {
 
     public async getAllAsync(expensesMonth: string): Promise<readonly IExpense[]> {
         try {
-            const allExpenseTagsByName = await this._getAllExpenseTagsByName();
+            const allExpenseTagsByName = await this._getAllExpenseTagsByNameAsync();
 
             const expenses: IExpense[] = [];
             for await (const expenseEntity of this._azureStorage.tables.expenses.listEntities<IExpenseEntity>({ queryOptions: { filter: `PartitionKey eq ${AzureTableStorageUtils.escapeKeyValue(`'${this._userId}-${expensesMonth}'`)}` } }))
@@ -70,7 +70,8 @@ export class AzureStorageExpensesRepository implements IExpensesRepository {
                 state: "ready"
             };
             await this._azureStorage.tables.expenses.createEntity(expenseEntity);
-            await this._indexTags(expense.tags);
+            await this._indexTagsAsync(expense.tags);
+            await this._indexShopAsync(expense.shop);
         }
         catch (error) {
             throw new DataStorageError(error as RestError);
@@ -139,7 +140,9 @@ export class AzureStorageExpensesRepository implements IExpensesRepository {
                     newExpenseDateString: expense.date.toISOString()
                 }));
             }
-            await this._indexTags(expense.tags);
+
+            await this._indexTagsAsync(expense.tags);
+            await this._indexShopAsync(expense.shop);
         }
         catch (error) {
             throw new DataStorageError(error as RestError);
@@ -159,7 +162,7 @@ export class AzureStorageExpensesRepository implements IExpensesRepository {
         }
     }
 
-    private async _getAllExpenseTagsByName(): Promise<Record<string, IExpenseTag>> {
+    private async _getAllExpenseTagsByNameAsync(): Promise<Record<string, IExpenseTag>> {
         const allExpenseTagsByName: Record<string, IExpenseTag> = {};
 
         for await (const tagEntity of this._azureStorage.tables.expenseTags.listEntities<IExpenseTagEntity>({ queryOptions: { filter: `PartitionKey eq '${AzureTableStorageUtils.escapeKeyValue(this._userId)}'` } }))
@@ -210,7 +213,7 @@ export class AzureStorageExpensesRepository implements IExpensesRepository {
         };
     }
 
-    private async _indexTags(expenseTags: readonly WithoutAnyEtag<IExpenseTag>[]): Promise<void> {
+    private async _indexTagsAsync(expenseTags: readonly WithoutAnyEtag<IExpenseTag>[]): Promise<void> {
         await Promise.all(expenseTags
             .reduce(
                 (tableTransactions, tag) => {
@@ -235,5 +238,13 @@ export class AzureStorageExpensesRepository implements IExpensesRepository {
             )
             .map(transaction => this._azureStorage.tables.expenseTags.submitTransaction(transaction.actions))
         );
+    }
+
+    private async _indexShopAsync(shopName: string): Promise<void> {
+        this._azureStorage.tables.expenseShops.createEntity<IExpenseShopEntity>({
+            partitionKey: AzureTableStorageUtils.escapeKeyValue(this._userId),
+            rowKey: AzureTableStorageUtils.escapeKeyValue(shopName),
+            name: shopName,
+        })
     }
 }

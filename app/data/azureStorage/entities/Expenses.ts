@@ -18,3 +18,7 @@ export interface IExpenseTagEntity extends TableEntity {
     readonly name: string;
     readonly color: number;
 }
+
+export interface IExpenseShopEntity extends TableEntity {
+    readonly name: string;
+}

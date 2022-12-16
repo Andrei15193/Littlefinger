@@ -42,3 +42,9 @@ export enum ExpenseTagColor {
     "FFADAD", "FFD6A5", "FDFFB6", "CAFFBF", "9BF6FF", "A0C4FF", "BDB2FF", "FFC6FF",
     "FF6361", "FFA600"
 }
+
+export interface IExpenseShop {
+    readonly name: string;
+
+    readonly etag: string;
+}

@@ -11,6 +11,7 @@ export interface IAzureStorageTables {
     readonly userSessions: TableClient;
     readonly expenses: TableClient;
     readonly expenseTags: TableClient;
+    readonly expenseShops: TableClient;
 }
 
 export interface IAzureStorageQueues {

@@ -6,6 +6,7 @@ import type { IEditExpenseRouteParams } from "../EditExpensePageDefinition";
 import type { IExpenseFormViewOptions } from "../../IExpenseFormViewOptions";
 import type { IRequestResult } from "../../../page/results";
 import type { IExpenseFormData } from "../../ExpenseForm";
+import type { IExpenseShopsRepository } from "../../../../data/repositories/expenses/IExpenseShopsRepository";
 import type { PageRequestBody } from "../../../page/IBasePageRequestBody";
 import type { DataStorageError } from "../../../../data/DataStorageError";
 import { CommandHandler } from "../../../page";
@@ -15,17 +16,19 @@ export class RemoveExpenseTagCommandHandler extends CommandHandler<IEditExpenseR
     private readonly _translation: ITranslation;
     private readonly _expensesRepository: IExpensesRepository;
     private readonly _expenseTagsRepository: IExpenseTagsRepository;
+    private readonly _expenseShopsRepository: IExpenseShopsRepository;
 
-    public constructor({ translation, expensesRepository, expenseTagsRepository }: IDependencyContainer) {
+    public constructor({ translation, expensesRepository, expenseTagsRepository, expenseShopsRepository }: IDependencyContainer) {
         super();
         this._translation = translation;
         this._expensesRepository = expensesRepository;
         this._expenseTagsRepository = expenseTagsRepository;
+        this._expenseShopsRepository = expenseShopsRepository;
     }
 
     public async executeCommandAsync({ month: expenseMonth, id: expenseId }: IEditExpenseRouteParams, requestBody: PageRequestBody<IExpenseFormData>, queryParmas: {}, tag?: string): Promise<IRequestResult> {
         try {
-            const form = await ExpenseForm.initializeAsync(requestBody, this._translation, this._expenseTagsRepository);
+            const form = await ExpenseForm.initializeAsync(requestBody, this._translation, this._expenseTagsRepository, this._expenseShopsRepository);
 
             const expense = await this._expensesRepository.getAsync({ month: expenseMonth, id: expenseId });
             if (expense.state !== "ready") {

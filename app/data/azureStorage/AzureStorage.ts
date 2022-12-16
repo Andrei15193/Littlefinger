@@ -19,13 +19,15 @@ class AzureStorageTables implements IAzureStorageTables {
         this.all = [
             this.userSessions = TableClient.fromConnectionString(azureStorageConnectionString, "userSessions"),
             this.expenses = TableClient.fromConnectionString(azureStorageConnectionString, "expenses"),
-            this.expenseTags = TableClient.fromConnectionString(azureStorageConnectionString, "expenseTags")
+            this.expenseTags = TableClient.fromConnectionString(azureStorageConnectionString, "expenseTags"),
+            this.expenseShops = TableClient.fromConnectionString(azureStorageConnectionString, "expenseShops")
         ];
     }
 
     public readonly userSessions: TableClient;
     public readonly expenses: TableClient;
     public readonly expenseTags: TableClient;
+    public readonly expenseShops: TableClient;
 
     public readonly tableService: TableServiceClient;
 

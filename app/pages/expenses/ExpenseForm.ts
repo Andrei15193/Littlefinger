@@ -1,6 +1,7 @@
 import type { IFormError, ITranslation } from "../../translations/Translation";
-import type { IExpenseTag } from "../../model/Expenses";
+import type { IExpenseShop, IExpenseTag } from "../../model/Expenses";
 import type { IExpenseTagsRepository } from "../../data/repositories/expenses/IExpenseTagsRepository";
+import type { IExpenseShopsRepository } from "../../data/repositories/expenses/IExpenseShopsRepository";
 import type { IForm, IFormField } from "../Forms";
 import type { WithoutEtag } from "../../model/Common";
 import { FormField, MultiValueFormField } from "../Forms";
@@ -26,7 +27,7 @@ export class ExpenseForm implements IForm {
     private readonly _fields: readonly IFormField<any, any>[];
     private readonly _translation: ITranslation;
 
-    public static async initializeAsync(expenseFormData: IExpenseFormData, translation: ITranslation, expenseTagsRepository: IExpenseTagsRepository): Promise<ExpenseForm> {
+    public static async initializeAsync(expenseFormData: IExpenseFormData, translation: ITranslation, expenseTagsRepository: IExpenseTagsRepository, expenseShopsRepository: IExpenseShopsRepository): Promise<ExpenseForm> {
         const form = new ExpenseForm(translation);
 
         const allTagColors = Enum.getAllValues(ExpenseTagColor);
@@ -69,7 +70,7 @@ export class ExpenseForm implements IForm {
         form.date.value = expenseFormData.date ? new Date(expenseFormData.date) : null;
 
         form.tags.options = await expenseTagsRepository.getAllAsync();
-        form.shop.options = ["Shop 1", "Shop 2"];
+        form.shop.options = await expenseShopsRepository.getAllAsync();
         form.currency.options = ["RON", "EUR"];
 
         if (expenseFormData.validated === "true")
@@ -88,7 +89,7 @@ export class ExpenseForm implements IForm {
         this._isValidated = false;
         this._fields = [
             this.name = new FormField<string>(),
-            this.shop = new FormField<string>(),
+            this.shop = new FormField<string, IExpenseShop>(),
             this.tags = new MultiValueFormField<WithoutEtag<IExpenseTag>>(),
             this.price = new FormField<number>(),
             this.currency = new FormField<string>(),
@@ -117,7 +118,7 @@ export class ExpenseForm implements IForm {
 
     public readonly name: FormField<string>;
 
-    public readonly shop: FormField<string>;
+    public readonly shop: FormField<string, IExpenseShop>;
 
     public readonly tags: MultiValueFormField<WithoutEtag<IExpenseTag>>;
 

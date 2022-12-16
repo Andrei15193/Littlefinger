@@ -1,5 +1,6 @@
 import type { IExpensesRepository } from "../../../../data/repositories/expenses/IExpensesRepository";
 import type { IExpenseTagsRepository } from "../../../../data/repositories/expenses/IExpenseTagsRepository";
+import type { IExpenseShopsRepository } from "../../../../data/repositories/expenses/IExpenseShopsRepository";
 import type { IDependencyContainer } from "../../../../dependencyContainer";
 import type { IFormError, ITranslation } from "../../../../translations/Translation";
 import type { IEditExpenseRouteParams } from "../EditExpensePageDefinition";
@@ -13,12 +14,14 @@ export class GetExpenseQueryHandler extends QueryHandler<IEditExpenseRouteParams
     private readonly _translation: ITranslation;
     private readonly _expensesRepository: IExpensesRepository;
     private readonly _expenseTagsRepository: IExpenseTagsRepository;
+    private readonly _expenseShopsRepository: IExpenseShopsRepository;
 
-    public constructor({ translation, expensesRepository, expenseTagsRepository }: IDependencyContainer) {
+    public constructor({ translation, expensesRepository, expenseTagsRepository, expenseShopsRepository }: IDependencyContainer) {
         super();
         this._translation = translation;
         this._expensesRepository = expensesRepository;
         this._expenseTagsRepository = expenseTagsRepository;
+        this._expenseShopsRepository = expenseShopsRepository;
     }
 
     public async executeQueryAsync({ month: expenseMonth, id: expenseId }: IEditExpenseRouteParams, queryParmas: {}): Promise<IRequestResult> {
@@ -38,7 +41,8 @@ export class GetExpenseQueryHandler extends QueryHandler<IEditExpenseRouteParams
                     date: expense.date.toISOString()
                 },
                 this._translation,
-                this._expenseTagsRepository
+                this._expenseTagsRepository,
+                this._expenseShopsRepository
             );
 
             return this.render("expenses/edit", {
