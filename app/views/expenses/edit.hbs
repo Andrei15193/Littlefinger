@@ -1,42 +1,54 @@
 <h3>Expense {{ expense.name }}</h3>
 
 <form method="POST">
-    <input type="hidden" id="etag" name="etag" value="{{ form.etag }}">
-    <input type="hidden" id="deleteFlag" name="deleteFlag" value="">
+    <div class="d-flex flex-column-reverse">
+        <div>
+            <div class="d-flex flex-row">
+                {{#ifCompare this.state '===' 'changingMonth'}}
+                <span title="{{ @root.translation.expenses.states.changingMonth }}">
+                    <button type="submit" name="command" value="edit" class="btn btn-sm btn-primary" disabled>
+                        <div class="spinner-grow spinner-grow-sm"></div>
+                        {{{ markdown translation.expenses.edit.updateButtonLabel }}}
+                    </button>
+                </span>
+                {{else}}
+                <button type="submit" name="command" value="edit" class="btn btn-sm btn-primary">
+                    {{{ markdown translation.expenses.edit.updateButtonLabel }}}
+                </button>
+                {{/ifCompare}}
+                <button type="button" class="ms-2 btn btn-sm btn-danger" data-bs-toggle="modal"
+                    data-bs-target="#confirmationModal">{{{ markdown translation.expenses.edit.deleteButtonLabel
+                    }}}</button>
+                <a href="/expenses/{{ route.month }}" class="ms-2 btn btn-sm btn-secondary">
+                    {{{ markdown translation.expenses.edit.cancelButtonLabel }}}</a>
+            </div>
+        </div>
+        <div>
+            <input type="hidden" id="etag" name="etag" value="{{ form.etag }}">
+            <input type="hidden" id="deleteFlag" name="deleteFlag" value="">
 
-    {{> expenses/form expenseId=route.id state=state warning=warning }}
-
-    <div class="d-flex flex-row">
-        {{#ifCompare this.state '===' 'changingMonth'}}
-        <span title="{{ @root.translation.expenses.states.changingMonth }}">
-            <button type="submit" name="command" value="edit" class="btn btn-sm btn-primary" disabled>
-                <div class="spinner-grow spinner-grow-sm"></div>
-                {{{ markdown translation.expenses.edit.updateButtonLabel  }}}
-            </button>
-        </span>
-        {{else}}
-        <button type="submit" name="command" value="edit" class="btn btn-sm btn-primary">
-            {{{ markdown translation.expenses.edit.updateButtonLabel  }}}
-        </button>
-        {{/ifCompare}}
-        <button type="button" class="ms-2 btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#confirmationModal">{{{ markdown translation.expenses.edit.deleteButtonLabel  }}}</button>
-        <a href="/expenses/{{ route.month }}" class="ms-2 btn btn-sm btn-secondary">{{{ markdown translation.expenses.edit.cancelButtonLabel  }}}</a>
+            {{> expenses/form expenseId=route.id state=state warning=warning }}
+        </div>
     </div>
 
     <div class="modal fade" id="confirmationModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">{{{ markdown translation.expenses.edit.deleteConfirmation.title }}}</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">{{{ markdown
+                        translation.expenses.edit.deleteConfirmation.title }}}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <p>{{{ markdown translation.expenses.edit.deleteConfirmation.description }}}</p>
-                    <p class="mb-0">{{{ markdown translation.expenses.edit.deleteConfirmation.confirmationMessage }}}</p>
+                    <p class="mb-0">{{{ markdown translation.expenses.edit.deleteConfirmation.confirmationMessage
+                        }}}</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" name="command" value="remove" class="btn btn-danger">{{{ markdown translation.expenses.edit.deleteConfirmation.confirmButtonLabel }}}</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{{ markdown translation.expenses.edit.deleteConfirmation.cancelButtonLabel }}}</button>
+                    <button type="submit" name="command" value="remove" class="btn btn-danger">{{{ markdown
+                        translation.expenses.edit.deleteConfirmation.confirmButtonLabel }}}</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{{ markdown
+                        translation.expenses.edit.deleteConfirmation.cancelButtonLabel }}}</button>
                 </div>
             </div>
         </div>
