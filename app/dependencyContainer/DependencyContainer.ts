@@ -5,13 +5,15 @@ import type { IUser } from "../model/Users";
 import type { ISessionService } from "../services/ISessionService";
 import type { IAzureStorage } from "../data/azureStorage";
 import type { IUserSessionsRepository } from "../data/repositories/users/IUserSessionsRepository";
+import type { ICurrenciesRepository } from "../data/repositories/expenses/ICurrenciesRepository";
 import type { IExpensesRepository } from "../data/repositories/expenses/IExpensesRepository";
 import type { IExpenseTagsRepository } from "../data/repositories/expenses/IExpenseTagsRepository";
 import type { IExpenseShopsRepository } from "../data/repositories/expenses/IExpenseShopsRepository";
 import { ApplicationTabs } from "../ApplicationTabs";
 import { AzureStorage } from "../data/azureStorage/AzureStorage";
-import { AzureStorageUserSessionsRepository } from "../data/repositories/azureStorage/users/AzureStorageUserSessionsRepository";
 import { AzureActiveDirectorySessionService } from "../services/azureActiveDirectory/AzureActiveDirectorySessionService";
+import { AzureStorageUserSessionsRepository } from "../data/repositories/azureStorage/users/AzureStorageUserSessionsRepository";
+import { AzureStorageCurrenciesRepository } from "../data/repositories/azureStorage/expenses/AzureStorageCurrencyRepository";
 import { AzureStorageExpensesRepository } from "../data/repositories/azureStorage/expenses/AzureStorageExpensesRepository";
 import { AzureStorageExpenseTagsRepository } from "../data/repositories/azureStorage/expenses/AzureStorageExpenseTagsRepository";
 import { AzureStorageExpenseShopsRepository } from "../data/repositories/azureStorage/expenses/AzureStorageExpenseShopsRepository";
@@ -44,6 +46,10 @@ export class DependencyContainer implements IDependencyContainer {
 
     public get userSessionsRepository(): IUserSessionsRepository {
         return this._getInstance("IUserSessionsRepository", this._replacements.userSessionsRepository, AzureStorageUserSessionsRepository, this.azureStorage);
+    }
+
+    public get currenciesRepository(): ICurrenciesRepository {
+        return this._getInstance("ICurrenciesRepository", this._replacements.currenciesRepository, AzureStorageCurrenciesRepository, this._userId, this.azureStorage);
     }
 
     public get expensesRepository(): IExpensesRepository {

@@ -1,3 +1,4 @@
+import type { ICurrenciesRepository } from "../../../../data/repositories/expenses/ICurrenciesRepository";
 import type { IExpensesRepository } from "../../../../data/repositories/expenses/IExpensesRepository";
 import type { IExpenseTagsRepository } from "../../../../data/repositories/expenses/IExpenseTagsRepository";
 import type { IExpenseShopsRepository } from "../../../../data/repositories/expenses/IExpenseShopsRepository";
@@ -14,13 +15,15 @@ import { ExpenseForm } from "../../ExpenseForm";
 
 export class EditExpenseCommandHandler extends CommandHandler<IEditExpenseRouteParams, PageRequestBody<IExpenseFormData>, IExpenseFormViewOptions> {
     private readonly _translation: ITranslation;
+    private readonly _currenciesRepository: ICurrenciesRepository;
     private readonly _expensesRepository: IExpensesRepository;
     private readonly _expenseTagsRepository: IExpenseTagsRepository;
     private readonly _expenseShopsRepository: IExpenseShopsRepository;
 
-    public constructor({ translation, expensesRepository, expenseTagsRepository, expenseShopsRepository }: IDependencyContainer) {
+    public constructor({ translation, currenciesRepository, expensesRepository, expenseTagsRepository, expenseShopsRepository }: IDependencyContainer) {
         super();
         this._translation = translation;
+        this._currenciesRepository = currenciesRepository;
         this._expensesRepository = expensesRepository;
         this._expenseTagsRepository = expenseTagsRepository;
         this._expenseShopsRepository = expenseShopsRepository;
@@ -28,7 +31,7 @@ export class EditExpenseCommandHandler extends CommandHandler<IEditExpenseRouteP
 
     public async executeCommandAsync({ month: expenseMonth, id: expenseId }: IEditExpenseRouteParams, requestBody: PageRequestBody<IExpenseFormData>, queryParmas: {}): Promise<IRequestResult> {
         try {
-            const form = await ExpenseForm.initializeAsync(requestBody, this._translation, this._expenseTagsRepository, this._expenseShopsRepository);
+            const form = await ExpenseForm.initializeAsync(requestBody, this._translation, this._currenciesRepository, this._expenseTagsRepository, this._expenseShopsRepository);
 
             const expense = await this._expensesRepository.getAsync({ month: expenseMonth, id: expenseId });
             if (expense.state !== "ready") {

@@ -11,6 +11,7 @@ import { DataStorageError } from "../../../DataStorageError";
 import { AzureTableStorageUtils } from "../../AzureTableStorageUtils";
 import { ExpensesUtils } from "../../../../model/ExpensesUtils";
 import { AzureQueueStorageUtils } from "../../AzureQueueStorageUtils";
+import { ICurrencyEntity } from "../../../azureStorage/entities/Currencies";
 
 export class AzureStorageExpensesRepository implements IExpensesRepository {
     private readonly _userId: string;
@@ -72,6 +73,7 @@ export class AzureStorageExpensesRepository implements IExpensesRepository {
             await this._azureStorage.tables.expenses.createEntity(expenseEntity);
             await this._indexTagsAsync(expense.tags);
             await this._indexShopAsync(expense.shop);
+            await this._indexCurrencyAsync(expense.currency);
         }
         catch (error) {
             throw new DataStorageError(error as RestError);
@@ -143,6 +145,7 @@ export class AzureStorageExpensesRepository implements IExpensesRepository {
 
             await this._indexTagsAsync(expense.tags);
             await this._indexShopAsync(expense.shop);
+            await this._indexCurrencyAsync(expense.currency);
         }
         catch (error) {
             throw new DataStorageError(error as RestError);
@@ -241,10 +244,24 @@ export class AzureStorageExpensesRepository implements IExpensesRepository {
     }
 
     private async _indexShopAsync(shopName: string): Promise<void> {
-        this._azureStorage.tables.expenseShops.createEntity<IExpenseShopEntity>({
-            partitionKey: AzureTableStorageUtils.escapeKeyValue(this._userId),
-            rowKey: AzureTableStorageUtils.escapeKeyValue(shopName),
-            name: shopName,
-        })
+        await this._azureStorage.tables.expenseShops.upsertEntity<IExpenseShopEntity>(
+            {
+                partitionKey: AzureTableStorageUtils.escapeKeyValue(this._userId),
+                rowKey: AzureTableStorageUtils.escapeKeyValue(shopName),
+                name: shopName,
+            },
+            "Merge"
+        );
+    }
+
+    private async _indexCurrencyAsync(currencyDisplayValue: string): Promise<void> {
+        await this._azureStorage.tables.currencies.upsertEntity<ICurrencyEntity>(
+            {
+                partitionKey: AzureTableStorageUtils.escapeKeyValue(this._userId),
+                rowKey: AzureTableStorageUtils.escapeKeyValue(currencyDisplayValue),
+                displayValue: currencyDisplayValue
+            },
+            "Merge"
+        );
     }
 }

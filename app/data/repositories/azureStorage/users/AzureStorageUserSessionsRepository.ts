@@ -33,7 +33,7 @@ export class AzureStorageUserSessionsRepository implements IUserSessionsReposito
                 expiration: userSessionEntity.expiration,
                 authenticationFlow,
                 serializedMsalTokenCache: userSessionEntity.serializedMsalTokenCache
-            }
+            };
         }
         catch (error) {
             throw new DataStorageError(error as RestError);

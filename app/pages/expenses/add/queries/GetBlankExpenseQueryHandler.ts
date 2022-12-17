@@ -1,6 +1,7 @@
 import type { IDependencyContainer } from "../../../../dependencyContainer";
 import type { ITranslation } from "../../../../translations/Translation";
 import type { IUser } from "../../../../model/Users";
+import type { ICurrenciesRepository } from "../../../../data/repositories/expenses/ICurrenciesRepository";
 import type { IExpenseTagsRepository } from "../../../../data/repositories/expenses/IExpenseTagsRepository";
 import type { IExpenseShopsRepository } from "../../../../data/repositories/expenses/IExpenseShopsRepository";
 import type { IExpenseFormViewOptions } from "../../IExpenseFormViewOptions";
@@ -13,14 +14,16 @@ import { ExpensesUtils } from "../../../../model/ExpensesUtils";
 export class GetBlankExpenseQueryHandler extends QueryHandler<IAddExpenseRouteParams, IExpenseFormViewOptions> {
     private readonly _translation: ITranslation;
     private readonly _user: IUser;
+    private readonly _currenciesRepository: ICurrenciesRepository;
     private readonly _expenseTagsRepository: IExpenseTagsRepository;
-    private readonly _expenseShopsRepository : IExpenseShopsRepository;
+    private readonly _expenseShopsRepository: IExpenseShopsRepository;
 
-    public constructor({ translation, user, expenseTagsRepository, expenseShopsRepository }: IDependencyContainer) {
+    public constructor({ translation, user, currenciesRepository, expenseTagsRepository, expenseShopsRepository }: IDependencyContainer) {
         super();
 
         this._translation = translation;
         this._user = user!;
+        this._currenciesRepository = currenciesRepository;
         this._expenseTagsRepository = expenseTagsRepository;
         this._expenseShopsRepository = expenseShopsRepository;
     }
@@ -42,6 +45,7 @@ export class GetBlankExpenseQueryHandler extends QueryHandler<IAddExpenseRoutePa
                     : routeMonth
             },
             this._translation,
+            this._currenciesRepository,
             this._expenseTagsRepository,
             this._expenseShopsRepository
         );

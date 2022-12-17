@@ -1,5 +1,6 @@
 import type { IFormError, ITranslation } from "../../translations/Translation";
 import type { IExpenseShop, IExpenseTag } from "../../model/Expenses";
+import type { ICurrenciesRepository } from "../../data/repositories/expenses/ICurrenciesRepository";
 import type { IExpenseTagsRepository } from "../../data/repositories/expenses/IExpenseTagsRepository";
 import type { IExpenseShopsRepository } from "../../data/repositories/expenses/IExpenseShopsRepository";
 import type { IForm, IFormField } from "../Forms";
@@ -27,7 +28,7 @@ export class ExpenseForm implements IForm {
     private readonly _fields: readonly IFormField<any, any>[];
     private readonly _translation: ITranslation;
 
-    public static async initializeAsync(expenseFormData: IExpenseFormData, translation: ITranslation, expenseTagsRepository: IExpenseTagsRepository, expenseShopsRepository: IExpenseShopsRepository): Promise<ExpenseForm> {
+    public static async initializeAsync(expenseFormData: IExpenseFormData, translation: ITranslation, currenciesRepository: ICurrenciesRepository, expenseTagsRepository: IExpenseTagsRepository, expenseShopsRepository: IExpenseShopsRepository): Promise<ExpenseForm> {
         const form = new ExpenseForm(translation);
 
         const allTagColors = Enum.getAllValues(ExpenseTagColor);
@@ -71,7 +72,7 @@ export class ExpenseForm implements IForm {
 
         form.tags.options = await expenseTagsRepository.getAllAsync();
         form.shop.options = await expenseShopsRepository.getAllAsync();
-        form.currency.options = ["RON", "EUR"];
+        form.currency.options = await currenciesRepository.getAllAsync();
 
         if (expenseFormData.validated === "true")
             form.validate();

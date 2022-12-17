@@ -1,3 +1,4 @@
+import type { ICurrenciesRepository } from "../../../../data/repositories/expenses/ICurrenciesRepository";
 import type { IExpensesRepository } from "../../../../data/repositories/expenses/IExpensesRepository";
 import type { IExpenseTagsRepository } from "../../../../data/repositories/expenses/IExpenseTagsRepository";
 import type { IExpenseShopsRepository } from "../../../../data/repositories/expenses/IExpenseShopsRepository";
@@ -14,13 +15,15 @@ import { ExpenseForm } from "../../ExpenseForm";
 
 export class RemoveExpenseCommandHandler extends CommandHandler<IEditExpenseRouteParams, PageRequestBody<IExpenseFormData>, IExpenseFormViewOptions>  {
     private readonly _translation: ITranslation;
+    private readonly _currenciesRepository: ICurrenciesRepository;
     private readonly _expensesRepository: IExpensesRepository;
     private readonly _expenseTagsRepository: IExpenseTagsRepository;
     private readonly _expenseShopsRepository: IExpenseShopsRepository;
 
-    public constructor({ translation, expensesRepository, expenseTagsRepository, expenseShopsRepository }: IDependencyContainer) {
+    public constructor({ translation, currenciesRepository, expensesRepository, expenseTagsRepository, expenseShopsRepository }: IDependencyContainer) {
         super();
         this._translation = translation;
+        this._currenciesRepository = currenciesRepository;
         this._expensesRepository = expensesRepository;
         this._expenseTagsRepository = expenseTagsRepository;
         this._expenseShopsRepository = expenseShopsRepository;
@@ -43,6 +46,7 @@ export class RemoveExpenseCommandHandler extends CommandHandler<IEditExpenseRout
                     date: expense.date.toISOString()
                 },
                 this._translation,
+                this._currenciesRepository,
                 this._expenseTagsRepository,
                 this._expenseShopsRepository
             );
