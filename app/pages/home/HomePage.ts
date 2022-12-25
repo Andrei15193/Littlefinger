@@ -1,4 +1,4 @@
-import type { IBaseViewOptions, ICommandHandlerDefinition, QueryHandlerConfiguration } from "../page";
+import type { IBaseViewOptions, ICommandHandlerDefinition, IQueryHandlerDefinition } from "../page";
 import type { IAuthenticationFormBody, IHomeRouteParams } from "./HomePageDefinition";
 import type { PageRequestBody } from "../page/IBasePageRequestBody";
 import { Page } from "../page";
@@ -11,7 +11,7 @@ import { EndSessionCommandHandler } from "./commands/EndSessionCommandHandler";
 export class HomePage extends Page<IHomeRouteParams, PageRequestBody<IAuthenticationFormBody>> {
     public readonly route: string = "/";
 
-    public handlers: [QueryHandlerConfiguration<IHomeRouteParams, IBaseViewOptions>, ...ICommandHandlerDefinition<IHomeRouteParams, PageRequestBody<IAuthenticationFormBody>, IBaseViewOptions>[]] = [
+    public handlers: [IQueryHandlerDefinition<IHomeRouteParams, IBaseViewOptions>, ...ICommandHandlerDefinition<IHomeRouteParams, PageRequestBody<IAuthenticationFormBody>, IBaseViewOptions>[]] = [
         {
             allowAnonymousRequests: true,
             handlerType: GetHomePageQueryHandler

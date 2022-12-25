@@ -4,11 +4,11 @@ import type { IBaseViewOptions } from "../IBaseViewOptions";
 import type { IRequestResult } from "./IRequestResult";
 import { config } from "../../../config";
 
-export class RenderRequestResult<TOptions extends IBaseViewOptions> implements IRequestResult {
+export class RenderRequestResult<TViewOptions extends IBaseViewOptions> implements IRequestResult {
     private readonly _view: string;
-    private readonly _options: TOptions;
+    private readonly _options: TViewOptions;
 
-    public constructor(view: string, options: TOptions) {
+    public constructor(view: string, options: TViewOptions) {
         this._view = view;
         this._options = options;
     }

@@ -7,12 +7,8 @@ import type { CommandHandler } from "./handlers/CommandHandler";
 export abstract class Page<TRouteParams extends {}, TRequestBody extends IBasePageRequestBody = IBasePageRequestBody, TViewOptions extends IBaseViewOptions = IBaseViewOptions> {
     public abstract readonly route: string;
 
-    public abstract readonly handlers: PageRequestHandlerDefinitions<TRouteParams, TRequestBody, TViewOptions>;
+    public abstract readonly handlers: [IQueryHandlerDefinition<TRouteParams, TViewOptions>, ...readonly ICommandHandlerDefinition<TRouteParams, TRequestBody, TViewOptions>[]];
 }
-
-export type PageRequestHandlerDefinitions<TRouteParams extends {}, TRequestBody extends IBasePageRequestBody, TViewOptions extends IBaseViewOptions> = [QueryHandlerConfiguration<TRouteParams, TViewOptions>, ...readonly ICommandHandlerDefinition<TRouteParams, TRequestBody, TViewOptions>[]];
-
-export type QueryHandlerConfiguration<TRouteParams extends {}, TViewOptions extends IBaseViewOptions> = QueryHandlerType<TRouteParams, TViewOptions> | IQueryHandlerDefinition<TRouteParams, TViewOptions>;
 
 export interface IRequestHandlerDefinition {
     readonly allowAnonymousRequests?: boolean;

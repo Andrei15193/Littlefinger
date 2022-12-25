@@ -1,7 +1,7 @@
 import type { Express, CookieOptions, Request, Response } from "express";
 import type { ITranslation } from "./translations/Translation";
 import type { ISessionService } from "./services/ISessionService";
-import type { ICommandHandlerDefinition, IQueryHandlerDefinition, Page, QueryHandlerConfiguration } from "./pages/page";
+import type { ICommandHandlerDefinition, IQueryHandlerDefinition, Page } from "./pages/page";
 import { config } from "./config";
 import { TranslationResolver } from "./translations/TranslationResolver";
 import { DependencyContainer } from "./dependencyContainer/DependencyContainer";
@@ -17,14 +17,11 @@ export class ExpressPage {
 
     public register(app: Express): void {
         const pageRoute = this._page.route;
-        const [queryHandlerConfiguration, ...commandHandlerDefinitions] = this._page.handlers;
+        const [queryHandlerDefinition, ...commandHandlerDefinitions] = this._page.handlers;
 
-        if (queryHandlerConfiguration !== undefined && queryHandlerConfiguration !== null) {
-            const queryHandlerDefinition: IQueryHandlerDefinition<any, any> = this._isQueryHandlerDefinition(queryHandlerConfiguration)
-                ? queryHandlerConfiguration
-                : { allowAnonymousRequests: false, handlerType: queryHandlerConfiguration };
+        if (queryHandlerDefinition)
             app.get(pageRoute, (req, res) => this._handleQueryAsync(req, res, queryHandlerDefinition));
-        }
+
         if (commandHandlerDefinitions.length > 0)
             app.post(pageRoute, (req, res) => this._handleCommandAsync(req, res, commandHandlerDefinitions));
     }
@@ -143,12 +140,5 @@ export class ExpressPage {
             res.cookie("userId", session.user.id, cookieOptions);
             res.cookie("sessionId", session.id, cookieOptions);
         }
-    }
-
-    private _isQueryHandlerDefinition(queryHandlerConfiguration: QueryHandlerConfiguration<any, any>): queryHandlerConfiguration is IQueryHandlerDefinition<any, any> {
-        return queryHandlerConfiguration !== undefined
-            && queryHandlerConfiguration !== null
-            && (queryHandlerConfiguration as IQueryHandlerDefinition<any, any>).handlerType !== undefined
-            && (queryHandlerConfiguration as IQueryHandlerDefinition<any, any>).handlerType !== null;
     }
 }
