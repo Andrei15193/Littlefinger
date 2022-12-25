@@ -23,9 +23,8 @@ Queries are associated with GET HTTP requests while commands are associated with
 
 The [CQRS](https://learn.microsoft.com/azure/architecture/patterns/cqrs) implementation should make use of the [Express](https://expressjs.com/) middleware and abstract it in a way that when implementing request handlers there is no dependency on [Express](https://expressjs.com/). Some of the concepts will be present, such as route parameters, query parameters, request body as well as possible results (render or redirect), however these are web application specific and not [Express](https://expressjs.com/) specific. How these values or request results are interpreted can vary depending on the underlying framework.
 
-![CQRS Class Diagram](CQRS Class Diagram.png)
-
-![CQRS Sequence Diagram](CQRS Sequence Diagram.png)
+* [CQRS Class Diagram](https://raw.githubusercontent.com/Andrei15193/Littlefinger/dev/decision-records/CQRS%20Class%20Diagram.png)
+* [CQRS Sequence Diagram](https://raw.githubusercontent.com/Andrei15193/Littlefinger/dev/decision-records/CQRS%20Sequence%20Diagram.png)
 
 ### Consequences
 
