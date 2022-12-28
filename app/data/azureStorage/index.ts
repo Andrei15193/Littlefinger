@@ -16,5 +16,5 @@ export interface IAzureStorageTables {
 }
 
 export interface IAzureStorageQueues {
-    readonly expensesMonthChangeRequests: QueueClient;
+    readonly expenseMonthChangeRequests: QueueClient;
 }

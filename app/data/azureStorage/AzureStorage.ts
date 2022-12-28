@@ -40,11 +40,11 @@ class AzureStorageQueues implements IAzureStorageQueues {
     public constructor(azureStorageConnectionString: string) {
         this.queueService = QueueServiceClient.fromConnectionString(azureStorageConnectionString);
         this.all = [
-            this.expensesMonthChangeRequests = this.queueService.getQueueClient("expenses-month-change-requests")
+            this.expenseMonthChangeRequests = this.queueService.getQueueClient("expense-month-change-requests")
         ];
     }
 
-    public readonly expensesMonthChangeRequests: QueueClient;
+    public readonly expenseMonthChangeRequests: QueueClient;
 
     public readonly queueService: QueueServiceClient;
 

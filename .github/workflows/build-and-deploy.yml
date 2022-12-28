@@ -86,16 +86,15 @@ jobs:
         publish-profile: ${{ secrets.AZURE_FUNCTIONS_APP_PUBLISH_PROFILE }}
         package: FunctionsApp.zip
 
-
-  deploy:
-    name: Deploy on Live Environment
+  deploy-release:
+    name: Deploy on Release Environment
     if: github.event_name == 'release'
     permissions:
       contents: none
     runs-on: ubuntu-latest
     needs: build
     environment:
-      name: Live
+      name: Release
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
@@ -108,13 +107,13 @@ jobs:
       id: deploy-to-webapp
       uses: azure/webapps-deploy@v2
       with:
-        app-name: littlefinger-test
+        app-name: littlefinger
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
         package: WebApp.zip
 
     - name: Deploy Azure Functions App
       uses: Azure/functions-action@v1
       with:
-        app-name: littlefinger-functions-test
+        app-name: littlefinger-functions
         publish-profile: ${{ secrets.AZURE_FUNCTIONS_APP_PUBLISH_PROFILE }}
         package: FunctionsApp.zip

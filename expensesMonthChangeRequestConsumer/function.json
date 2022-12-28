@@ -4,7 +4,7 @@
       "name": "expensesMonthChangeRequest",
       "type": "queueTrigger",
       "direction": "in",
-      "queueName": "expenses-month-change-requests"
+      "queueName": "expense-month-change-requests"
     }
   ],
   "scriptFile": "../out/functions/expensesMonthChangeRequestConsumer/index.js"

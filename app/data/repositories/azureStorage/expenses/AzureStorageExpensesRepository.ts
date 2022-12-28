@@ -136,7 +136,7 @@ export class AzureStorageExpensesRepository implements IExpensesRepository {
                     "Merge",
                     { etag: expense.etag }
                 );
-                await this._azureStorage.queues.expensesMonthChangeRequests.sendMessage(AzureQueueStorageUtils.encodeMessage<IExpenseMonthChangeRequest>({
+                await this._azureStorage.queues.expenseMonthChangeRequests.sendMessage(AzureQueueStorageUtils.encodeMessage<IExpenseMonthChangeRequest>({
                     userId: this._userId,
                     expenseKey: expense.key,
                     newExpenseDateString: expense.date.toISOString()
