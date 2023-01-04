@@ -127,7 +127,7 @@
                     {{/each}}
                 </td>
                 <td>
-                    {{ currency }}<span class="ms-2 invisible">{{ getLeadingZeros @root.translation.locale amount @root.format.integerDigitsCount.price }}</span>{{ formatNumber @root.translation.locale price }}
+                    {{ currency }}<span class="ms-2 invisible">{{ getLeadingZeros @root.translation.locale price @root.format.integerDigitsCount.price }}</span>{{ formatNumber @root.translation.locale price }}
                 </td>
                 <td><span class="invisible">{{ getLeadingZeros @root.translation.locale quantity @root.format.integerDigitsCount.quantity }}</span>{{ formatIntegerNumber @root.translation.locale quantity }}</td>
                 <td>
