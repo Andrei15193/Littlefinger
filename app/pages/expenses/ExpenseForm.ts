@@ -65,9 +65,9 @@ export class ExpenseForm implements IForm {
                     []
                 )
             || [];
-        form.price.value = expenseFormData.price === undefined || expenseFormData.price === null ? Number.NaN : expenseFormData.price;
+        form.price.value = expenseFormData.price === undefined || expenseFormData.price === null ? Number.NaN : Number(expenseFormData.price);
         form.currency.value = expenseFormData.currency === undefined || expenseFormData.currency === null ? null : expenseFormData.currency.trim().toLocaleUpperCase(translation.locale);
-        form.quantity.value = expenseFormData.quantity === undefined || expenseFormData.quantity === null ? Number.NaN : expenseFormData.quantity;
+        form.quantity.value = expenseFormData.quantity === undefined || expenseFormData.quantity === null ? Number.NaN : Number(expenseFormData.quantity);
         form.date.value = expenseFormData.date ? new Date(expenseFormData.date) : null;
 
         form.tags.options = await expenseTagsRepository.getAllAsync();
@@ -140,11 +140,11 @@ export class ExpenseForm implements IForm {
             this.shop.error = this._translation.expenses.form.shop.error.required;
         if (this.tags.isBlank || this.tags.value!.length > 25 || this.tags.value!.some(tag => tag.name.length > 250))
             this.tags.error = this._translation.expenses.form.tags.error.required;
-        if (this.price.isBlank || this.price.value! <= 0 || !Number.isInteger(this.price.value! * 100))
+        if (this.price.isBlank || !this._isValidNumber(this.price.value))
             this.price.error = this._translation.expenses.form.price.error.required;
         if (this.currency.isBlank || this.currency.value!.length > 250)
             this.currency.error = this._translation.expenses.form.currency.error.required;
-        if (this.quantity.isBlank || this.quantity.value! <= 0)
+        if (this.quantity.isBlank || this.quantity.value! <= 0 || !Number.isInteger(this.quantity.value))
             this.quantity.error = this._translation.expenses.form.quantity.error.required;
         if (this.date.isBlank)
             this.date.error = this._translation.expenses.form.date.error.required;
@@ -170,5 +170,9 @@ export class ExpenseForm implements IForm {
                 const tagToRemove = tag.toString().toLowerCase();
                 this.tags.value = this.tags.value.filter(existingTag => existingTag.name.toLowerCase() !== tagToRemove);
             }
+    }
+
+    private _isValidNumber(value: Number | undefined | null): boolean {
+        return value !== null && value !== undefined && !Number.isNaN(value) && value > 0 && /^\d+(\.\d\d?)?$/.test(value.toLocaleString("en-GB"));
     }
 }
