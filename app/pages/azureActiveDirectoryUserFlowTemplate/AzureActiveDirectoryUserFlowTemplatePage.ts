@@ -1,12 +1,12 @@
-import type { IBaseViewOptions, ICommandHandlerDefinition, IQueryHandlerDefinition } from "../page/index";
+import type { IBasicQueryHandlerDefinition } from "../page";
 import type { IAzureActiveDirectoryUserFlowTemplateRouteParams } from "./AzureActiveDirectoryUserFlowTemplatePageDefinition";
-import { Page } from "../page/index";
+import { BasicPage } from "../page";
 import { GetAzureActiveDirectoryUserFlowTemplateQueryHandler } from "./queries/GetAzureActiveDirectoryUserFlowTemplateQueryHandler";
 
-export class AzureActiveDirectoryUserFlowTemplatePage extends Page<IAzureActiveDirectoryUserFlowTemplateRouteParams, never, IBaseViewOptions> {
+export class AzureActiveDirectoryUserFlowTemplatePage extends BasicPage<IAzureActiveDirectoryUserFlowTemplateRouteParams> {
     public readonly route: string = "/:locale/:userFlow/azureActiveDirectoryUserFlowTemplate";
 
-    public handlers: [IQueryHandlerDefinition<IAzureActiveDirectoryUserFlowTemplateRouteParams, IBaseViewOptions>, ...ICommandHandlerDefinition<IAzureActiveDirectoryUserFlowTemplateRouteParams, never, IBaseViewOptions>[]] = [
+    public handlers: [IBasicQueryHandlerDefinition<IAzureActiveDirectoryUserFlowTemplateRouteParams>] = [
         {
             allowAnonymousRequests: true,
             handlerType: GetAzureActiveDirectoryUserFlowTemplateQueryHandler

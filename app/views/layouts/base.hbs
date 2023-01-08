@@ -1,22 +1,22 @@
 <!DOCTYPE html>
-<html lang="{{ translation.locale }}">
+<html lang="{{ @root.translation.locale }}">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ translation.site.title }}{{#if title}} - {{ title }}{{/if}}</title>
+    <title>{{ @root.translation.site.title }}{{#if title}} - {{ title }}{{/if}}</title>
     <%= htmlWebpackPlugin.tags.headTags %>
 </head>
 
 <body dir="ltr">
     {{#if user}}
-        {{#> layouts/member}}
-            {{{ body }}}
-        {{/layouts/member}}
+    {{#> layouts/member}}
+    {{{ body }}}
+    {{/layouts/member}}
     {{else}}
-        {{#> layouts/guest}}
-            {{{ body }}}
-        {{/layouts/guest}}
+    {{#> layouts/guest}}
+    {{{ body }}}
+    {{/layouts/guest}}
     {{/if}}
 
     <%= htmlWebpackPlugin.tags.bodyTags %>

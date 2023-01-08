@@ -4,10 +4,10 @@ import type { IDependencyContainer } from "../../../../dependencyContainer";
 import type { ITranslation } from "../../../../translations/Translation";
 import type { IRequestResult } from "../../../page/results";
 import type { IExpensesRepository } from "../../../../data/repositories/expenses/IExpensesRepository";
-import { QueryHandler } from "../../../page";
+import { BasicQueryHandler } from "../../../page";
 import { ExpensesUtils } from "../../../../model/ExpensesUtils";
 
-export class GetMonthlyExpensesQueryHandler extends QueryHandler<IListExpensesRouteParams, IListExpensesViewOptions, IListExpensesQueryParams> {
+export class GetMonthlyExpensesQueryHandler extends BasicQueryHandler<IListExpensesRouteParams, IListExpensesViewOptions, IListExpensesQueryParams> {
     private readonly _user: IUser;
     private readonly _translation: ITranslation;
     private readonly _expensesRepository: IExpensesRepository;

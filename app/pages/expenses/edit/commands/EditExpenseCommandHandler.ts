@@ -1,38 +1,31 @@
-import type { ICurrenciesRepository } from "../../../../data/repositories/expenses/ICurrenciesRepository";
-import type { IExpensesRepository } from "../../../../data/repositories/expenses/IExpensesRepository";
-import type { IExpenseTagsRepository } from "../../../../data/repositories/expenses/IExpenseTagsRepository";
-import type { IExpenseShopsRepository } from "../../../../data/repositories/expenses/IExpenseShopsRepository";
 import type { IDependencyContainer } from "../../../../dependencyContainer";
 import type { IFormError, ITranslation } from "../../../../translations/Translation";
 import type { IEditExpenseRouteParams } from "../EditExpensePageDefinition";
 import type { IExpenseFormViewOptions } from "../../IExpenseFormViewOptions";
 import type { IRequestResult } from "../../../page/results";
 import type { DataStorageError } from "../../../../data/DataStorageError";
-import type { IExpenseFormData } from "../../ExpenseForm";
-import type { PageRequestBody } from "../../../page/IBasePageRequestBody";
-import { CommandHandler } from "../../../page";
+import type { IExpensesRepository } from "../../../../data/repositories/expenses/IExpensesRepository";
+import type { IExpenseTagsRepository } from "../../../../data/repositories/expenses/IExpenseTagsRepository";
+import type { IExpensePageRequestFormBody } from "../../IExpensePageRequestFormBody";
+import { ExpenseTagColor } from "../../../../model/Expenses";
+import { FormCommandHandler } from "../../../page";
 import { ExpenseForm } from "../../ExpenseForm";
+import { Enum } from "../../../../global/Enum";
 
-export class EditExpenseCommandHandler extends CommandHandler<IEditExpenseRouteParams, PageRequestBody<IExpenseFormData>, IExpenseFormViewOptions> {
+export class EditExpenseCommandHandler extends FormCommandHandler<ExpenseForm, IEditExpenseRouteParams, IExpensePageRequestFormBody, IExpenseFormViewOptions> {
     private readonly _translation: ITranslation;
-    private readonly _currenciesRepository: ICurrenciesRepository;
     private readonly _expensesRepository: IExpensesRepository;
     private readonly _expenseTagsRepository: IExpenseTagsRepository;
-    private readonly _expenseShopsRepository: IExpenseShopsRepository;
 
-    public constructor({ translation, currenciesRepository, expensesRepository, expenseTagsRepository, expenseShopsRepository }: IDependencyContainer) {
+    public constructor({ translation, expensesRepository, expenseTagsRepository }: IDependencyContainer) {
         super();
         this._translation = translation;
-        this._currenciesRepository = currenciesRepository;
-        this._expensesRepository = expensesRepository;
         this._expenseTagsRepository = expenseTagsRepository;
-        this._expenseShopsRepository = expenseShopsRepository;
+        this._expensesRepository = expensesRepository;
     }
 
-    public async executeCommandAsync({ month: expenseMonth, id: expenseId }: IEditExpenseRouteParams, requestBody: PageRequestBody<IExpenseFormData>, queryParmas: {}): Promise<IRequestResult> {
+    public async executeCommandAsync(form: ExpenseForm, { month: expenseMonth, id: expenseId }: IEditExpenseRouteParams): Promise<IRequestResult> {
         try {
-            const form = await ExpenseForm.initializeAsync(requestBody, this._translation, this._currenciesRepository, this._expenseTagsRepository, this._expenseShopsRepository);
-
             const expense = await this._expensesRepository.getAsync({ month: expenseMonth, id: expenseId });
             if (expense.state !== "ready") {
                 form.error = this._translation.expenses.form.error.notEditable;
@@ -55,7 +48,14 @@ export class EditExpenseCommandHandler extends CommandHandler<IEditExpenseRouteP
                         },
                         name: form.name.value!,
                         shop: form.shop.value!,
-                        tags: form.tags.value,
+                        tags: form
+                            .tags
+                            .value
+                            .filter(expenseTagName => expenseTagName.length > 0)
+                            .map(expenseTagName => ({
+                                name: expenseTagName,
+                                color: form.tags.options.find(expenseTag => expenseTag.name == expenseTagName)!.color
+                            })),
                         price: form.price.value!,
                         currency: form.currency.value!,
                         quantity: form.quantity.value!,
@@ -92,13 +92,10 @@ export class EditExpenseCommandHandler extends CommandHandler<IEditExpenseRouteP
         }
         catch (error) {
             const dataStorageError = error as DataStorageError;
-            const form = ExpenseForm.initializeFaulted(
-                dataStorageError.map<IFormError>({
-                    notFound: this._translation.expenses.form.error.notFound(expenseMonth),
-                    unknown: this._translation.expenses.form.error.unknown
-                }),
-                this._translation
-            );
+            form.error = dataStorageError.map<IFormError>({
+                notFound: this._translation.expenses.form.error.notFound(expenseMonth),
+                unknown: this._translation.expenses.form.error.unknown
+            });
             return this.render("expenses/edit-not-found", {
                 title: this._translation.expenses.edit.title(expenseId),
                 tab: "expenses",

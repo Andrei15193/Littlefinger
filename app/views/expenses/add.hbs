@@ -1,13 +1,13 @@
-<h3>{{{ markdown translation.expenses.add.pageTitle }}}</h3>
+<h3>{{{ markdown @root.translation.expenses.add.pageTitle }}}</h3>
 
 <form method="POST">
     <div class="d-flex flex-column-reverse">
         <div class="d-flex flex-row">
             <button type="submit" name="command" value="add" class="btn btn-sm btn-primary">
-                {{{ translation.expenses.add.addButtonLabel }}}
+                {{{ markdown @root.translation.expenses.add.addButtonLabel }}}
             </button>
             <a href="/expenses{{#if route.month}}/{{ route.month }}{{/if}}" class="ms-2 btn btn-sm btn-secondary">
-                {{{translation.expenses.add.cancelButtonLabel }}}
+                {{{ markdown @root.translation.expenses.add.cancelButtonLabel }}}
             </a>
         </div>
 

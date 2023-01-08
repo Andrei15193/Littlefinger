@@ -2,10 +2,9 @@ import type { IAuthenticationFormBody, IHomeRouteParams } from "../HomePageDefin
 import type { IDependencyContainer } from "../../../dependencyContainer";
 import type { IRequestResult } from "../../page/results";
 import type { ISessionService } from "../../../services/ISessionService";
-import { CommandHandler } from "../../page";
-import { PageRequestBody } from "../../page/IBasePageRequestBody";
+import { BasicCommandHandler } from "../../page";
 
-export class BeginAuthenticationFlowCommandHandler extends CommandHandler<IHomeRouteParams, PageRequestBody<IAuthenticationFormBody>> {
+export class BeginAuthenticationFlowCommandHandler extends BasicCommandHandler<IHomeRouteParams, IAuthenticationFormBody> {
     private readonly _sessionService: ISessionService;
 
     public constructor({ sessionService }: IDependencyContainer) {
@@ -13,7 +12,7 @@ export class BeginAuthenticationFlowCommandHandler extends CommandHandler<IHomeR
         this._sessionService = sessionService;
     }
 
-    public async executeCommandAsync(routeParams: IHomeRouteParams, body: PageRequestBody<IAuthenticationFormBody>, queryParmas: {}): Promise<IRequestResult> {
+    public async executeCommandAsync(routeParams: IHomeRouteParams, body: IAuthenticationFormBody, queryParmas: {}): Promise<IRequestResult> {
         return this.redirect(this._sessionService.getSignInUrl("/"));
     }
 }

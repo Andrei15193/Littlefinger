@@ -1,8 +1,8 @@
-Follow CQRS Pattern
--------------------
+Follow CQRS Pattern with Forms
+------------------------------
 
-**Status**: Obsolete  
-**Replaced by**: [2023-01-14 Follow CQRS Pattern with Forms](https://github.com/Andrei15193/Littlefinger/blob/dev/decision-records/2023-01-14%20Follow%20CQRS%20Pattern%20with%20Forms.md)
+**Status**: Accepted  
+**Replaces**: [2022-12-25 Follow CQRS Pattern](https://github.com/Andrei15193/Littlefinger/blob/dev/decision-records/2022-12-25%20Follow%20CQRS%20Pattern.md)
 
 ### Context
 
@@ -24,8 +24,11 @@ Queries are associated with GET HTTP requests while commands are associated with
 
 The [CQRS](https://learn.microsoft.com/azure/architecture/patterns/cqrs) implementation should make use of the [Express](https://expressjs.com/) middleware and abstract it in a way that when implementing request handlers there is no dependency on [Express](https://expressjs.com/). Some of the concepts will be present, such as route parameters, query parameters, request body as well as possible results (render or redirect), however these are web application specific and not [Express](https://expressjs.com/) specific. How these values or request results are interpreted can vary depending on the underlying framework.
 
-* [CQRS Class Diagram](https://raw.githubusercontent.com/Andrei15193/Littlefinger/7192eb41e9d104309089438dd7b897f75cd6beac/decision-records/CQRS%20Class%20Diagram.png)
-* [CQRS Sequence Diagram](https://raw.githubusercontent.com/Andrei15193/Littlefinger/7192eb41e9d104309089438dd7b897f75cd6beac/decision-records/CQRS%20Sequence%20Diagram.png)
+Given that this is a classic multi-page application, there are mainly two types of pages. There are basic pages that generally just display information and there is no input processing. Examples of these types of pages are the landing page, the expense list view as well as the about page.
+
+The other type of pages are form pages which basically handle an entire form for the user, the expense page being an example in this case. Form types should be part of the query and command configurations for these type of pages and the instantiation and loading of form data should be automated and made part of the general flow, providing the initialized form object to the query or command handler. This will standardize the way pages are defined as well as handing forms.
+
+* [CQRS Class Diagram](https://raw.githubusercontent.com/Andrei15193/Littlefinger/dev/decision-records/CQRS%20Class%20Diagram.png)
 
 ### Consequences
 

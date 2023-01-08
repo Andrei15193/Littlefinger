@@ -29,7 +29,7 @@ export class AzureStorageExpenseTagsRepository implements IExpenseTagsRepository
         }
     }
 
-    public async getAllByName(): Promise<{ readonly [tagName: string]: IExpenseTag; }> {
+    public async getAllByNameAsync(): Promise<{ readonly [tagName: string]: IExpenseTag; }> {
         try {
             const expenseTagsByName: Record<string, IExpenseTag> = {};
 

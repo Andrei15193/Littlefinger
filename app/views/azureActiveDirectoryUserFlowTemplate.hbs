@@ -7,12 +7,12 @@
 </div>
 
 <script>
-    $(function() {
-        $("div.attrEntry:has(>div.error.itemLevel)>input").each(function(attrEntryInputElementIndex, attrEntryInputElement) {
+    $(function () {
+        $("div.attrEntry:has(>div.error.itemLevel)>input").each(function (attrEntryInputElementIndex, attrEntryInputElement) {
             return $(attrEntryInputElement).after($(attrEntryInputElement).parent().find(">div.error.itemLevel"));
         });
 
-        $("div.entry-item:has(>div.error.itemLevel)>input").each(function(attrEntryInputElementIndex, attrEntryInputElement) {
+        $("div.entry-item:has(>div.error.itemLevel)>input").each(function (attrEntryInputElementIndex, attrEntryInputElement) {
             return $(attrEntryInputElement).after($(attrEntryInputElement).parent().find(">div.error.itemLevel"));
         });
 

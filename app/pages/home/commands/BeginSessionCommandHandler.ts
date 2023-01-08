@@ -2,11 +2,10 @@ import type { IAuthenticationFormBody, IHomeRouteParams } from "../HomePageDefin
 import type { IDependencyContainer } from "../../../dependencyContainer";
 import type { IRequestResult } from "../../page/results";
 import type { ISessionService } from "../../../services/ISessionService";
-import { CommandHandler } from "../../page";
-import { PageRequestBody } from "../../page/IBasePageRequestBody";
+import { BasicCommandHandler } from "../../page";
 import { AuthenticationFormBodyHelper } from "../HomePageDefinition";
 
-export class BeginSessionCommandHandler extends CommandHandler<IHomeRouteParams, PageRequestBody<IAuthenticationFormBody>> {
+export class BeginSessionCommandHandler extends BasicCommandHandler<IHomeRouteParams, IAuthenticationFormBody> {
     private readonly _sessionService: ISessionService;
 
     public constructor({ sessionService }: IDependencyContainer) {
@@ -14,7 +13,7 @@ export class BeginSessionCommandHandler extends CommandHandler<IHomeRouteParams,
         this._sessionService = sessionService;
     }
 
-    public async executeCommandAsync(routeParams: IHomeRouteParams, body: PageRequestBody<IAuthenticationFormBody>, queryParmas: {}): Promise<IRequestResult> {
+    public async executeCommandAsync(routeParams: IHomeRouteParams, body: IAuthenticationFormBody, queryParmas: {}): Promise<IRequestResult> {
         const originalUrl = this._sessionService.getOriginalUrl(body.state);
 
         if (AuthenticationFormBodyHelper.isSuccessful(body)) {

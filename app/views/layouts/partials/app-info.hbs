@@ -1,6 +1,6 @@
 <div class="appInfo px-2 pb-1{{#if class}} {{ class }}{{/if}}">
     {{#if environment }}
-        <span class="{{ environmentTypeColorClass environment.type }}" {{#if (environmentDescriptionTranslation @root.translation @root.environment)}} title="{{ environmentDescriptionTranslation @root.translation @root.environment }}"{{/if}}>{{ environmentNameTranslation @root.translation @root.environment }}</span> |
+    <span class="{{ environmentTypeColorClass environment.type }}" {{#if (environmentDescriptionTranslation @root.translation @root.environment)}} title="{{ environmentDescriptionTranslation @root.translation @root.environment }}" {{/if}}>{{ environmentNameTranslation @root.translation @root.environment }}</span> |
     {{/if}}
-    <span title="{{ translation.description }}">{{ translation.name }} ({{ translation.locale }})</span>
+    <span title="{{ @root.translation.description }}">{{ @root.translation.name }} ({{ @root.translation.locale }})</span>
 </div>

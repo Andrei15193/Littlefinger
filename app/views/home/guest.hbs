@@ -4,18 +4,18 @@
     </div>
 
     <div class="mt-4 mb-2">
-        <h3 class="d-inline m-0">{{{ markdown translation.about.titleGuest }}} | </h3>
-        <button type="submit" name="command" value="authenticate" class="btn btn-link p-0 fs-5 fw-semibold align-baseline">{{{ markdown translation.site.loginButtonLabel }}}</button>
+        <h3 class="d-inline m-0">{{{ markdown @root.translation.about.titleGuest }}} | </h3>
+        <button type="submit" name="command" value="authenticate" class="btn btn-link p-0 fs-5 fw-semibold align-baseline">{{{ markdown @root.translation.site.loginButtonLabel }}}</button>
     </div>
 
-    <p>{{{ markdown translation.about.skit }}}</p>
+    <p>{{{ markdown @root.translation.about.skit }}}</p>
 
-    <p>{{{ markdown translation.about.description }}}</p>
+    <p>{{{ markdown @root.translation.about.description }}}</p>
 
-    <p>{{{ markdown translation.about.trackingNotification }}}</p>
+    <p>{{{ markdown @root.translation.about.trackingNotification }}}</p>
 
     <hr>
 
-    <button type="submit" name="command" value="authenticate" class="btn btn-primary">{{{ markdown translation.site.loginButtonLabel }}}</button>
-    <button type="submit" name="command" value="register" class="btn btn-link">{{{ markdown translation.site.registerButtonLabel }}}</button>
+    <button type="submit" name="command" value="authenticate" class="btn btn-primary">{{{ markdown @root.translation.site.loginButtonLabel }}}</button>
+    <button type="submit" name="command" value="register" class="btn btn-link">{{{ markdown @root.translation.site.registerButtonLabel }}}</button>
 </form>

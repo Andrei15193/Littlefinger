@@ -1,5 +1,5 @@
 import type { IEnvironmentTranslationLabels, ISiteTranslationTabels, ITranslation } from "./translations/Translation";
-import type { IExpenseWarning } from "./model/Expenses";
+import type { IExpenseTag, IExpenseWarning } from "./model/Expenses";
 import fs from "fs";
 import hbs from "hbs";
 import Markdown from "markdown-it";

@@ -1,9 +1,9 @@
 import type { IAzureActiveDirectoryUserFlowTemplateRouteParams } from "../AzureActiveDirectoryUserFlowTemplatePageDefinition";
 import type { IRequestResult } from "../../page/results/index";
-import { QueryHandler } from "../../page/index";
+import { BasicQueryHandler } from "../../page/index";
 import { TranslationResolver } from "../../../translations/TranslationResolver";
 
-export class GetAzureActiveDirectoryUserFlowTemplateQueryHandler extends QueryHandler<IAzureActiveDirectoryUserFlowTemplateRouteParams> {
+export class GetAzureActiveDirectoryUserFlowTemplateQueryHandler extends BasicQueryHandler<IAzureActiveDirectoryUserFlowTemplateRouteParams> {
     public constructor() {
         super();
     }

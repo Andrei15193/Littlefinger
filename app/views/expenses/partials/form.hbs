@@ -19,43 +19,52 @@
 <input type="hidden" name="validated" id="validated" value="{{ form.isValidated }}">
 
 <div class="mb-3">
-    <label for="name" class="form-label">{{{ markdown translation.expenses.form.name.label }}}</label>
-    <input type="text" autocomplete="off"
+    <label for="name" class="form-label">{{{ markdown @root.translation.expenses.form.name.label }}}</label>
+    <input
+        type="text"
+        autocomplete="off"
         class="form-control form-control-sm{{#if form.isValidated}}{{#if form.name.error}} is-invalid{{else}} is-valid{{/if}}{{/if}}"
-        id="name" name="name" value="{{ form.name.value }}" {{#unlessCompare state '===' 'ready' }}
-        disabled{{/unlessCompare}}>
+        id="name"
+        name="name"
+        value="{{ form.name.value }}"
+        {{#unlessCompare state '===' 'ready' }} disabled{{/unlessCompare}}>
     <div class="invalid-feedback">{{{ markdown form.name.error }}}</div>
 </div>
 <div class="mb-3">
-    <label for="shop" class="form-label">{{{ markdown translation.expenses.form.shop.label }}}</label>
-    <input type="text" autocomplete="off"
+    <label for="shop" class="form-label">{{{ markdown @root.translation.expenses.form.shop.label }}}</label>
+    <input
+        type="text"
+        autocomplete="off"
         class="form-control form-control-sm{{#if form.isValidated}}{{#if form.shop.error}} is-invalid{{else}} is-valid{{/if}}{{/if}}"
-        id="shop" name="shop" value="{{ form.shop.value }}" list="shopOptions" {{#unlessCompare state '===' 'ready' }}
-        disabled{{/unlessCompare}}>
+        id="shop"
+        name="shop"
+        value="{{ form.shop.value }}"
+        list="shopOptions"
+        {{#unlessCompare state '===' 'ready' }} disabled{{/unlessCompare}}>
     <datalist id="shopOptions">
-        {{#each form.shop.options}}
-        <option value="{{ this.name }}">
-            {{/each}}
+        {{#each form.shop.options}}<option value="{{ this.name }}">{{/each}}
     </datalist>
 
     <div class="invalid-feedback">{{{ markdown form.shop.error }}}</div>
 </div>
 <div class="mb-3">
-    <label for="tags" class="form-label">{{{ markdown translation.expenses.form.tags.label }}}</label>
+    <label for="tags" class="form-label">{{{ markdown @root.translation.expenses.form.tags.label }}}</label>
     <div class="input-group">
-        <input type="text" autocomplete="off"
+        <input
+            type="text"
+            autocomplete="off"
             class="form-control form-control-sm{{#if form.isValidated}}{{#if form.tags.error}} is-invalid{{else}} is-valid{{/if}}{{/if}}"
-            list="tagOptions" id="tags" name="tags"
-            value="{{#each form.tags.value}}{{#if @first}}{{ this.name }}{{/if}}{{/each}}" {{#unlessCompare
-            state '===' 'ready' }} disabled{{/unlessCompare}}>
+            list="tagOptions"
+            id="tags"
+            name="tags"
+            value="{{#each form.tags.value}}{{#if @first}}{{ this }}{{/if}}{{/each}}"
+            {{#unlessCompare state '===' 'ready' }} disabled{{/unlessCompare}}>
         <datalist id="tagOptions">
-            {{#each form.tags.options}}
-            <option value="{{ this.name }}">
-                {{/each}}
+            {{#each form.tags.options}}<option value="{{ this.name }}">{{/each}}
         </datalist>
-        <button class="btn btn-sm btn-outline-secondary rounded-end" type="submit" name="command" value="add-tag"
-            {{#unlessCompare state '===' 'ready' }} disabled{{/unlessCompare}}>{{{ markdown
-            translation.expenses.form.tags.addMoreButtonLabel }}}</button>
+        <button class="btn btn-sm btn-outline-secondary rounded-end" type="submit" name="command" value="add-tag" {{#unlessCompare state '===' 'ready' }} disabled{{/unlessCompare}}>{{{ markdown
+            @root.translation.expenses.form.tags.addMoreButtonLabel }}}
+        </button>
 
         <div class="invalid-feedback">{{{ markdown form.tags.error }}}</div>
     </div>
@@ -63,60 +72,69 @@
         {{#each form.tags.value}}
         {{#unless @first}}
         <div class="tag-group d-inline-flex flex-row">
-            <div class="tag {{ expenseTagColorClass this.color }} badge rounded-pill">
-                {{ this.name }}
+            {{#with (lookup @root.form.expenseTagsByName this)}}
+            <div class="tag {{ expenseTagColorClass color }} badge rounded-pill">
+                {{ name }}
             </div>
-            <button type="submit" name="command" value="remove-tag:{{ this.name }}"
-                class="tag {{ expenseTagColorClass this.color }} badge rounded-pill btn btn-danger px-2 py-0 border-0 d-flex flex-row align-items-center"
-                {{#unlessCompare @root.state '===' 'ready' }} disabled{{/unlessCompare}}>
+            <button type="submit" name="command" value="remove-tag:{{ name }}" class="tag {{ expenseTagColorClass color }} badge rounded-pill btn btn-danger px-2 py-0 border-0 d-flex flex-row align-items-center" {{#unlessCompare @root.state '===' 'ready' }} disabled{{/unlessCompare}}>
                 {{> icons/close-icon height='0.7rem' }}
             </button>
+            {{/with}}
         </div>
         {{/unless}}
         {{/each}}
 
         {{#each form.tags.value}}
         {{#unless @first}}
-        <input type="hidden" name="tags" value="{{ this.name }}">
+        <input type="hidden" name="tags" value="{{ this }}">
         {{/unless}}
         {{/each}}
     </div>
 </div>
 <div class="mb-3">
-    <label for="price" class="form-label">{{{ markdown translation.expenses.form.price.label }}}</label>
+    <label for="price" class="form-label">{{{ markdown @root.translation.expenses.form.price.label }}}</label>
     <div class="input-group">
-        <input type="text" autocomplete="off"
+        <input
+            type="text"
+            autocomplete="off"
             class="form-control form-control-sm currency-input{{#if form.isValidated}}{{#if form.currency.error}} is-invalid{{else}} is-valid{{/if}}{{/if}}"
-            id="currency" name="currency" placeholder="Currency" value="{{ form.currency.value }}"
+            id="currency"
+            name="currency"
+            placeholder="{{ @root.translation.expenses.form.currency.placeholder }}"
+            value="{{ form.currency.value }}"
             list="currencyOptions" {{#unlessCompare state '===' 'ready' }} disabled{{/unlessCompare}}>
         <datalist id="currencyOptions">
-            {{#each form.currency.options}}
-            <option value="{{ this }}">
-                {{/each}}
+            {{#each form.currency.options}}<option value="{{ this }}">{{/each}}
         </datalist>
 
-        <input type="number" autocomplete="off" lang="" step="any"
-            class="form-control form-control-sm{{#if form.isValidated}}{{#if form.price.error}} is-invalid{{else}} is-valid{{/if}}{{/if}}"
-            id="price" name="price" value="{{ form.price.value }}" {{#unlessCompare state '===' 'ready' }}
-            disabled{{/unlessCompare}}>
+        <input type="number" autocomplete="off" lang="" step="any" class="form-control form-control-sm{{#if form.isValidated}}{{#if form.price.error}} is-invalid{{else}} is-valid{{/if}}{{/if}}" id="price" name="price" value="{{ form.price.value }}" {{#unlessCompare state '===' 'ready' }} disabled{{/unlessCompare}}>
 
         {{#if form.currency.error }}<div class="invalid-feedback">{{{ markdown form.currency.error }}}</div>{{/if}}
         {{#if form.price.error }}<div class="invalid-feedback">{{{ markdown form.price.error }}}</div>{{/if}}
     </div>
 </div>
 <div class="mb-3">
-    <label for="quantity" class="form-label">{{{ markdown translation.expenses.form.quantity.label }}}</label>
-    <input type="number" autocomplete="off" step="any"
+    <label for="quantity" class="form-label">{{{ markdown @root.translation.expenses.form.quantity.label }}}</label>
+    <input
+        type="number"
+        autocomplete="off"
+        step="any"
         class="form-control form-control-sm{{#if form.isValidated}}{{#if form.quantity.error}} is-invalid{{else}} is-valid{{/if}}{{/if}}"
-        id="quantity" name="quantity" value="{{ form.quantity.value }}" {{#unlessCompare state '===' 'ready' }}
-        disabled{{/unlessCompare}}>
+        id="quantity"
+        name="quantity"
+        value="{{ form.quantity.value }}"
+        {{#unlessCompare state '===' 'ready' }} disabled{{/unlessCompare}}>
     <div class="invalid-feedback">{{{ markdown form.quantity.error }}}</div>
 </div>
 <div class="mb-3">
-    <label for="date" class="form-label">{{{ markdown translation.expenses.form.date.label }}}</label>
-    <input type="date" autocomplete="off"
+    <label for="date" class="form-label">{{{ markdown @root.translation.expenses.form.date.label }}}</label>
+    <input
+        type="date"
+        autocomplete="off"
         class="form-control form-control-sm{{#if form.isValidated}}{{#if form.date.error}} is-invalid{{else}} is-valid{{/if}}{{/if}}"
-        id="date" name="date" value="{{ toInputDateValue form.date.value }}" {{#unlessCompare state '===' 'ready' }}
-        disabled{{/unlessCompare}}>
+        id="date"
+        name="date"
+        value="{{ toInputDateValue form.date.value }}"
+        {{#unlessCompare state '===' 'ready' }} disabled{{/unlessCompare}}>
     <div class="invalid-feedback">{{{ markdown form.date.error }}}</div>
 </div>

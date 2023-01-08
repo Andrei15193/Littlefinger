@@ -2,9 +2,9 @@ import type { IDependencyContainer } from "../../../dependencyContainer";
 import type { ITranslation } from "../../../translations/Translation";
 import type { IAboutRouteParams } from "../AboutPageDefinition";
 import type { IRequestResult } from "../../page/results";
-import { QueryHandler } from "../../page";
+import { BasicQueryHandler } from "../../page";
 
-export class GetAboutPageQueryHandler extends QueryHandler<IAboutRouteParams> {
+export class GetAboutPageQueryHandler extends BasicQueryHandler<IAboutRouteParams> {
     private readonly _translation: ITranslation;
 
     public constructor({ translation }: IDependencyContainer) {

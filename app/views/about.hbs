@@ -1,20 +1,20 @@
-<h3>{{{ markdown translation.about.title }}}</h3>
+<h3>{{{ markdown @root.translation.about.title }}}</h3>
 
-<p>{{{ markdown translation.about.skit }}}</p>
+<p>{{{ markdown @root.translation.about.skit }}}</p>
 
-<p>{{{ markdown translation.about.description }}}</p>
+<p>{{{ markdown @root.translation.about.description }}}</p>
 
-<p>{{{ markdown translation.about.trackingNotification }}}</p>
+<p>{{{ markdown @root.translation.about.trackingNotification }}}</p>
 
-<h4>{{{ markdown translation.about.externalResources.title }}}</h4>
+<h4>{{{ markdown @root.translation.about.externalResources.title }}}</h4>
 <ul>
-    {{#each translation.about.externalResources.websites }}
+    {{#each @root.translation.about.externalResources.websites }}
     <li>
         {{{ markdown description }}}
         <ul>
-        {{#each resources }}
+            {{#each resources }}
             <li>{{{ markdown this }}}</li>
-        {{/each}}
+            {{/each}}
         </ul>
     </li>
     {{/each}}

@@ -1,178 +1,77 @@
-import type { IFormError, ITranslation } from "../../translations/Translation";
-import type { IExpenseShop, IExpenseTag } from "../../model/Expenses";
-import type { ICurrenciesRepository } from "../../data/repositories/expenses/ICurrenciesRepository";
+import type { IFormBody } from "../forms";
+import type { IDependencyContainer } from "../../dependencyContainer/index";
+import type { IFormField } from "../forms/index";
 import type { IExpenseTagsRepository } from "../../data/repositories/expenses/IExpenseTagsRepository";
+import type { ICurrenciesRepository } from "../../data/repositories/expenses/ICurrenciesRepository";
 import type { IExpenseShopsRepository } from "../../data/repositories/expenses/IExpenseShopsRepository";
-import type { IForm, IFormField } from "../Forms";
+import type { IExpenseShop, IExpenseTag } from "../../model/Expenses";
 import type { WithoutEtag } from "../../model/Common";
-import { FormField, MultiValueFormField } from "../Forms";
-import { isArray } from "../Array";
 import { ExpenseTagColor } from "../../model/Expenses";
+import { Form, RequiredTextFormField, RequiredIntegerFormField, RequiredDecimalFormField, RequiredDateFormField, RequiredMultiSelectTextField } from "../forms";
 import { Enum } from "../../global/Enum";
 
-export interface IExpenseFormData {
-    readonly validated: "true" | "false";
-    readonly etag: string | undefined | null;
+export class ExpenseForm extends Form {
+    private _expenseTagsByName: Record<string, WithoutEtag<IExpenseTag>>;
+    private readonly _currenciesRepository: ICurrenciesRepository;
+    private readonly _expenseTagsRepository: IExpenseTagsRepository;
+    private readonly _expenseShopsRepository: IExpenseShopsRepository;
 
-    readonly name: string | undefined | null;
-    readonly shop: string | undefined | null;
-    readonly tags: string | readonly string[] | undefined | null;
-    readonly price: number | undefined | null;
-    readonly currency: string | undefined | null;
-    readonly quantity: number | undefined | null;
-    readonly date: string | undefined | null;
-}
-
-export class ExpenseForm implements IForm {
-    private _isValidated: boolean;
-    private readonly _fields: readonly IFormField<any, any>[];
-    private readonly _translation: ITranslation;
-
-    public static async initializeAsync(expenseFormData: IExpenseFormData, translation: ITranslation, currenciesRepository: ICurrenciesRepository, expenseTagsRepository: IExpenseTagsRepository, expenseShopsRepository: IExpenseShopsRepository): Promise<ExpenseForm> {
-        const form = new ExpenseForm(translation);
-
-        const allTagColors = Enum.getAllValues(ExpenseTagColor);
-        const expenseTags = expenseFormData.tags === undefined || expenseFormData.tags === null
-            ? []
-            : isArray(expenseFormData.tags)
-                ? expenseFormData.tags
-                : [expenseFormData.tags];
-        const expenseTagsByName = expenseTags.length === 0 ? {} : await expenseTagsRepository.getAllByName();
-
-        form.etag = expenseFormData.etag === undefined ? null : expenseFormData.etag;
-
-        form.name.value = expenseFormData.name === undefined || expenseFormData.name === null ? null : expenseFormData.name.trim();
-        form.shop.value = expenseFormData.shop === undefined || expenseFormData.shop === null ? null : expenseFormData.shop.trim();
-        form.tags.value =
-            expenseTags
-                ?.map(expenseTagName => expenseTagName?.trim())
-                .filter(expenseTagName => expenseTagName !== undefined && expenseTagName !== null && expenseTagName.length > 0)
-                .sort()
-                .reduce<WithoutEtag<IExpenseTag>[]>(
-                    (result, expenseTagName) => {
-                        const expenseTag = expenseTagsByName[expenseTagName];
-                        if (expenseTag === undefined) {
-                            result.push({
-                                name: expenseTagName,
-                                color: allTagColors[Math.floor(Math.random() * 1000) % allTagColors.length]!
-                            })
-                        }
-                        else
-                            result.push(expenseTag);
-
-                        return result;
-                    },
-                    []
-                )
-            || [];
-        form.price.value = expenseFormData.price === undefined || expenseFormData.price === null ? Number.NaN : Number(expenseFormData.price);
-        form.currency.value = expenseFormData.currency === undefined || expenseFormData.currency === null ? null : expenseFormData.currency.trim().toLocaleUpperCase(translation.locale);
-        form.quantity.value = expenseFormData.quantity === undefined || expenseFormData.quantity === null ? Number.NaN : Number(expenseFormData.quantity);
-        form.date.value = expenseFormData.date ? new Date(expenseFormData.date) : null;
-
-        form.tags.options = await expenseTagsRepository.getAllAsync();
-        form.shop.options = await expenseShopsRepository.getAllAsync();
-        form.currency.options = await currenciesRepository.getAllAsync();
-
-        if (expenseFormData.validated === "true")
-            form.validate();
-
-        return form;
-    }
-
-    public static initializeFaulted(formError: IFormError, translation: ITranslation): ExpenseForm {
-        const form = new ExpenseForm(translation);
-        form.error = formError;
-        return form;
-    }
-
-    private constructor(translation: ITranslation) {
-        this._isValidated = false;
-        this._fields = [
-            this.name = new FormField<string>(),
-            this.shop = new FormField<string, IExpenseShop>(),
-            this.tags = new MultiValueFormField<WithoutEtag<IExpenseTag>>(),
-            this.price = new FormField<number>(),
-            this.currency = new FormField<string>(),
-            this.quantity = new FormField<number>(),
-            this.date = new FormField<Date>()
+    public constructor({ translation, currenciesRepository, expenseShopsRepository, expenseTagsRepository }: IDependencyContainer) {
+        super();
+        this._expenseTagsByName = {};
+        this._currenciesRepository = currenciesRepository;
+        this._expenseShopsRepository = expenseShopsRepository;
+        this._expenseTagsRepository = expenseTagsRepository;
+        this.fields = [
+            this.name = new RequiredTextFormField("name", translation?.expenses.form.name.error.required),
+            this.shop = new RequiredTextFormField<IExpenseShop>("shop", translation?.expenses.form.shop.error.required),
+            this.tags = new RequiredMultiSelectTextField<WithoutEtag<IExpenseTag>>("tags", translation?.expenses.form.tags.error.required),
+            this.price = new RequiredDecimalFormField("price", translation?.expenses.form.price.error.required),
+            this.currency = new RequiredTextFormField("currency", translation?.expenses.form.currency.error.required),
+            this.quantity = new RequiredIntegerFormField("quantity", translation?.expenses.form.quantity.error.required),
+            this.date = new RequiredDateFormField("date", translation?.expenses.form.date.error.required)
         ];
-        this.error = null;
-        this.etag = null;
-        this._translation = translation;
+
+        this.tags.maximumItemLimit = 25;
     }
 
-    public get isValidated(): boolean {
-        return this._isValidated;
+    public readonly name: RequiredTextFormField;
+
+    public readonly shop: RequiredTextFormField<IExpenseShop>;
+
+    public readonly tags: RequiredMultiSelectTextField<WithoutEtag<IExpenseTag>>;
+
+    public readonly price: RequiredDecimalFormField;
+
+    public readonly currency: RequiredTextFormField;
+
+    public readonly quantity: RequiredIntegerFormField;
+
+    public readonly date: RequiredDateFormField;
+
+    public readonly fields: readonly IFormField<any, any>[];
+
+    public get expenseTagsByName(): Record<string, WithoutEtag<IExpenseTag>> {
+        return this._expenseTagsByName;
     }
 
-    public get isValid(): boolean {
-        return (this.error === undefined || this.error === null)
-            && this._fields.every(field => field.error === undefined || field.error === null);
-    }
+    public override async loadAsync(formBody: IFormBody): Promise<void> {
+        await super.loadAsync(formBody);
 
-    public get isInvalid(): boolean {
-        return !this.isValid;
-    }
+        this.shop.options = await this._expenseShopsRepository.getAllAsync();
+        this.currency.options = await this._currenciesRepository.getAllAsync();
+        this.tags.options = await this._expenseTagsRepository.getAllAsync();
 
-    public error: IFormError | null;
+        const expenseTagColors = Enum.getAllValues(ExpenseTagColor);
+        this._expenseTagsByName = await this._expenseTagsRepository.getAllByNameAsync();
 
-    public readonly name: FormField<string>;
-
-    public readonly shop: FormField<string, IExpenseShop>;
-
-    public readonly tags: MultiValueFormField<WithoutEtag<IExpenseTag>>;
-
-    public readonly price: FormField<number>;
-
-    public readonly currency: FormField<string>;
-
-    public readonly quantity: FormField<number>;
-
-    public readonly date: FormField<Date>;
-
-    public etag: string | null;
-
-    public validate(): void {
-        if (this.name.isBlank || this.name.value!.length > 250)
-            this.name.error = this._translation.expenses.form.name.error.required;
-        if (this.shop.isBlank || this.shop.value!.length > 250)
-            this.shop.error = this._translation.expenses.form.shop.error.required;
-        if (this.tags.isBlank || this.tags.value!.length > 25 || this.tags.value!.some(tag => tag.name.length > 250))
-            this.tags.error = this._translation.expenses.form.tags.error.required;
-        if (this.price.isBlank || !this._isValidNumber(this.price.value))
-            this.price.error = this._translation.expenses.form.price.error.required;
-        if (this.currency.isBlank || this.currency.value!.length > 250)
-            this.currency.error = this._translation.expenses.form.currency.error.required;
-        if (this.quantity.isBlank || this.quantity.value! <= 0 || !Number.isInteger(this.quantity.value))
-            this.quantity.error = this._translation.expenses.form.quantity.error.required;
-        if (this.date.isBlank)
-            this.date.error = this._translation.expenses.form.date.error.required;
-
-        this._isValidated = true;
-    }
-
-    public addTag(): void {
-        const tagColors: readonly ExpenseTagColor[] = Enum.getAllValues(ExpenseTagColor);
-
-        const availableColors = tagColors.filter(tagColor => this.tags.options?.find(tag => tag.color === tagColor) === undefined);
-        const tagColor = availableColors[Math.random() * 1000 % availableColors.length]!;
-        this.tags.value = [{ name: "", color: tagColor }, ...this.tags.value];
-    }
-
-    public removeTag(tag: string | readonly string[]): void {
-        if (tag !== undefined)
-            if (isArray(tag)) {
-                const tagsToRemove = tag.map(tag => tag.toString().toLowerCase());
-                this.tags.value = this.tags.value.filter(existingTag => !tagsToRemove.includes(existingTag.name.toLowerCase()));
+        this.tags.value.forEach(tagName => {
+            if (!(tagName in this._expenseTagsByName)) {
+                this._expenseTagsByName[tagName] = {
+                    name: tagName,
+                    color: expenseTagColors[Math.floor(Math.random() * 1000) % expenseTagColors.length]!,
+                }
             }
-            else {
-                const tagToRemove = tag.toString().toLowerCase();
-                this.tags.value = this.tags.value.filter(existingTag => existingTag.name.toLowerCase() !== tagToRemove);
-            }
-    }
-
-    private _isValidNumber(value: Number | undefined | null): boolean {
-        return value !== null && value !== undefined && !Number.isNaN(value) && value > 0 && /^\d+(\.\d\d?)?$/.test(value.toLocaleString("en-GB"));
+        });
     }
 }

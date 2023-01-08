@@ -7,8 +7,8 @@
     </div>
 
     <div class=" mt-md-4 d-flex flex-fill flex-column ms-3">
-        <h1 class="mb-0">{{{ markdown translation.site.title }}}</h1>
-        <h5>{{{ markdown translation.site.headerSubtitle }}}</h5>
+        <h1 class="mb-0">{{{ markdown @root.translation.site.title }}}</h1>
+        <h5>{{{ markdown @root.translation.site.headerSubtitle }}}</h5>
     </div>
 
     {{> layouts/app-info class='d-none d-md-block mx-4 align-self-start' }}
@@ -18,8 +18,8 @@
             <h3 class="m-0">{{ user.displayName }}</h3>
         </div>
         <form action="/" method="POST" class="btn-group d-flex" role="group">
-            <a href="/expenses/add" class="btn btn-light btn-sm">{{{ markdown translation.site.logExpenseButtonLabel }}}</a>
-            <button type="submit" name="command" value="end-session" class="btn btn-light btn-sm">{{{ markdown translation.site.logoutButtonLabel }}}</button>
+            <a href="/expenses/add" class="btn btn-light btn-sm">{{{ markdown @root.translation.site.logExpenseButtonLabel }}}</a>
+            <button type="submit" name="command" value="end-session" class="btn btn-light btn-sm">{{{ markdown @root.translation.site.logoutButtonLabel }}}</button>
         </form>
     </div>
 </div>
@@ -39,14 +39,16 @@
     <div class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             {{#each tabs}}
-                {{#ifCompare this '===' @root.tab}}
-                    {{ label }}
-                {{/ifCompare}}
+            {{#ifCompare this '===' @root.tab}}
+            {{ label }}
+            {{/ifCompare}}
             {{/each}}
         </a>
         <ul class="dropdown-menu dropdown-menu-end">
             <li><span class="dropdown-item text-primary">{{ user.displayName }}</span></li>
-            <li><hr class="dropdown-divider"></li>
+            <li>
+                <hr class="dropdown-divider">
+            </li>
             {{#each tabs}}
             <li>
                 <a href="{{ path }}" class="dropdown-item{{#ifCompare this '===' @root.tab}} active{{/ifCompare}}{{#if disabled}} disabled{{/if}}">
@@ -54,15 +56,17 @@
                 </a>
             </li>
             {{/each}}
-            <li><hr class="dropdown-divider"></li>
+            <li>
+                <hr class="dropdown-divider">
+            </li>
             <li>
                 <a href="/expenses/add" class="dropdown-item">
-                    {{{ markdown translation.site.logExpenseButtonLabel }}}
+                    {{{ markdown @root.translation.site.logExpenseButtonLabel }}}
                 </a>
             </li>
             <li>
                 <form action="/" method="POST">
-                    <button type="submit" name="command" value="end-session" class="dropdown-item text-danger">{{{ markdown translation.site.logoutButtonLabel }}}</button>
+                    <button type="submit" name="command" value="end-session" class="dropdown-item text-danger">{{{ markdown @root.translation.site.logoutButtonLabel }}}</button>
                 </form>
             </li>
         </ul>
@@ -76,6 +80,6 @@
 <hr class="w-100 ">
 <div class="text-center">
     <div class="pb-3">
-        {{{ markdown translation.site.footerSubtitle }}}
+        {{{ markdown @root.translation.site.footerSubtitle }}}
     </div>
 </div>

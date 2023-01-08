@@ -1,33 +1,27 @@
 import type { IDependencyContainer } from "../../../../dependencyContainer";
 import type { ITranslation } from "../../../../translations/Translation";
-import type { ICurrenciesRepository } from "../../../../data/repositories/expenses/ICurrenciesRepository";
-import type { IExpenseTagsRepository } from "../../../../data/repositories/expenses/IExpenseTagsRepository";
-import type { IExpenseShopsRepository } from "../../../../data/repositories/expenses/IExpenseShopsRepository";
 import type { IAddExpenseRouteParams } from "../AddExpensePageDefinition";
 import type { IExpenseFormViewOptions } from "../../IExpenseFormViewOptions";
-import type { PageRequestBody } from "../../../page/IBasePageRequestBody";
 import type { IRequestResult } from "../../../page/results";
-import type { IExpenseFormData } from "../../ExpenseForm";
-import { CommandHandler } from "../../../page";
+import type { IExpensePageRequestFormBody } from "../../IExpensePageRequestFormBody";
+import { FormCommandHandler } from "../../../page";
 import { ExpenseForm } from "../../ExpenseForm";
 
-export class RemoveExpenseTagCommandHandler extends CommandHandler<IAddExpenseRouteParams, PageRequestBody<IExpenseFormData>, IExpenseFormViewOptions> {
+export class RemoveExpenseTagCommandHandler extends FormCommandHandler<ExpenseForm, IAddExpenseRouteParams, IExpensePageRequestFormBody, IExpenseFormViewOptions> {
     private readonly _translation: ITranslation;
-    private readonly _currenciesRepository: ICurrenciesRepository;
-    private readonly _expenseTagsRepository: IExpenseTagsRepository;
-    private readonly _expenseShopsRepository: IExpenseShopsRepository;
 
-    public constructor({ translation, currenciesRepository, expenseTagsRepository, expenseShopsRepository }: IDependencyContainer) {
+    public constructor({ translation }: IDependencyContainer) {
         super();
         this._translation = translation;
-        this._currenciesRepository = currenciesRepository;
-        this._expenseTagsRepository = expenseTagsRepository;
-        this._expenseShopsRepository = expenseShopsRepository;
     }
 
-    public async executeCommandAsync(routeParams: IAddExpenseRouteParams, requestBody: PageRequestBody<IExpenseFormData>, queryParmas: {}, tag: string): Promise<IRequestResult> {
-        const form = await ExpenseForm.initializeAsync(requestBody, this._translation, this._currenciesRepository, this._expenseTagsRepository, this._expenseShopsRepository);
-        form.removeTag(tag);
+    public async executeCommandAsync(form: ExpenseForm, routeParams: IAddExpenseRouteParams, requestBody: IExpensePageRequestFormBody, queryParmas: {}, tag: string): Promise<IRequestResult> {
+        const tagIndexToRemove = form.tags.value.indexOf(tag!);
+        if (tagIndexToRemove >= 0)
+            form.tags.value = form.tags.value.slice(0, tagIndexToRemove).concat(form.tags.value.slice(tagIndexToRemove + 1));
+
+        if (form.isValidated)
+            form.validate();
 
         return this.render("expenses/add", {
             title: this._translation.expenses.add.title,

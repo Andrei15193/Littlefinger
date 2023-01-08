@@ -1,15 +1,17 @@
+import type { IBasePageRequestBody } from "../page/IBasePageRequestBody";
+
 export interface IHomeRouteParams {
 }
 
 export type IAuthenticationFormBody = ISuccessfulAuthenticationFormBody | IFaultedAuthenticationFormBody;
 
-export interface ISuccessfulAuthenticationFormBody {
+export interface ISuccessfulAuthenticationFormBody extends IBasePageRequestBody {
     readonly client_info: string;
     readonly code: string;
     readonly state: string;
 }
 
-export interface IFaultedAuthenticationFormBody {
+export interface IFaultedAuthenticationFormBody extends IBasePageRequestBody {
     readonly error: string;
     readonly error_description: string;
     readonly state: string;

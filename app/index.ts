@@ -9,7 +9,7 @@ import { AzureStorageManager } from "./data/azureStorage/AzureStorageManager";
 import { AzureStorage } from "./data/azureStorage/AzureStorage";
 import { config } from "./config";
 import { SessionServiceMock } from "./services/mock/SessionServiceMock";
-import { ExpressPage } from "./ExpressPage";
+import { ExpressPage, ExpressBasicPage, ExpressFormPage } from "./ExpressPage";
 import { AuthenticationFlow } from "./services/ISessionService";
 
 import "./assets/style.scss";
@@ -57,10 +57,25 @@ import "./assets/style.scss";
             })
             : undefined
     };
-    pages.forEach(page => {
-        const expressPage = new ExpressPage(page, dependencyReplacements);
-        expressPage.register(app);
-    });
+    pages
+        .map<ExpressPage>(page => {
+            let expressPage: ExpressPage | null = null;
+            page.accept({
+                visitBasicPage(page) {
+                    expressPage = new ExpressBasicPage(page, dependencyReplacements);
+                },
+
+                visitFormPage(page) {
+                    expressPage = new ExpressFormPage(page, dependencyReplacements);
+                }
+            });
+
+            if (expressPage === null)
+                throw new Error("Unhandled page type. Cannot start the application.");
+
+            return expressPage;
+        })
+        .forEach(expressPage => expressPage.register(app));
 
     if (config.http.port !== undefined)
         app.listen(config.http.port, () => console.log(`[server]: Server is running at http://localhost:${config.http.port}`));

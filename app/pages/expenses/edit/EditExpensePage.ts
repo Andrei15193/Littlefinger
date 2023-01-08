@@ -1,19 +1,21 @@
+import type { IFormQueryHandlerDefinition, IFormCommandHandlerDefinition, FormType } from "../../page";
 import type { IExpenseFormViewOptions } from "../IExpenseFormViewOptions";
 import type { IEditExpenseRouteParams } from "./EditExpensePageDefinition";
-import type { ICommandHandlerDefinition, IQueryHandlerDefinition } from "../../page";
-import type { PageRequestBody } from "../../page/IBasePageRequestBody";
-import type { IExpenseFormData } from "../ExpenseForm";
-import { Page } from "../../page";
+import type { IExpensePageRequestFormBody } from "../IExpensePageRequestFormBody";
+import { FormPage } from "../../page";
 import { GetExpenseQueryHandler } from "./queries/GetExpenseQueryHandler";
 import { EditExpenseCommandHandler } from "./commands/EditExpenseCommandHandler";
 import { RemoveExpenseCommandHandler } from "./commands/RemoveExpenseCommandHandler";
 import { AddExpenseTagCommandHandler } from "./commands/AddExpenseTagCommandHandler";
 import { RemoveExpenseTagCommandHandler } from "./commands/RemoveExpenseTagCommandHandler";
+import { ExpenseForm } from "../ExpenseForm";
 
-export class EditExpensePage extends Page<IEditExpenseRouteParams, PageRequestBody<IExpenseFormData>, IExpenseFormViewOptions> {
+export class EditExpensePage extends FormPage<ExpenseForm, IEditExpenseRouteParams, IExpensePageRequestFormBody, IExpenseFormViewOptions> {
     public readonly route: string = "/expenses/:month(\\d{4}-\\d{2})/:id";
 
-    public readonly handlers: [IQueryHandlerDefinition<IEditExpenseRouteParams, IExpenseFormViewOptions>, ...ICommandHandlerDefinition<IEditExpenseRouteParams, PageRequestBody<IExpenseFormData>, IExpenseFormViewOptions>[]] = [
+    public readonly formType: FormType<ExpenseForm> = ExpenseForm;
+
+    public readonly handlers: [IFormQueryHandlerDefinition<ExpenseForm, IEditExpenseRouteParams, IExpenseFormViewOptions>, ...IFormCommandHandlerDefinition<ExpenseForm, IEditExpenseRouteParams, IExpensePageRequestFormBody, IExpenseFormViewOptions>[]] = [
         {
             handlerType: GetExpenseQueryHandler
         },

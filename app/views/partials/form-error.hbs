@@ -1,12 +1,13 @@
 <div class="alert alert-danger mt-3 p-2" role="alert">
-{{#if error.message}}
+    {{#if error.message}}
     <p>{{{ markdown error.message }}}</p>
     {{#each error.actions}}
     {{#if @first}}<ul>{{/if}}
         <li>{{{ markdown this }}}</li>
-    {{#if @last}}</ul>{{/if}}
+        {{#if @last}}
+    </ul>{{/if}}
     {{/each}}
-{{else}}
+    {{else}}
     {{{ markdown error }}}
-{{/if}}
+    {{/if}}
 </div>

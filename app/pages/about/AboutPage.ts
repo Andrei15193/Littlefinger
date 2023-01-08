@@ -1,12 +1,12 @@
-import type { IBaseViewOptions, ICommandHandlerDefinition, IQueryHandlerDefinition } from "../page";
+import type { IBasicQueryHandlerDefinition } from "../page";
 import type { IAboutRouteParams } from "./AboutPageDefinition";
-import { Page } from "../page";
+import { BasicPage } from "../page";
 import { GetAboutPageQueryHandler } from "./queries/GetAboutPageQueryHandler";
 
-export class AboutPage extends Page<IAboutRouteParams, never> {
+export class AboutPage extends BasicPage<IAboutRouteParams> {
     public readonly route: string = "/about";
 
-    public handlers: [IQueryHandlerDefinition<IAboutRouteParams, IBaseViewOptions>, ...ICommandHandlerDefinition<IAboutRouteParams, never, IBaseViewOptions>[]] = [
+    public handlers: [IBasicQueryHandlerDefinition<IAboutRouteParams>] = [
         {
             handlerType: GetAboutPageQueryHandler
         }

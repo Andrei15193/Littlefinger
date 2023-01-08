@@ -3,9 +3,9 @@ import type { ITranslation } from "../../../translations/Translation";
 import type { IHomeRouteParams } from "../HomePageDefinition";
 import type { IRequestResult } from "../../page/results";
 import type { ISessionService } from "../../../services/ISessionService";
-import { QueryHandler } from "../../page";
+import { BasicQueryHandler } from "../../page";
 
-export class GetHomePageQueryHandler extends QueryHandler<IHomeRouteParams> {
+export class GetHomePageQueryHandler extends BasicQueryHandler<IHomeRouteParams> {
     private readonly _translation: ITranslation;
     private readonly _sessionService: ISessionService;
 
