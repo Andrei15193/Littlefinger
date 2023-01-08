@@ -1,5 +1,6 @@
-export type { IBasePageRequestBody } from "./IBasePageRequestBody";
 export type { IBaseViewOptions } from "./IBaseViewOptions";
+export type { IBasePageRequestBody } from "./IBasePageRequestBody";
+export type { IBasePageRequestFormBody } from "./IBasePageRequestFormBody";
 
 export { Page } from "./Page";
 export type { IQueryHandlerDefinition } from "./Page";
