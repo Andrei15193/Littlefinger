@@ -33,7 +33,7 @@ export class AddExpenseCommandHandler extends FormCommandHandler<ExpenseForm, IA
                         .filter(expenseTagName => expenseTagName.length > 0)
                         .map(expenseTagName => ({
                             name: expenseTagName,
-                            color: form.tags.options.find(expenseTag => expenseTag.name == expenseTagName)!.color
+                            color: form.expenseTagsByName[expenseTagName]!.color
                         })),
                     price: form.price.value!,
                     currency: form.currency.value!,
@@ -42,7 +42,8 @@ export class AddExpenseCommandHandler extends FormCommandHandler<ExpenseForm, IA
                 });
                 return this.redirect(`/expenses/${ExpensesUtils.getExpenseMonth(form.date.value!)}`);
             }
-            catch {
+            catch (error) {
+                console.error(error);
                 form.error = this._translation.expenses.form.error.unknown;
 
                 return this.render("expenses/add", {

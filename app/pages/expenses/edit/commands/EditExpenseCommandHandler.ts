@@ -7,10 +7,8 @@ import type { DataStorageError } from "../../../../data/DataStorageError";
 import type { IExpensesRepository } from "../../../../data/repositories/expenses/IExpensesRepository";
 import type { IExpenseTagsRepository } from "../../../../data/repositories/expenses/IExpenseTagsRepository";
 import type { IExpensePageRequestFormBody } from "../../IExpensePageRequestFormBody";
-import { ExpenseTagColor } from "../../../../model/Expenses";
 import { FormCommandHandler } from "../../../page";
 import { ExpenseForm } from "../../ExpenseForm";
-import { Enum } from "../../../../global/Enum";
 
 export class EditExpenseCommandHandler extends FormCommandHandler<ExpenseForm, IEditExpenseRouteParams, IExpensePageRequestFormBody, IExpenseFormViewOptions> {
     private readonly _translation: ITranslation;
@@ -54,7 +52,7 @@ export class EditExpenseCommandHandler extends FormCommandHandler<ExpenseForm, I
                             .filter(expenseTagName => expenseTagName.length > 0)
                             .map(expenseTagName => ({
                                 name: expenseTagName,
-                                color: form.tags.options.find(expenseTag => expenseTag.name == expenseTagName)!.color
+                                color: form.expenseTagsByName[expenseTagName]!.color
                             })),
                         price: form.price.value!,
                         currency: form.currency.value!,
