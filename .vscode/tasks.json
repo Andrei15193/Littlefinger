@@ -22,9 +22,8 @@
             }
         },
         {
-            "label": "npm run watch",
+            "label": "npm run watch build",
             "detail": "webpack --watch",
-            "dependsOn": "npm run build",
             "type": "npm",
             "script": "watch",
             "problemMatcher": [],
@@ -41,7 +40,6 @@
         {
             "label": "npm run host:app",
             "detail": "nodemon",
-            "dependsOn": "npm run build",
             "type": "npm",
             "script": "host:app",
             "problemMatcher": [],
@@ -74,7 +72,6 @@
         {
             "label": "npm run host:functionsApp",
             "detail": "func start",
-            "dependsOn": "npm run build",
             "type": "npm",
             "script": "host:functionsApp",
             "problemMatcher": [],
@@ -89,20 +86,19 @@
             }
         },
         {
-            "label": "dev",
-            "detail": "run local development services",
+            "label": "Dev build",
+            "detail": "Start Azurite, watch build application, and start Azure Functions application",
             "dependsOn": [
-                "npm run watch",
-                "npm run host:app",
+                "npm run watch build",
                 "npm run host:storage",
                 "npm run host:functionsApp"
             ],
             "type": "shell",
+            "problemMatcher": [],
             "group": {
                 "kind": "build",
                 "isDefault": true
             },
-            "problemMatcher": []
         }
     ]
 }

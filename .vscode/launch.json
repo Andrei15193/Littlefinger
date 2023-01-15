@@ -1,0 +1,40 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug Application",
+            "type": "node",
+            "request": "launch",
+            "console": "internalConsole",
+            "internalConsoleOptions": "neverOpen",
+            "runtimeExecutable": "npx",
+            "program": "nodemon",
+            "args": [
+                "--require",
+                "dotenv/config",
+                "--delay",
+                "1s",
+                "--watch",
+                "app/assets",
+                "--watch",
+                "app/views",
+                "--watch",
+                "out/app",
+                "--ext",
+                "js,css,png,svg,hbs",
+                "./out/app/index.js",
+                "--delete-extra-tables",
+                "--clear-queues",
+                "--use-default-user"
+            ],
+            "restart": true,
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "outputCapture": "std"
+        }
+    ]
+}
