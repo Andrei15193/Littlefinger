@@ -85,13 +85,13 @@
                     <div>{{{ markdown @root.translation.expenses.list.columns.tags }}}</div>
                 </th>
                 <th>
-                    <div>{{{ markdown @root.translation.expenses.list.columns.price }}}</div>
+                    <div>{{{ markdown @root.translation.expenses.list.columns.amount }}}</div>
                 </th>
                 <th>
                     <div>{{{ markdown @root.translation.expenses.list.columns.quantity }}}</div>
                 </th>
                 <th>
-                    <div>{{{ markdown @root.translation.expenses.list.columns.amount }}}</div>
+                    <div>{{{ markdown @root.translation.expenses.list.columns.price }}}</div>
                 </th>
                 <th>
                     <div>{{{ markdown @root.translation.expenses.list.columns.date }}}</div>
@@ -127,11 +127,11 @@
                     {{/each}}
                 </td>
                 <td>
-                    {{ currency }}<span class="ms-2 invisible">{{ getLeadingZeros @root.translation.locale price @root.format.integerDigitsCount.price }}</span>{{ formatNumber @root.translation.locale price }}
+                    {{ currency }}<span class="ms-2 invisible">{{ getLeadingZeros @root.translation.locale amount @root.format.integerDigitsCount.amount }}</span>{{ formatNumber @root.translation.locale amount }}
                 </td>
                 <td><span class="invisible">{{ getLeadingZeros @root.translation.locale quantity @root.format.integerDigitsCount.quantity }}</span>{{ formatIntegerNumber @root.translation.locale quantity }}</td>
                 <td>
-                    {{ currency }}<span class="ms-2 invisible">{{ getLeadingZeros @root.translation.locale amount @root.format.integerDigitsCount.amount }}</span>{{ formatNumber @root.translation.locale amount }}
+                    {{ currency }}<span class="ms-2 invisible">{{ getLeadingZeros @root.translation.locale price @root.format.integerDigitsCount.price }}</span>{{ formatNumber @root.translation.locale price }}
                 </td>
                 <td>{{ formatDate @root.translation.locale date }}</td>
                 </tr>
@@ -151,12 +151,6 @@
                     <div><span class="invisible">&nbsp;</span></div>
                 </td>
                 <td>
-                    <div><span class="invisible">&nbsp;</span></div>
-                </td>
-                <td>
-                    <div><span class="invisible">&nbsp;</span></div>
-                </td>
-                <td>
                     <div>
                         {{#each @root.totals}}
                         <div>
@@ -164,6 +158,12 @@
                         </div>
                         {{/each}}
                     </div>
+                </td>
+                <td>
+                    <div><span class="invisible">&nbsp;</span></div>
+                </td>
+                <td>
+                    <div><span class="invisible">&nbsp;</span></div>
                 </td>
                 <td>
                     <div><span class="invisible">&nbsp;</span></div>
