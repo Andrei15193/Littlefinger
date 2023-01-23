@@ -66,7 +66,7 @@ export class GetMonthlyExpensesQueryHandler extends BasicQueryHandler<IListExpen
                             expense.tags.forEach(expenseTag => {
                                 const total = result.find(total => total.tag === expenseTag);
                                 if (total !== undefined)
-                                    total.amount += expense.amount;
+                                    total.amount = (total.amount * 100 + expense.amount * 100) / 100;
                                 else
                                     result.push({ tag: expenseTag, amount: expense.amount });
                             });
@@ -93,7 +93,7 @@ export class GetMonthlyExpensesQueryHandler extends BasicQueryHandler<IListExpen
         return this.render("expenses/list", {
             title: this._translation.expenses.list.title,
             tab: "expenses",
-            expenses,
+            expenses: expenses.concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses),
             totals,
             currencyTagDistirbutions: distributionsByTags,
             filters: {

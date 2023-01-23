@@ -1,7 +1,7 @@
 <div class="expenses-list-view">
     <form method="GET" class="expenses-list-header mb-2 mb-md-0 bg-white">
         <div class="d-flex flex-row align-items-center">
-            <h3>{{{ markdown @root.translation.expenses.list.pageTitle }}}</h3>
+            {{>expenses/subpageNavigation pageTitle = @root.translation.expenses.list.pageTitle}}
             <a href="/expenses{{#if route.month}}/{{ route.month }}{{/if}}/add" class="ms-2 btn btn-sm btn-primary">{{{ markdown @root.translation.expenses.list.addButtonLabel }}}</a>
 
             <div class="ms-4 d-flex flex-column flex-fill">
@@ -72,7 +72,7 @@
 
     <hr class="expenses-table-header d-md-none mt-3">
 
-    <table class="d-none d-md-table table table-sticky table-hover">
+    <table class="d-none d-md-table table table-sticky table-hover mt-2">
         <thead>
             <tr class="expenses-table-header">
                 <th>
@@ -201,20 +201,6 @@
             <div class="tag {{ expenseTagColorClass this.color }} badge rounded-pill">{{ this.name }}</div>
             {{/each}}
         </div>
-        {{!-- <td>{{ shop }}</td>
-        <td>
-            {{#each tags}}
-            <div class="tag {{ expenseTagColorClass this.color }} badge rounded-pill">{{ this.name }}</div>
-            {{/each}}
-        </td>
-        <td>
-            {{ currency }}<span class="ms-2 invisible">{{ getLeadingZeros @root.translation.locale amount @root.format.integerDigitsCount.price }}</span>{{ formatNumber @root.translation.locale price }}
-        </td>
-        <td><span class="invisible">{{ getLeadingZeros @root.translation.locale quantity @root.format.integerDigitsCount.quantity }}</span>{{ formatIntegerNumber @root.translation.locale quantity }}</td>
-        <td>
-            {{ currency }}<span class="ms-2 invisible">{{ getLeadingZeros @root.translation.locale amount @root.format.integerDigitsCount.amount }}</span>{{ formatNumber @root.translation.locale amount }}
-        </td>
-        <td>{{ formatDate @root.translation.locale date }}</td> --}}
         <hr>
         {{/each}}
     </div>

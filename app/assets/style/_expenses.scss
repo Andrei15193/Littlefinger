@@ -7,6 +7,7 @@
         top: $app-navigation-height;
         height: $expenses-header-height;
         z-index: 100;
+        background-color: $white;
 
         @include media-breakpoint-up(md) {
             top: $app-navigation-height-md;
@@ -38,7 +39,7 @@
     .expenses-table-header {
         position: sticky;
         top: calc($app-navigation-height + $expenses-header-height);
-        background-color: white;
+        background-color: $white;
 
         @include media-breakpoint-up(md) {
             top: calc($app-navigation-height-md + $expenses-header-height-md);

@@ -1,0 +1,16 @@
+<div class="dropdown me-2 mb-1">
+    <a href="#" class="dropdown-toggle fs-3" data-bs-toggle="dropdown" aria-expanded="false">{{{ markdown pageTitle }}}</a>
+
+    <ul class="dropdown-menu">
+        <li>
+            <a class="dropdown-item{{#ifCompare pageTitle '===' @root.translation.expenses.list.pageTitle}} active{{/ifCompare}}" href="/expenses">
+                {{{ markdown @root.translation.expenses.list.pageTitle }}}
+            </a>
+        </li>
+        <li>
+            <a class="dropdown-item{{#ifCompare pageTitle '===' @root.translation.expenseShops.list.pageTitle}} active{{/ifCompare}}" href="/expense-shops">
+                {{{ markdown @root.translation.expenseShops.list.pageTitle }}}
+            </a>
+        </li>
+    </ul>
+</div>

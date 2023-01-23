@@ -2,6 +2,7 @@ import type { ITranslation } from "../Translation";
 import { siteTranslationLabels } from "./site";
 import { homeTranslationLabels } from "./home";
 import { expensesTranslationLabels } from "./expenses";
+import { expenseShopsTranslationLabels } from "./expenseShops";
 import { aboutTranslationLabels } from "./about";
 
 export const enGB: ITranslation = {
@@ -12,5 +13,6 @@ export const enGB: ITranslation = {
     site: siteTranslationLabels,
     home: homeTranslationLabels,
     expenses: expensesTranslationLabels,
+    expenseShops: expenseShopsTranslationLabels,
     about: aboutTranslationLabels
 }

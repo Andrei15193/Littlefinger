@@ -28,7 +28,7 @@ div.user {
 div.user>div.info {
     border-top-left-radius: $border-radius;
     border-top-right-radius: $border-radius;
-    background-color: var(--bs-light);
+    background-color: $light;
 }
 
 div.user>form.btn-group>.btn {
@@ -50,6 +50,7 @@ div.user>form.btn-group>.btn:not(:first-child) {
     position: sticky;
     top: 0;
     height: $app-navigation-height;
+    z-index: 1000;
 
     @include media-breakpoint-up(md) {
         height: $app-navigation-height-md;

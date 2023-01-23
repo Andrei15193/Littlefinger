@@ -6,6 +6,7 @@ export interface ITranslation {
     readonly site: ISiteTranslationTabels;
     readonly home: IHomeTranslationLabels;
     readonly expenses: IExpensesTranslationLabels;
+    readonly expenseShops: IExpenseShopsTranslationLabels;
     readonly about: IAboutTranslationLabels;
 }
 
@@ -159,6 +160,21 @@ export interface IExpensesTranslationLabels {
             readonly invalidEtag: string;
             readonly notFound: IFormErrorCallback<(expenseMonth: string) => readonly string[]>;
         }
+    }
+}
+
+
+export interface IExpenseShopsTranslationLabels {
+    readonly list: {
+        readonly title: string;
+        readonly pageTitle: string;
+
+        readonly actions: {
+            readonly rename: string;
+            readonly delete: string;
+        }
+
+        readonly empty: string;
     }
 }
 

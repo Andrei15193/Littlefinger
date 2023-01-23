@@ -1,0 +1,25 @@
+<div class="expenses-list-view">
+    <div class="expenses-list-header h-auto pb-1">
+        {{>expenses/subpageNavigation pageTitle = @root.translation.expenseShops.list.pageTitle}}
+    </div>
+
+    {{#unlessCompare expenseShops.length '===' 0}}
+    <table class="table table-sticky table-hover mt-2">
+        <tbody>
+            {{#each expenseShops}}
+            <tr {{#unlessOdd @index}} class="table-light" {{/unlessOdd}}>
+                <th class="w-100">
+                    {{ name }}
+                </th>
+                <td class="ps-2 pe-0">
+                    <button type="button" class="btn btn-sm btn-primary disabled">{{{markdown @root.translation.expenseShops.list.actions.rename}}}</button>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-sm btn-danger disabled">{{{markdown @root.translation.expenseShops.list.actions.delete}}}</button>
+                </td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+    {{/unlessCompare}}
+</div>
