@@ -102,8 +102,7 @@ export interface IExpensesTranslationLabels {
 
         readonly deleteConfirmation: {
             readonly title: string;
-            readonly description: string;
-            readonly confirmationMessage: string;
+            readonly message: string;
             readonly confirmButtonLabel: string;
             readonly cancelButtonLabel: string;
         }
@@ -175,6 +174,20 @@ export interface IExpenseShopsTranslationLabels {
         }
 
         readonly empty: string;
+    }
+
+    readonly delete: {
+        readonly confirmation: {
+            title(expenseShopName: string): string;
+            readonly message: string;
+            readonly confirmButtonLabel: string;
+            readonly cancelButtonLabel: string;
+        }
+
+        readonly errors: {
+            readonly notFound: string;
+            readonly invalidEtag: string;
+        }
     }
 }
 

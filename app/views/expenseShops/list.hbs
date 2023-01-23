@@ -3,23 +3,54 @@
         {{>expenses/subpageNavigation pageTitle = @root.translation.expenseShops.list.pageTitle}}
     </div>
 
+    {{#if errorMessage}}
+    <div class="alert alert-danger p-2" role="alert">
+        {{ errorMessage }}
+    </div>
+    {{/if}}
+
     {{#unlessCompare expenseShops.length '===' 0}}
     <table class="table table-sticky table-hover mt-2">
         <tbody>
             {{#each expenseShops}}
             <tr {{#unlessOdd @index}} class="table-light" {{/unlessOdd}}>
-                <th class="w-100">
+                <th class="align-middle w-100">
                     {{ name }}
                 </th>
                 <td class="ps-2 pe-0">
-                    <button type="button" class="btn btn-sm btn-primary disabled">{{{markdown @root.translation.expenseShops.list.actions.rename}}}</button>
+                    <form method="POST">
+                        <button type="submit" name="command" value="rename" class="btn btn-sm btn-primary disabled">{{{markdown @root.translation.expenseShops.list.actions.rename}}}</button>
+                    </form>
                 </td>
                 <td>
-                    <button type="button" class="btn btn-sm btn-danger disabled">{{{markdown @root.translation.expenseShops.list.actions.delete}}}</button>
+                    <button type="submit" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal{{ @index }}">{{{markdown @root.translation.expenseShops.list.actions.delete}}}</button>
+
+                    <div class="modal fade" id="confirmDeleteModal{{ @index }}" tabindex="-1" aria-hidden="false">
+                        <form class="modal-dialog" method="POST">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5">{{call @root.translation.expenseShops.delete.confirmation.title name}}</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    {{{markdownBlock @root.translation.expenseShops.delete.confirmation.message}}}
+
+                                    <input type="hidden" name="name" value="{{ name }}">
+                                    <input type="hidden" name="etag" value="{{ etag }}">
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" name="command" value="remove" class="btn btn-danger">{{{markdown @root.translation.expenseShops.delete.confirmation.confirmButtonLabel}}}</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{{markdown @root.translation.expenseShops.delete.confirmation.cancelButtonLabel}}}</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </td>
             </tr>
             {{/each}}
         </tbody>
     </table>
+    {{else}}
+    <div class="p-2 alert alert-secondary text-center" role="alert">{{{ markdown @root.translation.expenseShops.list.empty }}}</div>
     {{/unlessCompare}}
 </div>

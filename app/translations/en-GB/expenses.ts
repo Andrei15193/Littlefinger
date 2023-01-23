@@ -53,8 +53,7 @@ export const expensesTranslationLabels: IExpensesTranslationLabels = {
 
         deleteConfirmation: {
             title: "Confirm Deletion",
-            description: "This action will permanently delete your logged expense.",
-            confirmationMessage: "Please confirm your action.",
+            message: "This action will permanently delete your logged expense.\n\nPlease confirm your action.",
             confirmButtonLabel: "Confirm",
             cancelButtonLabel: "Cancel"
         }

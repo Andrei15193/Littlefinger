@@ -93,7 +93,7 @@ export class GetMonthlyExpensesQueryHandler extends BasicQueryHandler<IListExpen
         return this.render("expenses/list", {
             title: this._translation.expenses.list.title,
             tab: "expenses",
-            expenses: expenses.concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses).concat(expenses),
+            expenses,
             totals,
             currencyTagDistirbutions: distributionsByTags,
             filters: {

@@ -15,12 +15,16 @@ body {
     min-height: 100%;
 }
 
+.modal-body *:last-child {
+    margin-bottom: 0;
+}
+
 .currency-input {
     flex: initial !important;
     width: 90px !important;
 }
 
-a > svg {
+a>svg {
     fill: $warning;
 }
 

@@ -15,12 +15,27 @@ export class AzureStorageExpenseShopsRepository implements IExpenseShopsReposito
         this._azureStorage = azureStorage;
     }
 
+    public async getByNameAsync(shopName: string): Promise<IExpenseShop | null> {
+        if (shopName === undefined || shopName === null)
+            return null;
+
+        try {
+            let expenseShopEntity = await this._azureStorage.tables.expenseShops.getEntity<IExpenseShopEntity>(AzureTableStorageUtils.escapeKeyValue(this._userId), AzureTableStorageUtils.escapeKeyValue(shopName));
+            const expenseShop = this._mapExpenseShopEntity(expenseShopEntity);
+
+            return expenseShop;
+        }
+        catch (error) {
+            throw new DataStorageError(error as RestError);
+        }
+    }
+
     public async getAllAsync(): Promise<readonly IExpenseShop[]> {
         try {
             const expenseShops: IExpenseShop[] = [];
 
-            for await (const expenseTagEntity of this._azureStorage.tables.expenseShops.listEntities<IExpenseShopEntity>({ queryOptions: { filter: `PartitionKey eq '${AzureTableStorageUtils.escapeKeyValue(this._userId)}'` } }))
-                expenseShops.push(this._mapExpenseShopEntity(expenseTagEntity));
+            for await (const expenseShopEntity of this._azureStorage.tables.expenseShops.listEntities<IExpenseShopEntity>({ queryOptions: { filter: `PartitionKey eq '${AzureTableStorageUtils.escapeKeyValue(this._userId)}'` } }))
+                expenseShops.push(this._mapExpenseShopEntity(expenseShopEntity));
 
             return expenseShops;
         }
@@ -39,6 +54,18 @@ export class AzureStorageExpenseShopsRepository implements IExpenseShopsReposito
                 },
                 "Merge"
             );
+        }
+        catch (error) {
+            throw new DataStorageError(error as RestError);
+        }
+    }
+
+    public async removeAsync(expenseShopName: string, etag: string): Promise<void> {
+        if (AzureTableStorageUtils.isInvalidEtag(etag))
+            throw new DataStorageError("InvalidEtag");
+
+        try {
+            await this._azureStorage.tables.expenseShops.deleteEntity(AzureTableStorageUtils.escapeKeyValue(this._userId), AzureTableStorageUtils.escapeKeyValue(expenseShopName), { etag });
         }
         catch (error) {
             throw new DataStorageError(error as RestError);

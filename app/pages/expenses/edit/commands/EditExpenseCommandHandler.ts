@@ -5,7 +5,6 @@ import type { IExpenseFormViewOptions } from "../../IExpenseFormViewOptions";
 import type { IRequestResult } from "../../../page/results";
 import type { DataStorageError } from "../../../../data/DataStorageError";
 import type { IExpensesRepository } from "../../../../data/repositories/expenses/IExpensesRepository";
-import type { IExpenseTagsRepository } from "../../../../data/repositories/expenses/IExpenseTagsRepository";
 import type { IExpensePageRequestFormBody } from "../../IExpensePageRequestFormBody";
 import { FormCommandHandler } from "../../../page";
 import { ExpenseForm } from "../../ExpenseForm";
@@ -13,12 +12,10 @@ import { ExpenseForm } from "../../ExpenseForm";
 export class EditExpenseCommandHandler extends FormCommandHandler<ExpenseForm, IEditExpenseRouteParams, IExpensePageRequestFormBody, IExpenseFormViewOptions> {
     private readonly _translation: ITranslation;
     private readonly _expensesRepository: IExpensesRepository;
-    private readonly _expenseTagsRepository: IExpenseTagsRepository;
 
-    public constructor({ translation, expensesRepository, expenseTagsRepository }: IDependencyContainer) {
+    public constructor({ translation, expensesRepository }: IDependencyContainer) {
         super();
         this._translation = translation;
-        this._expenseTagsRepository = expenseTagsRepository;
         this._expensesRepository = expensesRepository;
     }
 

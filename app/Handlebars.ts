@@ -1,5 +1,5 @@
 import type { IEnvironmentTranslationLabels, ISiteTranslationTabels, ITranslation } from "./translations/Translation";
-import type { IExpenseTag, IExpenseWarning } from "./model/Expenses";
+import type { IExpenseWarning } from "./model/Expenses";
 import fs from "fs";
 import hbs from "hbs";
 import Markdown from "markdown-it";
@@ -14,6 +14,7 @@ type IHandlebars = ReturnType<typeof hbs.create>;
 export function createHandlebarsInstance(viewsDirectoryPath: string): IHandlebars {
     const markdownParser = new Markdown();
     markdownParser.configure("commonmark");
+    markdownParser.options.html = false;
     markdownParser.use(markdownItAttrs, {
         allowedAttributes: ["id", "class", "target", "title"]
     });
@@ -22,6 +23,14 @@ export function createHandlebarsInstance(viewsDirectoryPath: string): IHandlebar
 
     handlebars.registerHelper("markdown", function (this: any, text: string) {
         return text === undefined || text === null ? undefined : markdownParser.renderInline(text);
+    });
+
+    handlebars.registerHelper("markdownBlock", function (this: any, text: string) {
+        return text === undefined || text === null ? undefined : markdownParser.render(text);
+    });
+
+    handlebars.registerHelper("call", function (this: any, callback: Function, ...args: readonly any[]): unknown {
+        return callback(...args);
     });
 
     handlebars.registerHelper("ifCompare", function (this: any, arg1: any, operator: string, arg2: any, options) {
@@ -185,7 +194,7 @@ export function createHandlebarsInstance(viewsDirectoryPath: string): IHandlebar
             default:
                 return null;
         }
-    })
+    });
 
     return handlebars;
 }

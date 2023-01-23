@@ -42,8 +42,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p>{{{ markdown @root.translation.expenses.edit.deleteConfirmation.description }}}</p>
-                    <p class="mb-0">{{{ markdown @root.translation.expenses.edit.deleteConfirmation.confirmationMessage }}}</p>
+                    {{{ markdownBlock @root.translation.expenses.edit.deleteConfirmation.message }}}
                 </div>
                 <div class="modal-footer">
                     <button type="submit" name="command" value="remove" class="btn btn-danger">
