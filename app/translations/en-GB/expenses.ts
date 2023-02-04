@@ -62,43 +62,43 @@ export const expensesTranslationLabels: IExpensesTranslationLabels = {
         name: {
             label: "Name",
             error: {
-                required: "Please provide a name for the expense that you have made (at most 250 characters)"
+                required: "Please provide a name for the expense that you have made (at most 250 characters)."
             }
         },
         shop: {
             label: "Shop",
             error: {
-                required: "Please provide the name of the shop where you made your purchase (at most 250 characters)"
+                required: "Please provide the name of the shop where you made your purchase (at most 250 characters)."
             }
         },
         tags: {
             label: "Tags",
             error: {
-                required: "Please provide at least one tag (useful when generating reports, at most 250 characters each, at most 25 tags in total)"
+                required: "Please provide at least one tag (useful when generating reports, at most 250 characters each, at most 25 tags in total)."
             },
             addMoreButtonLabel: "Add More"
         },
         currency: {
             error: {
-                required: "Please provide the currency in which you made the purchase (at most 250 characters)"
+                required: "Please provide the currency in which you made the purchase (at most 250 characters)."
             }
         },
         price: {
             label: "Price",
             error: {
-                required: "Please provide a price that is greater than zero and has at most two decimals"
+                required: "Please provide a price that is greater than zero and has at most two decimals."
             }
         },
         quantity: {
             label: "Quantity",
             error: {
-                required: "Please provide the quantity which must be an integer greater than zero"
+                required: "Please provide the quantity which must be an integer greater than zero."
             }
         },
         date: {
             label: "Date",
             error: {
-                required: "Please provide the date when you made the purchase"
+                required: "Please provide the date when you made the purchase."
             }
         },
         error: {

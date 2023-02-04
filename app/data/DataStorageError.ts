@@ -1,12 +1,12 @@
 import type { RestError } from "@azure/data-tables";
 
-export type DataStorageErrorReason = "InvalidEtag" | "NotFound" | "Unknown";
+export type DataStorageErrorReason = "TargetNorReady" | "InvalidEtag" | "NotFound" | "Unknown";
 
 export class DataStorageError extends Error {
-    public constructor(reason: "NotFound" | "InvalidEtag");
+    public constructor(reason: "TargetNorReady" | "NotFound" | "InvalidEtag");
     public constructor(restError: RestError);
 
-    public constructor(reasonOrRestError: "NotFound" | "InvalidEtag" | RestError) {
+    public constructor(reasonOrRestError: "TargetNorReady" | "NotFound" | "InvalidEtag" | RestError) {
         if (typeof reasonOrRestError === "string") {
             super();
             this.reason = reasonOrRestError;

@@ -112,7 +112,7 @@ export class AzureStorageExpensesRepository implements IExpensesRepository {
                 const warningActivation = new Date();
                 warningActivation.setHours(warningActivation.getHours() + 1);
 
-                await this._azureStorage.tables.expenses.updateEntity<IExpenseEntity>(
+                await this._azureStorage.tables.expenses.updateEntity<Omit<IExpenseEntity, "date">>(
                     {
                         partitionKey: AzureTableStorageUtils.escapeKeyValue(partitionKey),
                         rowKey: AzureTableStorageUtils.escapeKeyValue(expense.key.id),
@@ -124,7 +124,6 @@ export class AzureStorageExpensesRepository implements IExpensesRepository {
                         currency: expense.currency.toUpperCase(),
                         price: expense.price,
                         quantity: expense.quantity,
-                        date: expense.date,
 
                         state: "changingMonth",
                         warning: JSON.stringify({
@@ -244,11 +243,11 @@ export class AzureStorageExpensesRepository implements IExpensesRepository {
     }
 
     private async _indexShopAsync(shopName: string): Promise<void> {
-        await this._azureStorage.tables.expenseShops.upsertEntity<IExpenseShopEntity>(
+        await this._azureStorage.tables.expenseShops.upsertEntity<Omit<IExpenseShopEntity, "state">>(
             {
                 partitionKey: AzureTableStorageUtils.escapeKeyValue(this._userId),
-                rowKey: AzureTableStorageUtils.escapeKeyValue(shopName),
-                name: shopName,
+                rowKey: AzureTableStorageUtils.escapeKeyValue(shopName.toLowerCase()),
+                name: shopName
             },
             "Merge"
         );

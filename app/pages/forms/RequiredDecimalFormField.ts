@@ -54,7 +54,7 @@ export class RequiredDecimalFormField<TOption = number> implements IFormField<nu
     }
 
     private _validateDecimal(field: IFormField<number, TOption>): string | null {
-        if (field.value !== undefined && field.value !== null && Number.isFinite(field.value) && field.value > 0 && /^(\d{1,3},)*\d{1,3}(\.\d\d?)?$/.test(field.value.toLocaleString("en-GB")))
+        if (field.value !== undefined && field.value !== null && Number.isFinite(field.value) && field.value > 0 && /^\d+(\.\d\d?)?$/.test(field.value.toLocaleString("en-GB", { useGrouping: false, notation: "standard" })))
             return null;
         else
             return this._invalidNumberError;

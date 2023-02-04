@@ -164,6 +164,14 @@ export interface IExpensesTranslationLabels {
 
 
 export interface IExpenseShopsTranslationLabels {
+    readonly states: {
+        readonly renaming: string;
+    }
+    readonly warnings: {
+        rename(newName: string): string;
+        renameTarget(initialName: string): string;
+    }
+
     readonly list: {
         readonly title: string;
         readonly pageTitle: string;
@@ -176,15 +184,41 @@ export interface IExpenseShopsTranslationLabels {
         readonly empty: string;
     }
 
-    readonly delete: {
+    readonly rename: {
         readonly confirmation: {
             title(expenseShopName: string): string;
+
+            readonly name: {
+                readonly label: string;
+                readonly error: {
+                    readonly required: string;
+                }
+            };
+
             readonly message: string;
             readonly confirmButtonLabel: string;
             readonly cancelButtonLabel: string;
         }
 
         readonly errors: {
+            readonly notEditable: string;
+            readonly notFound: string;
+            readonly invalidEtag: string;
+            readonly targetNotReady: string;
+        }
+    }
+
+    readonly delete: {
+        readonly confirmation: {
+            title(expenseShopName: string): string;
+
+            readonly message: string;
+            readonly confirmButtonLabel: string;
+            readonly cancelButtonLabel: string;
+        }
+
+        readonly errors: {
+            readonly notEditable: string;
             readonly notFound: string;
             readonly invalidEtag: string;
         }

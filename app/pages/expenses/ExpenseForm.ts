@@ -23,13 +23,13 @@ export class ExpenseForm extends Form {
         this._expenseShopsRepository = expenseShopsRepository;
         this._expenseTagsRepository = expenseTagsRepository;
         this.fields = [
-            this.name = new RequiredTextFormField("name", translation?.expenses.form.name.error.required),
-            this.shop = new RequiredTextFormField<IExpenseShop>("shop", translation?.expenses.form.shop.error.required),
-            this.tags = new RequiredMultiSelectTextField<WithoutEtag<IExpenseTag>>("tags", translation?.expenses.form.tags.error.required),
-            this.price = new RequiredDecimalFormField("price", translation?.expenses.form.price.error.required),
-            this.currency = new RequiredTextFormField("currency", translation?.expenses.form.currency.error.required),
-            this.quantity = new RequiredIntegerFormField("quantity", translation?.expenses.form.quantity.error.required),
-            this.date = new RequiredDateFormField("date", translation?.expenses.form.date.error.required)
+            this.name = new RequiredTextFormField("name", translation.expenses.form.name.error.required),
+            this.shop = new RequiredTextFormField<IExpenseShop>("shop", translation.expenses.form.shop.error.required),
+            this.tags = new RequiredMultiSelectTextField<WithoutEtag<IExpenseTag>>("tags", translation.expenses.form.tags.error.required),
+            this.price = new RequiredDecimalFormField("price", translation.expenses.form.price.error.required),
+            this.currency = new RequiredTextFormField("currency", translation.expenses.form.currency.error.required),
+            this.quantity = new RequiredIntegerFormField("quantity", translation.expenses.form.quantity.error.required),
+            this.date = new RequiredDateFormField("date", translation.expenses.form.date.error.required)
         ];
 
         this.tags.maximumItemLimit = 25;

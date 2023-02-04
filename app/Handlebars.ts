@@ -1,5 +1,5 @@
 import type { IEnvironmentTranslationLabels, ISiteTranslationTabels, ITranslation } from "./translations/Translation";
-import type { IExpenseWarning } from "./model/Expenses";
+import type { IExpenseShopWarning, IExpenseWarning } from "./model/Expenses";
 import fs from "fs";
 import hbs from "hbs";
 import Markdown from "markdown-it";
@@ -53,26 +53,33 @@ export function createHandlebarsInstance(viewsDirectoryPath: string): IHandlebar
         return value % 2 !== 0 ? options.fn(this) : options.inverse(this);
     });
 
+    handlebars.registerHelper("formatFormNumber", function (this: any, locale: string, value?: number): string {
+        return value?.toLocaleString(locale, { useGrouping: false, notation: "standard" }) || "";
+    });
+
     handlebars.registerHelper("getLeadingZeros", function (this: any, locale: string, value: number, integerDigitsCount?: number): string {
         if (locale === undefined || locale === null || typeof locale !== "string")
             throw new Error("getLeadingZeros expects a locale, but none was provided.");
 
-        const significantIntegerDigits = value.toLocaleString(locale);
-        const completeIntegerDigits = value.toLocaleString(locale, { minimumIntegerDigits: integerDigitsCount, minimumFractionDigits: 0 });
+        const significantIntegerDigits = value.toLocaleString(locale, { notation: "standard" });
 
-        return completeIntegerDigits.substring(0, completeIntegerDigits.length - significantIntegerDigits.length);
+        const oneAsString = (1).toLocaleString(locale, { notation: "standard" });
+        const zeroAsString = (0).toLocaleString(locale, { notation: "standard" });
+        const zerosTemplate = Number("1" + "0".repeat(integerDigitsCount! - 1)).toLocaleString(locale, { notation: "standard" }).replace(oneAsString, zeroAsString);
+
+        return zerosTemplate.substring(0, zerosTemplate.length - significantIntegerDigits.length);
     });
     handlebars.registerHelper("formatNumber", function (this: any, locale: string, value?: number): string {
         if (locale === undefined || locale === null || typeof locale !== "string")
             throw new Error("formatNumber expects a locale, but none was provided.");
 
-        return value?.toLocaleString(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || "";
+        return value?.toLocaleString(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2, notation: "standard" }) || "";
     });
     handlebars.registerHelper("formatIntegerNumber", function (this: any, locale: string, value?: number): string {
         if (locale === undefined || locale === null || typeof locale !== "string")
             throw new Error("formatIntegerNumber expects a locale, but none was provided.");
 
-        return value?.toLocaleString(locale, { maximumFractionDigits: 0 }) || "";
+        return value?.toLocaleString(locale, { maximumFractionDigits: 0, notation: "standard" }) || "";
     });
 
     handlebars.registerHelper("toInputDateValue", function (this: any, date: Date): string {
@@ -169,6 +176,14 @@ export function createHandlebarsInstance(viewsDirectoryPath: string): IHandlebar
             return translationLabelOrSelector;
         else
             return translationLabelOrSelector.apply(translation.expenses.warnings, expenseWarning.arguments as any[]);
+    });
+
+    handlebars.registerHelper("expenseShopWarning", function (this: any, translation: ITranslation, expenseShopWarning: IExpenseShopWarning) {
+        const translationLabelOrSelector: string | ((...args: readonly any[]) => string) = translation.expenseShops.warnings[expenseShopWarning.key];
+        if (typeof translationLabelOrSelector === "string")
+            return translationLabelOrSelector;
+        else
+            return translationLabelOrSelector.apply(translation.expenses.warnings, expenseShopWarning.arguments as any[]);
     });
 
     handlebars.registerHelper("expenseTagColorClass", function (this: any, expenseTagColor: ExpenseTagColor): string {

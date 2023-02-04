@@ -101,9 +101,9 @@ export class GetMonthlyExpensesQueryHandler extends BasicQueryHandler<IListExpen
             },
             format: {
                 integerDigitsCount: {
-                    price: Math.max(...expenses.map(expense => expense.price))?.toFixed(0).length,
-                    quantity: Math.max(...expenses.map(expense => expense.quantity))?.toFixed(0).length,
-                    amount: totals[0]?.amount.toFixed(0).length
+                    price: Math.max(...expenses.map(expense => expense.price))?.toLocaleString(this._translation.locale, { useGrouping: false, maximumFractionDigits: 0 }).length || 1,
+                    quantity: Math.max(...expenses.map(expense => expense.quantity))?.toLocaleString(this._translation.locale, { useGrouping: false, maximumFractionDigits: 0 }).length || 1,
+                    amount: totals[0]?.amount.toLocaleString(this._translation.locale, { useGrouping: false, maximumFractionDigits: 0 }).length || 1
                 }
             },
             pagination: {

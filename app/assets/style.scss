@@ -28,6 +28,12 @@ a>svg {
     fill: $warning;
 }
 
+@each $color, $value in $theme-colors {
+    .text-#{$color} svg {
+        fill: $value;
+    }
+}
+
 .text-justify {
     text-align: justify;
 }

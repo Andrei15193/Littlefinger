@@ -107,7 +107,7 @@
             {{#each form.currency.options}}<option value="{{ this }}">{{/each}}
         </datalist>
 
-        <input type="number" autocomplete="off" lang="" step="any" class="form-control form-control-sm{{#if form.isValidated}}{{#if form.price.error}} is-invalid{{else}} is-valid{{/if}}{{/if}}" id="price" name="price" value="{{ form.price.value }}" {{#unlessCompare state '===' 'ready' }} disabled{{/unlessCompare}}>
+        <input type="number" autocomplete="off" lang="" step="any" class="form-control form-control-sm{{#if form.isValidated}}{{#if form.price.error}} is-invalid{{else}} is-valid{{/if}}{{/if}}" id="price" name="price" value="{{ formatFormNumber @root.translation.locale form.price.value }}" {{#unlessCompare state '===' 'ready' }} disabled{{/unlessCompare}}>
 
         {{#if form.currency.error }}<div class="invalid-feedback">{{{ markdown form.currency.error }}}</div>{{/if}}
         {{#if form.price.error }}<div class="invalid-feedback">{{{ markdown form.price.error }}}</div>{{/if}}

@@ -1,4 +1,4 @@
-import type { IExpensesTranslationLabels } from "../translations/Translation";
+import type { IExpensesTranslationLabels, IExpenseShopsTranslationLabels } from "../translations/Translation";
 
 export interface IExpenseKey {
     readonly month: string;
@@ -46,5 +46,15 @@ export enum ExpenseTagColor {
 export interface IExpenseShop {
     readonly name: string;
 
+    readonly warning?: IExpenseShopWarning;
+    readonly state: ExpenseShopState;
+
     readonly etag: string;
+}
+
+export type ExpenseShopState = "ready" | "renaming";
+
+export interface IExpenseShopWarning {
+    readonly key: keyof IExpenseShopsTranslationLabels["warnings"];
+    readonly arguments: readonly (string | number | object)[];
 }
