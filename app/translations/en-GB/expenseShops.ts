@@ -18,6 +18,11 @@ export const expenseShopsTranslationLabels: IExpenseShopsTranslationLabels = {
         title: "Expense Shops",
         pageTitle: "Expense Shops",
 
+        columns: {
+            name: "Name",
+            actions: "Actions"
+        },
+
         actions: {
             rename: "Rename",
             delete: "Delete"

@@ -40,6 +40,7 @@
         position: sticky;
         top: calc($app-navigation-height + $expenses-header-height);
         background-color: $white;
+        z-index: 10;
 
         @include media-breakpoint-up(md) {
             top: calc($app-navigation-height-md + $expenses-header-height-md);

@@ -19,6 +19,12 @@
 
     {{#unlessCompare expenseShops.length '===' 0}}
     <table class="table table-sticky table-hover mt-2">
+        <thead>
+            <tr class="expenses-table-header">
+                <th><div>{{ @root.translation.expenseShops.list.columns.name }}</div></th>
+                <th colspan="2" class="text-center"><div>{{ @root.translation.expenseShops.list.columns.actions }}</div></th>
+            </tr>
+        </thead>
         <tbody>
             {{#each expenseShops}}
             <tr {{#unlessOdd @index}} class="table-light" {{/unlessOdd}}>

@@ -3,6 +3,7 @@ import { siteTranslationLabels } from "./site";
 import { homeTranslationLabels } from "./home";
 import { expensesTranslationLabels } from "./expenses";
 import { expenseShopsTranslationLabels } from "./expenseShops";
+import { expenseTagsTranslationLabels } from "./expenseTags";
 import { aboutTranslationLabels } from "./about";
 
 export const enGB: ITranslation = {
@@ -14,5 +15,6 @@ export const enGB: ITranslation = {
     home: homeTranslationLabels,
     expenses: expensesTranslationLabels,
     expenseShops: expenseShopsTranslationLabels,
+    expenseTags: expenseTagsTranslationLabels,
     about: aboutTranslationLabels
 }

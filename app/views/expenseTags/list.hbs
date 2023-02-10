@@ -1,0 +1,47 @@
+<div class="expenses-list-view">
+    <div class="expenses-list-header h-auto pb-1">
+        {{>expenses/subpageNavigation pageTitle = @root.translation.expenseTags.list.pageTitle}}
+    </div>
+
+    {{#if form.error}}
+    <div class="alert alert-danger p-2" role="alert">
+        {{ markdown form.error }}
+    </div>
+    {{else}}
+    {{#each form.fields}}
+    {{#if error}}
+    <div class="alert alert-danger p-2" role="alert">
+        {{ markdown error }}
+    </div>
+    {{/if}}
+    {{/each}}
+    {{/if}}
+
+    {{#unlessCompare expenseTags.length '===' 0}}
+    <table class="table table-sticky table-hover mt-2">
+        <thead>
+            <tr class="expenses-table-header">
+                <th><div>{{ @root.translation.expenseTags.list.columns.name }}</div></th>
+                <th colspan="2" class="text-center"><div>{{ @root.translation.expenseTags.list.columns.actions }}</div></th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each expenseTags}}
+            <tr {{#unlessOdd @index}} class="table-light" {{/unlessOdd}}>
+                <th class="align-middle w-100">
+                    <div class="tag fs-6 fw-bold {{ expenseTagColorClass this.color }} badge rounded-pill">{{ this.name }}</div>
+                </th>
+                <td class="ps-2 pe-0">
+                    <button type="button" class="btn btn-sm btn-primary disabled">{{{markdown @root.translation.expenseTags.list.actions.update}}}</button>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-sm btn-danger disabled">{{{markdown @root.translation.expenseTags.list.actions.delete}}}</button>
+                </td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+    {{else}}
+    <div class="p-2 alert alert-secondary text-center" role="alert">{{{ markdown @root.translation.expenseTags.list.empty }}}</div>
+    {{/unlessCompare}}
+</div>

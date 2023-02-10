@@ -7,6 +7,7 @@ export interface ITranslation {
     readonly home: IHomeTranslationLabels;
     readonly expenses: IExpensesTranslationLabels;
     readonly expenseShops: IExpenseShopsTranslationLabels;
+    readonly expenseTags: IExpenseTagsTranslationLabels;
     readonly about: IAboutTranslationLabels;
 }
 
@@ -162,7 +163,6 @@ export interface IExpensesTranslationLabels {
     }
 }
 
-
 export interface IExpenseShopsTranslationLabels {
     readonly states: {
         readonly renaming: string;
@@ -175,6 +175,11 @@ export interface IExpenseShopsTranslationLabels {
     readonly list: {
         readonly title: string;
         readonly pageTitle: string;
+
+        readonly columns: {
+            readonly name: string;
+            readonly actions: string;
+        }
 
         readonly actions: {
             readonly rename: string;
@@ -211,6 +216,80 @@ export interface IExpenseShopsTranslationLabels {
     readonly delete: {
         readonly confirmation: {
             title(expenseShopName: string): string;
+
+            readonly message: string;
+            readonly confirmButtonLabel: string;
+            readonly cancelButtonLabel: string;
+        }
+
+        readonly errors: {
+            readonly notEditable: string;
+            readonly notFound: string;
+            readonly invalidEtag: string;
+        }
+    }
+}
+
+export interface IExpenseTagsTranslationLabels {
+    readonly states: {
+        readonly renaming: string;
+    }
+    readonly warnings: {
+        rename(newName: string): string;
+        renameTarget(initialName: string): string;
+    }
+
+    readonly list: {
+        readonly title: string;
+        readonly pageTitle: string;
+
+        readonly columns: {
+            readonly name: string;
+            readonly actions: string;
+        }
+
+        readonly actions: {
+            readonly update: string;
+            readonly delete: string;
+        }
+
+        readonly empty: string;
+    }
+
+    readonly update: {
+        readonly confirmation: {
+            title(expenseTagName: string): string;
+
+            readonly name: {
+                readonly label: string;
+                readonly error: {
+                    readonly required: string;
+                }
+            };
+
+            readonly color: {
+                readonly label: string;
+                readonly error: {
+                    readonly required: string;
+                }
+            };
+
+            readonly message: string;
+            readonly confirmButtonLabel: string;
+            readonly cancelButtonLabel: string;
+        }
+
+        readonly errors: {
+            readonly notEditable: string;
+            readonly notFound: string;
+            readonly invalidEtag: string;
+            readonly targetNotReady: string;
+        }
+    }
+
+    readonly delete: {
+        readonly confirmation: {
+            title(expenseTagName: string): string;
 
             readonly message: string;
             readonly confirmButtonLabel: string;

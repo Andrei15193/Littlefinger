@@ -12,5 +12,10 @@
                 {{{ markdown @root.translation.expenseShops.list.pageTitle }}}
             </a>
         </li>
+        <li>
+            <a class="dropdown-item{{#ifCompare pageTitle '===' @root.translation.expenseTags.list.pageTitle}} active{{/ifCompare}}" href="/expense-tags">
+                {{{ markdown @root.translation.expenseTags.list.pageTitle }}}
+            </a>
+        </li>
     </ul>
 </div>

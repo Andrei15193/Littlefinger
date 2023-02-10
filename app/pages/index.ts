@@ -4,6 +4,7 @@ import { AddExpensePage, EditExpensePage, ListExpensesPage } from "./expenses";
 import { AboutPage } from "./about";
 import { AzureActiveDirectoryUserFlowTemplatePage } from "./azureActiveDirectoryUserFlowTemplate/index"
 import { ListExpenseShopsPage } from "./expenseShops/index";
+import { ListExpenseTagsPage } from "./expenseTags/index";
 
 export const pages: IPage[] = [
     new HomePage(),
@@ -13,6 +14,8 @@ export const pages: IPage[] = [
     new EditExpensePage(),
 
     new ListExpenseShopsPage(),
+
+    new ListExpenseTagsPage(),
 
     new AboutPage(),
 
