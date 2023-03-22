@@ -10,8 +10,8 @@ export class ExpenseShopForm extends Form {
         super();
 
         this.fields = [
-            this.initialName = new RequiredTextFormField("initialName", translation.expenseShops.rename.confirmation.name.error.required),
-            this.newName = new RequiredTextFormField("newName", translation.expenseShops.rename.confirmation.name.error.required)
+            this.initialName = new RequiredTextFormField("initialName", translation.expenseShops.rename.modal.name.error.required),
+            this.newName = new RequiredTextFormField("newName", translation.expenseShops.rename.modal.name.error.required)
         ];
 
         this._expenseShops = [];

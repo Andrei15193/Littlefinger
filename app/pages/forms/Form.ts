@@ -12,7 +12,7 @@ export abstract class Form {
     }
 
     public get isValid(): boolean | null {
-        if (this.error !== null || this._etag === undefined || this._etag === null)
+        if (this.error !== null)
             return false;
         else
             return this.fields.reduce<boolean | null>(
@@ -22,7 +22,7 @@ export abstract class Form {
     }
 
     public get isInvalid(): boolean | null {
-        if (this.error !== null || this._etag === undefined || this._etag === null)
+        if (this.error !== null)
             return true;
         else
             return this.fields.reduce<boolean | null>(

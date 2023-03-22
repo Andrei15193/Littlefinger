@@ -32,9 +32,9 @@ export const expenseShopsTranslationLabels: IExpenseShopsTranslationLabels = {
     },
 
     rename: {
-        confirmation: {
+        modal: {
             title(expenseShopName: string): string {
-                return `Renaming of ${expenseShopName}`;
+                return `Rename ${expenseShopName}`;
             },
             name: {
                 label: "Name",
@@ -60,9 +60,9 @@ export const expenseShopsTranslationLabels: IExpenseShopsTranslationLabels = {
     },
 
     delete: {
-        confirmation: {
+        modal: {
             title(expenseShopName: string): string {
-                return `Confirm Deletion of ${expenseShopName}`;
+                return `Delete ${expenseShopName}`;
             },
             message: "This action will delete the indexed shop name, but will not update any of the expenses.\n"
                 + "\n"

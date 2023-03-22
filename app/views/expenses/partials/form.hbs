@@ -73,10 +73,10 @@
         {{#unless @first}}
         <div class="tag-group d-inline-flex flex-row">
             {{#with (lookup @root.form.expenseTagsByName this)}}
-            <div class="tag {{ expenseTagColorClass color }} badge rounded-pill">
+            <div class="tag tag-{{ expenseTagColorKey color }} badge rounded-pill">
                 {{ name }}
             </div>
-            <button type="submit" name="command" value="remove-tag:{{ name }}" class="tag {{ expenseTagColorClass color }} badge rounded-pill btn btn-danger px-2 py-0 border-0 d-flex flex-row align-items-center" {{#unlessCompare @root.state '===' 'ready' }} disabled{{/unlessCompare}}>
+            <button type="submit" name="command" value="remove-tag:{{ name }}" class="tag tag-{{ expenseTagColorKey color }} badge rounded-pill btn btn-danger px-2 py-0 border-0 d-flex flex-row align-items-center" {{#unlessCompare @root.state '===' 'ready' }} disabled{{/unlessCompare}}>
                 {{> icons/close-icon height='0.7rem' }}
             </button>
             {{/with}}

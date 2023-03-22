@@ -24,17 +24,17 @@ export const expenseTagsTranslationLabels: IExpenseTagsTranslationLabels = {
         },
 
         actions: {
-            update: "Rename",
+            edit: "Edit",
             delete: "Delete"
         },
 
         empty: "There are no expense tags. These are automatically added as you log expenses."
     },
 
-    update: {
-        confirmation: {
+    edit: {
+        modal: {
             title(expenseTagName: string): string {
-                return `Renaming of ${expenseTagName}`;
+                return `Edit ${expenseTagName}`;
             },
             name: {
                 label: "Name",
@@ -45,7 +45,7 @@ export const expenseTagsTranslationLabels: IExpenseTagsTranslationLabels = {
             color: {
                 label: "Colour",
                 error: {
-                    required: "Please provide a colour for the expense tag."
+                    required: "Please select a colour for the expense tag."
                 }
             },
             message: "This action will update **all expenses** that currently have this expense tag as well. If there is another tag with the same name, then the two are merged.\n"
@@ -66,9 +66,9 @@ export const expenseTagsTranslationLabels: IExpenseTagsTranslationLabels = {
     },
 
     delete: {
-        confirmation: {
+        modal: {
             title(expenseTagName: string): string {
-                return `Confirm Deletion of ${expenseTagName}`;
+                return `Delete ${expenseTagName}`;
             },
             message: "This action will delete the tag, **all** expenses will be updated and have this tag removed.\n"
                 + "\n"

@@ -1,4 +1,4 @@
-import type { IExpensesTranslationLabels, IExpenseShopsTranslationLabels } from "../translations/Translation";
+import type { IExpensesTranslationLabels, IExpenseTagsTranslationLabels, IExpenseShopsTranslationLabels } from "../translations/Translation";
 
 export interface IExpenseKey {
     readonly month: string;
@@ -34,6 +34,9 @@ export interface IExpenseTag {
     readonly name: string;
     readonly color: ExpenseTagColor;
 
+    readonly warning?: IExpenseTagWarning;
+    readonly state: ExpenseTagState;
+
     readonly etag: string;
 }
 
@@ -41,6 +44,13 @@ export enum ExpenseTagColor {
     "1ABC9C", "16A085", "2ECC71", "27AE60", "3498DB", "2980B9", "9B59B6", "8E44AD", "34495E", "2C3E50", "F1C40F", "F39C12", "E67E22", "D35400", "E74C3C", "C0392B", "ECF0F1", "BDC3C7", "95A5A6", "7F8C8D",
     "FFADAD", "FFD6A5", "FDFFB6", "CAFFBF", "9BF6FF", "A0C4FF", "BDB2FF", "FFC6FF",
     "FF6361", "FFA600"
+}
+
+export type ExpenseTagState = "ready" | "renaming" | "deleting";
+
+export interface IExpenseTagWarning {
+    readonly key: keyof IExpenseTagsTranslationLabels["warnings"];
+    readonly arguments: readonly (string | number | object)[];
 }
 
 export interface IExpenseShop {

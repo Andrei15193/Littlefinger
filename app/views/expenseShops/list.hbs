@@ -21,8 +21,12 @@
     <table class="table table-sticky table-hover mt-2">
         <thead>
             <tr class="expenses-table-header">
-                <th><div>{{ @root.translation.expenseShops.list.columns.name }}</div></th>
-                <th colspan="2" class="text-center"><div>{{ @root.translation.expenseShops.list.columns.actions }}</div></th>
+                <th>
+                    <div>{{ @root.translation.expenseShops.list.columns.name }}</div>
+                </th>
+                <th colspan="2" class="text-center">
+                    <div>{{ @root.translation.expenseShops.list.columns.actions }}</div>
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -48,30 +52,30 @@
                         <form class="modal-dialog" method="POST">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h1 class="modal-title fs-5">{{call @root.translation.expenseShops.rename.confirmation.title name}}</h1>
+                                    <h1 class="modal-title fs-5">{{call @root.translation.expenseShops.rename.modal.title name}}</h1>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
                                     <div class="mb-3">
-                                        <label for="name" class="form-label">{{{ markdown @root.translation.expenseShops.rename.name.label }}}</label>
+                                        <label for="newName" class="form-label">{{{ markdown @root.translation.expenseShops.rename.modal.name.label }}}</label>
                                         <input
                                             type="text"
                                             autocomplete="off"
                                             class="form-control form-control-sm{{#if nameError}}{{#if nameError}} is-invalid{{else}} is-valid{{/if}}{{/if}}"
                                             id="newName"
                                             name="newName"
-                                            placeholder="{{ name }}">
+                                            value="{{ name }}">
                                         <div class="invalid-feedback">{{{ markdown nameError }}}</div>
                                     </div>
 
-                                    {{{markdownBlock @root.translation.expenseShops.rename.confirmation.message}}}
+                                    {{{markdownBlock @root.translation.expenseShops.rename.modal.message}}}
 
                                     <input type="hidden" name="initialName" value="{{ name }}">
                                     <input type="hidden" name="etag" value="{{ etag }}">
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="submit" name="command" value="rename" class="btn btn-primary">{{{markdown @root.translation.expenseShops.rename.confirmation.confirmButtonLabel}}}</button>
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{{markdown @root.translation.expenseShops.rename.confirmation.cancelButtonLabel}}}</button>
+                                    <button type="submit" name="command" value="rename" class="btn btn-primary">{{{markdown @root.translation.expenseShops.rename.modal.confirmButtonLabel}}}</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{{markdown @root.translation.expenseShops.rename.modal.cancelButtonLabel}}}</button>
                                 </div>
                             </div>
                         </form>
@@ -84,19 +88,19 @@
                         <form class="modal-dialog" method="POST">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h1 class="modal-title fs-5">{{call @root.translation.expenseShops.delete.confirmation.title name}}</h1>
+                                    <h1 class="modal-title fs-5">{{call @root.translation.expenseShops.delete.modal.title name}}</h1>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    {{{markdownBlock @root.translation.expenseShops.delete.confirmation.message}}}
+                                    {{{markdownBlock @root.translation.expenseShops.delete.modal.message}}}
 
                                     <input type="hidden" name="initialName" value="{{ name }}">
                                     <input type="hidden" name="newName" value="{{ name }}">
                                     <input type="hidden" name="etag" value="{{ etag }}">
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="submit" name="command" value="remove" class="btn btn-danger">{{{markdown @root.translation.expenseShops.delete.confirmation.confirmButtonLabel}}}</button>
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{{markdown @root.translation.expenseShops.delete.confirmation.cancelButtonLabel}}}</button>
+                                    <button type="submit" name="command" value="remove" class="btn btn-danger">{{{markdown @root.translation.expenseShops.delete.modal.confirmButtonLabel}}}</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{{markdown @root.translation.expenseShops.delete.modal.cancelButtonLabel}}}</button>
                                 </div>
                             </div>
                         </form>

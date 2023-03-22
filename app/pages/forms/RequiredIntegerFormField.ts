@@ -53,8 +53,18 @@ export class RequiredIntegerFormField<TOption = number> implements IFormField<nu
         this._isValid = this._error === null;
     }
 
+    public minimumNumber: number | null = 1;
+
+    public maximumNumber: number | null = null;
+
     private _validateInteger(field: IFormField<number, TOption>): string | null {
-        if (field.value !== undefined && field.value !== null && Number.isFinite(field.value) && field.value > 0 && Number.isInteger(field.value))
+        if (
+            field.value !== undefined
+            && field.value !== null && Number.isFinite(field.value)
+            && Number.isInteger(field.value)
+            && (this.minimumNumber === null || field.value >= this.minimumNumber)
+            && (this.maximumNumber === null || field.value <= this.maximumNumber)
+        )
             return null;
         else
             return this._invalidNumberError;

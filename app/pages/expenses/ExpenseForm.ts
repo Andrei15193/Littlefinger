@@ -5,13 +5,13 @@ import type { IExpenseTagsRepository } from "../../data/repositories/expenses/IE
 import type { ICurrenciesRepository } from "../../data/repositories/expenses/ICurrenciesRepository";
 import type { IExpenseShopsRepository } from "../../data/repositories/expenses/IExpenseShopsRepository";
 import type { IExpenseShop, IExpenseTag } from "../../model/Expenses";
-import type { WithoutEtag } from "../../model/Common";
+import type { WithoutEtag, WithoutState } from "../../model/common";
 import { ExpenseTagColor } from "../../model/Expenses";
 import { Form, RequiredTextFormField, RequiredIntegerFormField, RequiredDecimalFormField, RequiredDateFormField, RequiredMultiSelectTextField } from "../forms";
 import { Enum } from "../../global/Enum";
 
 export class ExpenseForm extends Form {
-    private _expenseTagsByName: Record<string, WithoutEtag<IExpenseTag>>;
+    private _expenseTagsByName: Record<string, WithoutEtag<WithoutState<IExpenseTag>>>;
     private readonly _currenciesRepository: ICurrenciesRepository;
     private readonly _expenseTagsRepository: IExpenseTagsRepository;
     private readonly _expenseShopsRepository: IExpenseShopsRepository;
@@ -51,7 +51,7 @@ export class ExpenseForm extends Form {
 
     public readonly fields: readonly IFormField<any, any>[];
 
-    public get expenseTagsByName(): Record<string, WithoutEtag<IExpenseTag>> {
+    public get expenseTagsByName(): Record<string, WithoutEtag<WithoutState<IExpenseTag>>> {
         return this._expenseTagsByName;
     }
 

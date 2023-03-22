@@ -1,3 +1,5 @@
+import type { IStatefulEntity } from "../azureStorage/entities/StatefulEntity";
+
 export class AzureTableStorageUtils {
     public static escapeKeyValue(value: string): string {
         return value.replace(
@@ -14,5 +16,15 @@ export class AzureTableStorageUtils {
 
     public static isInvalidEtag(etag: string | undefined | null): etag is null | undefined | "*" {
         return etag === undefined || etag === null || etag === "*";
+    }
+
+    public static hasWarning(statefulEntity: IStatefulEntity<unknown>): boolean {
+        const currentDate = new Date();
+
+        const hasWarning = (statefulEntity.warning !== null && statefulEntity.warning !== undefined
+            && statefulEntity.warningActivation !== null && statefulEntity.warningActivation !== undefined
+            && statefulEntity.warningActivation < currentDate);
+
+        return hasWarning;
     }
 }

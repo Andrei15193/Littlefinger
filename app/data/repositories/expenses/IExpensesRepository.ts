@@ -1,4 +1,4 @@
-import type { WithoutAnyEtag, WithoutRelatedEtags } from "../../../model/Common";
+import type { WithoutAnyEtag, WithoutRelatedEtags, WithoutAnyState } from "../../../model/common";
 import type { IExpense, IExpenseKey } from "../../../model/Expenses";
 
 export interface IExpensesRepository {
@@ -6,9 +6,9 @@ export interface IExpensesRepository {
 
     getAllAsync(expensesMonth: string): Promise<readonly IExpense[]>;
 
-    addAsync(expense: WithoutAnyEtag<Omit<IExpense, "key" | "amount" | "state" | "warning">>): Promise<void>;
+    addAsync(expense: WithoutAnyEtag<WithoutAnyState<Omit<IExpense, "key" | "amount">>>): Promise<void>;
 
-    updateAsync(expense: WithoutRelatedEtags<Omit<IExpense, "amount" | "state" | "warning">>): Promise<void>;
+    updateAsync(expense: WithoutRelatedEtags<WithoutAnyState<Omit<IExpense, "amount">>>): Promise<void>;
 
     removeAsync(expenseMonth: string, expenseId: string, expenseEtag: string): Promise<void>;
 }

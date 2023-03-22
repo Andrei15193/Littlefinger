@@ -51,97 +51,45 @@ export class AzureStorageExpenseShopsRepository implements IExpenseShopsReposito
         }
     }
 
-    public async renameAsync(initialExpenseShopName: string, newExpenseShopName: string, etag: string): Promise<void> {
-        const warningActivation = new Date();
-        warningActivation.setHours(warningActivation.getHours() + 1);
+    public async renameAsync(initialExpenseShopName: string, initialExpenseShopEtag: string, newExpenseShopName: string): Promise<void> {
+        if (AzureTableStorageUtils.isInvalidEtag(initialExpenseShopEtag))
+            throw new DataStorageError("InvalidEtag");
 
-        let initialExpenseEtag = etag;
-        try {
-            const existingDestinationExpenseShop = await this._azureStorage.tables.expenseShops.getEntity<IExpenseShopEntity>(
-                AzureTableStorageUtils.escapeKeyValue(this._userId),
-                AzureTableStorageUtils.escapeKeyValue(newExpenseShopName.toLowerCase())
-            );
+        if (initialExpenseShopName !== newExpenseShopName) {
+            const warningActivation = new Date();
+            warningActivation.setHours(warningActivation.getHours() + 1);
 
-            const existingDestinationExpenseShopState = existingDestinationExpenseShop.state === null || existingDestinationExpenseShop.state === undefined
-                ? "ready"
-                : existingDestinationExpenseShop.state;
-            const hasWarning = (existingDestinationExpenseShop.warning !== null && existingDestinationExpenseShop.warning !== undefined
-                    && existingDestinationExpenseShop.warningActivation !== null && existingDestinationExpenseShop.warningActivation !== undefined
-                    && existingDestinationExpenseShop.warningActivation < new Date());
+            try {
+                if (initialExpenseShopName.localeCompare(newExpenseShopName, "en-GB", { sensitivity: "base" }) !== 0)
+                    await this._ensureDestinationExpenseShopAsync(initialExpenseShopName, newExpenseShopName, warningActivation);
 
-            if (existingDestinationExpenseShopState !== "ready" && !hasWarning)
-                throw new DataStorageError("TargetNorReady");
-
-            const { etag: updatedEtag } = await this._azureStorage.tables.expenseShops.updateEntity<Omit<IExpenseShopEntity, "name">>(
-                {
-                    partitionKey: existingDestinationExpenseShop.partitionKey,
-                    rowKey: existingDestinationExpenseShop.rowKey,
-                    state: "renaming",
-                    warning: JSON.stringify({
-                        key: "renameTarget",
-                        arguments: [initialExpenseShopName]
-                    } as IExpenseShopWarning),
-                    warningActivation
-                },
-                "Merge",
-                { etag: existingDestinationExpenseShop.etag }
-            );
-
-            if (initialExpenseShopName.localeCompare(newExpenseShopName, "en-GB", { sensitivity: "base" }) === 0)
-                initialExpenseEtag = updatedEtag!;
-        }
-        catch (error) {
-            if (error instanceof DataStorageError)
-                throw error;
-
-            const dataStorageError = new DataStorageError(error as RestError);
-            await dataStorageError
-                .map({
-                    async notFound(this: AzureStorageExpenseShopsRepository) {
-                        await this._azureStorage.tables.expenseShops.createEntity<IExpenseShopEntity>(
-                            {
-                                partitionKey: AzureTableStorageUtils.escapeKeyValue(this._userId),
-                                rowKey: AzureTableStorageUtils.escapeKeyValue(newExpenseShopName.toLowerCase()),
-                                name: newExpenseShopName,
-                                state: "renaming",
-                                warning: JSON.stringify({
-                                    key: "renameTarget",
-                                    arguments: [initialExpenseShopName]
-                                } as IExpenseShopWarning),
-                                warningActivation
-                            }
-                        );
+                await this._azureStorage.tables.expenseShops.updateEntity<Omit<IExpenseShopEntity, "name">>(
+                    {
+                        partitionKey: AzureTableStorageUtils.escapeKeyValue(this._userId),
+                        rowKey: AzureTableStorageUtils.escapeKeyValue(initialExpenseShopName.toLowerCase()),
+                        state: "renaming",
+                        warning: JSON.stringify({
+                            key: "rename",
+                            arguments: [newExpenseShopName]
+                        } as IExpenseShopWarning),
+                        warningActivation
                     },
-                    async unknown() {
-                        throw error;
-                    }
-                })
-                .call(this);
-        }
+                    "Merge",
+                    { etag: initialExpenseShopEtag }
+                );
 
-        try {
-            await this._azureStorage.tables.expenseShops.updateEntity<Omit<IExpenseShopEntity, "name">>(
-                {
-                    partitionKey: AzureTableStorageUtils.escapeKeyValue(this._userId),
-                    rowKey: AzureTableStorageUtils.escapeKeyValue(initialExpenseShopName.toLowerCase()),
-                    state: "renaming",
-                    warning: JSON.stringify({
-                        key: "rename",
-                        arguments: [newExpenseShopName]
-                    } as IExpenseShopWarning),
-                    warningActivation
-                },
-                "Merge",
-                { etag: initialExpenseEtag }
-            );
-            await this._azureStorage.queues.expenseShopRenameRequests.sendMessage(AzureQueueStorageUtils.encodeMessage<IExpenseShopRenameRequest>({
-                userId: this._userId,
-                initialExpenseShopName,
-                newExpenseShopName
-            }));
-        }
-        catch (error) {
-            throw new DataStorageError(error as RestError);
+                await this._azureStorage.queues.expenseShopRenameRequests.sendMessage(AzureQueueStorageUtils.encodeMessage<IExpenseShopRenameRequest>({
+                    userId: this._userId,
+                    initialExpenseShopName,
+                    newExpenseShopName
+                }));
+            }
+            catch (error) {
+                if (error instanceof DataStorageError)
+                    throw error;
+
+                throw new DataStorageError(error as RestError);
+            }
         }
     }
 
@@ -169,9 +117,53 @@ export class AzureStorageExpenseShopsRepository implements IExpenseShopsReposito
 
         return {
             name: expenseShopEntity.name,
-            etag: expenseShopEntity.etag,
             warning,
-            state: warning === undefined ? (expenseShopEntity.state || "ready") : "ready"
+            state: warning === undefined ? expenseShopEntity.state : "ready",
+            etag: expenseShopEntity.etag
         };
+    }
+
+    private async _ensureDestinationExpenseShopAsync(initialExpenseShopName: string, expenseShopName: string, warningActivation: Date): Promise<void> {
+        let destinationExpenseShopEntity: TableEntityResult<IExpenseShopEntity> | null = null;
+        try {
+            destinationExpenseShopEntity = await this._azureStorage.tables.expenseShops.getEntity<IExpenseShopEntity>(AzureTableStorageUtils.escapeKeyValue(this._userId), AzureTableStorageUtils.escapeKeyValue(expenseShopName.toLowerCase()));
+        }
+        catch (error) {
+            const dataStorageError = new DataStorageError(error as RestError);
+            if (dataStorageError.reason !== "NotFound")
+                throw dataStorageError;
+        }
+
+        if (destinationExpenseShopEntity === null)
+            await this._azureStorage.tables.expenseShops.createEntity<IExpenseShopEntity>({
+                partitionKey: AzureTableStorageUtils.escapeKeyValue(this._userId),
+                rowKey: AzureTableStorageUtils.escapeKeyValue(expenseShopName.toLowerCase()),
+                name: expenseShopName,
+                state: "renaming",
+                warning: JSON.stringify({
+                    key: "renameTarget",
+                    arguments: [initialExpenseShopName]
+                } as IExpenseShopWarning),
+                warningActivation
+            });
+        else {
+            if (destinationExpenseShopEntity.state !== "ready" && !AzureTableStorageUtils.hasWarning(destinationExpenseShopEntity))
+                throw new DataStorageError("TargetNotReady");
+
+            await this._azureStorage.tables.expenseShops.updateEntity<Omit<IExpenseShopEntity, "name">>(
+                {
+                    partitionKey: destinationExpenseShopEntity.partitionKey,
+                    rowKey: destinationExpenseShopEntity.rowKey,
+                    state: "renaming",
+                    warning: JSON.stringify({
+                        key: "renameTarget",
+                        arguments: [initialExpenseShopName]
+                    } as IExpenseShopWarning),
+                    warningActivation
+                },
+                "Merge",
+                { etag: destinationExpenseShopEntity.etag }
+            );
+        }
     }
 }

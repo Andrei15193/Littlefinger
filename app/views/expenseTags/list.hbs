@@ -21,18 +21,82 @@
     <table class="table table-sticky table-hover mt-2">
         <thead>
             <tr class="expenses-table-header">
-                <th><div>{{ @root.translation.expenseTags.list.columns.name }}</div></th>
-                <th colspan="2" class="text-center"><div>{{ @root.translation.expenseTags.list.columns.actions }}</div></th>
+                <th>
+                    <div>{{ @root.translation.expenseTags.list.columns.name }}</div>
+                </th>
+                <th colspan="2" class="text-center">
+                    <div>{{ @root.translation.expenseTags.list.columns.actions }}</div>
+                </th>
             </tr>
         </thead>
         <tbody>
             {{#each expenseTags}}
             <tr {{#unlessOdd @index}} class="table-light" {{/unlessOdd}}>
                 <th class="align-middle w-100">
-                    <div class="tag fs-6 fw-bold {{ expenseTagColorClass this.color }} badge rounded-pill">{{ this.name }}</div>
+                    <div class="d-flex flex-row align-items-center">
+                        {{#if warning}}
+                        <div class="text-warning me-2" title="{{ expenseTagWarning @root.translation this.warning }}">{{> icons/exclamation-round-icon height='1.1rem' }}</div>
+                        {{else}}
+                        {{#ifCompare state '===' 'renaming'}}
+                        <div class="text-info me-2" title="{{ @root.translation.expenseTags.states.renaming }}">
+                            <div class="spinner-grow spinner-grow-sm"></div>
+                        </div>
+                        {{/ifCompare}}
+                        {{/if}}
+
+                        <div class="tag tag-{{ expenseTagColorKey this.color }} fs-6 fw-bold badge rounded-pill">{{ this.name }}</div>
+                    </div>
                 </th>
                 <td class="ps-2 pe-0">
-                    <button type="button" class="btn btn-sm btn-primary disabled">{{{markdown @root.translation.expenseTags.list.actions.update}}}</button>
+                    <button type="button" class="btn btn-sm btn-primary{{#ifCompare state '!==' 'ready'}} disabled{{/ifCompare}}" data-bs-toggle="modal" data-bs-target="#confirmEditModal{{ @index }}">{{{markdown @root.translation.expenseTags.list.actions.edit}}}</button>
+
+                    <div class="modal fade" id="confirmEditModal{{ @index }}" tabindex="-1" aria-hidden="false">
+                        <form class="modal-dialog" method="POST">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5">{{call @root.translation.expenseTags.edit.modal.title name}}</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label for="newName" class="form-label">{{{ markdown @root.translation.expenseTags.edit.modal.name.label }}}</label>
+                                        <input
+                                            type="text"
+                                            autocomplete="off"
+                                            class="form-control form-control-sm{{#if nameError}}{{#if nameError}} is-invalid{{else}} is-valid{{/if}}{{/if}}"
+                                            id="newName"
+                                            name="newName"
+                                            value="{{ name }}">
+                                        <div class="invalid-feedback">{{{ markdown nameError }}}</div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="color" class="form-label">{{{ markdown @root.translation.expenseTags.edit.modal.color.label }}}</label>
+                                        <select
+                                            type="text"
+                                            autocomplete="off"
+                                            class="form-select form-select-sm{{#if colorError}}{{#if colorError}} is-invalid{{else}} is-valid{{/if}}{{/if}}"
+                                            id="color"
+                                            name="color">
+                                            {{#each @root.form.color.options}}
+                                            <option class="tag-{{ expenseTagColorKey this }}" value="{{ this }}" {{#ifCompare ../color '===' this}} selected{{/ifCompare}}>#{{ expenseTagColorKey this }}</option>
+                                            {{/each}}
+                                        </select>
+                                        <div class="invalid-feedback">{{{ markdown colorError }}}</div>
+                                    </div>
+
+                                    {{{markdownBlock @root.translation.expenseTags.edit.modal.message}}}
+
+                                    <input type="hidden" name="initialName" value="{{ name }}">
+                                    <input type="hidden" name="etag" value="{{ etag }}">
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" name="command" value="edit" class="btn btn-primary">{{{markdown @root.translation.expenseTags.edit.modal.confirmButtonLabel}}}</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{{markdown @root.translation.expenseTags.edit.modal.cancelButtonLabel}}}</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </td>
                 <td>
                     <button type="button" class="btn btn-sm btn-danger disabled">{{{markdown @root.translation.expenseTags.list.actions.delete}}}</button>

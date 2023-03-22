@@ -190,7 +190,7 @@ export interface IExpenseShopsTranslationLabels {
     }
 
     readonly rename: {
-        readonly confirmation: {
+        readonly modal: {
             title(expenseShopName: string): string;
 
             readonly name: {
@@ -214,7 +214,7 @@ export interface IExpenseShopsTranslationLabels {
     }
 
     readonly delete: {
-        readonly confirmation: {
+        readonly modal: {
             title(expenseShopName: string): string;
 
             readonly message: string;
@@ -249,15 +249,15 @@ export interface IExpenseTagsTranslationLabels {
         }
 
         readonly actions: {
-            readonly update: string;
+            readonly edit: string;
             readonly delete: string;
         }
 
         readonly empty: string;
     }
 
-    readonly update: {
-        readonly confirmation: {
+    readonly edit: {
+        readonly modal: {
             title(expenseTagName: string): string;
 
             readonly name: {
@@ -288,7 +288,7 @@ export interface IExpenseTagsTranslationLabels {
     }
 
     readonly delete: {
-        readonly confirmation: {
+        readonly modal: {
             title(expenseTagName: string): string;
 
             readonly message: string;

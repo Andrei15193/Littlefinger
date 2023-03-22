@@ -4,8 +4,7 @@ import type { IExpensesRepository } from "../../expenses/IExpensesRepository";
 import type { IAzureStorage } from "../../../azureStorage";
 import type { IExpenseEntity, IExpenseShopEntity, IExpenseTagEntity } from "../../../azureStorage/entities/Expenses";
 import type { IExpenseMonthChangeRequest } from "../../../azureStorage/requests/IExpenseMonthChangeRequest";
-import type { WithoutAnyEtag, WithoutRelatedEtags } from "../../../../model/Common";
-import { TableTransaction } from "@azure/data-tables";
+import type { WithoutAnyEtag, WithoutRelatedEtags } from "../../../../model/common";
 import { v4 as uuid } from "uuid";
 import { DataStorageError } from "../../../DataStorageError";
 import { AzureTableStorageUtils } from "../../AzureTableStorageUtils";
@@ -172,6 +171,7 @@ export class AzureStorageExpensesRepository implements IExpensesRepository {
                 allExpenseTagsByName[tagEntity.name] = {
                     name: tagEntity.name,
                     color: tagEntity.color,
+                    state: tagEntity.state,
                     etag: tagEntity.etag
                 };
 
@@ -217,50 +217,59 @@ export class AzureStorageExpensesRepository implements IExpensesRepository {
 
     private async _indexTagsAsync(expenseTags: readonly WithoutAnyEtag<IExpenseTag>[]): Promise<void> {
         await Promise.all(expenseTags
-            .reduce(
-                (tableTransactions, tag) => {
-                    let currentTableTransaction = tableTransactions[tableTransactions.length - 1]!;
-                    if (currentTableTransaction.actions.length === 100) {
-                        currentTableTransaction = new TableTransaction();
-                        tableTransactions.push(currentTableTransaction);
-                    }
-                    currentTableTransaction.upsertEntity<IExpenseTagEntity>(
+            .map(async tag => {
+                try {
+                    await this._azureStorage.tables.expenseTags.createEntity<IExpenseTagEntity>(
                         {
                             partitionKey: AzureTableStorageUtils.escapeKeyValue(this._userId),
-                            rowKey: AzureTableStorageUtils.escapeKeyValue(tag.name),
+                            rowKey: AzureTableStorageUtils.escapeKeyValue(tag.name.toLowerCase()),
                             name: tag.name,
-                            color: tag.color
-                        },
-                        "Merge"
+                            color: tag.color,
+                            state: "ready"
+                        }
                     );
-
-                    return tableTransactions;
-                },
-                [new TableTransaction()]
-            )
-            .map(transaction => this._azureStorage.tables.expenseTags.submitTransaction(transaction.actions))
+                }
+                catch (error) {
+                    const dataStorageError = new DataStorageError(error as RestError);
+                    if (dataStorageError.reason !== "AlreadyExists")
+                        throw dataStorageError;
+                }
+            })
         );
     }
 
     private async _indexShopAsync(shopName: string): Promise<void> {
-        await this._azureStorage.tables.expenseShops.upsertEntity<Omit<IExpenseShopEntity, "state">>(
-            {
-                partitionKey: AzureTableStorageUtils.escapeKeyValue(this._userId),
-                rowKey: AzureTableStorageUtils.escapeKeyValue(shopName.toLowerCase()),
-                name: shopName
-            },
-            "Merge"
-        );
+        try {
+            await this._azureStorage.tables.expenseShops.createEntity<IExpenseShopEntity>(
+                {
+                    partitionKey: AzureTableStorageUtils.escapeKeyValue(this._userId),
+                    rowKey: AzureTableStorageUtils.escapeKeyValue(shopName.toLowerCase()),
+                    name: shopName,
+                    state: "ready"
+                }
+            );
+        }
+        catch (error) {
+            const dataStorageError = new DataStorageError(error as RestError);
+            if (dataStorageError.reason !== "AlreadyExists")
+                throw dataStorageError;
+        }
     }
 
     private async _indexCurrencyAsync(currencyDisplayValue: string): Promise<void> {
-        await this._azureStorage.tables.currencies.upsertEntity<ICurrencyEntity>(
-            {
-                partitionKey: AzureTableStorageUtils.escapeKeyValue(this._userId),
-                rowKey: AzureTableStorageUtils.escapeKeyValue(currencyDisplayValue),
-                displayValue: currencyDisplayValue
-            },
-            "Merge"
-        );
+        try {
+            await this._azureStorage.tables.currencies.createEntity<ICurrencyEntity>(
+                {
+                    partitionKey: AzureTableStorageUtils.escapeKeyValue(this._userId),
+                    rowKey: AzureTableStorageUtils.escapeKeyValue(currencyDisplayValue),
+                    displayValue: currencyDisplayValue
+                }
+            );
+        }
+        catch (error) {
+            const dataStorageError = new DataStorageError(error as RestError);
+            if (dataStorageError.reason !== "AlreadyExists")
+                throw dataStorageError;
+        }
     }
 }

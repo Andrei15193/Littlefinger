@@ -1,0 +1,11 @@
+{
+  "bindings": [
+    {
+      "name": "expenseTagsRenameRequest",
+      "type": "queueTrigger",
+      "direction": "in",
+      "queueName": "expense-tag-rename-requests"
+    }
+  ],
+  "scriptFile": "../out/functions/expenseTagsRenameRequestConsumer/index.js"
+}

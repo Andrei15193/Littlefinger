@@ -11,7 +11,7 @@
                         <div class="tag-group d-flex flex-row w-100">
                             {{#each currencyTagDistirbutions}}
                             {{#if this.tag}}
-                            <div class="tag {{ expenseTagColorClass this.tag.color }} badge d-inline" style="width: {{ this.percentage }}%;" title="{{ this.tag.name }} ({{ formatNumber @root.translation.locale this.percentage }}%, {{ @root.filters.currency }} {{ formatNumber @root.translation.locale this.amount }})"></div>
+                            <div class="tag tag-{{ expenseTagColorKey this.tag.color }} badge d-inline" style="width: {{ this.percentage }}%;" title="{{ this.tag.name }} ({{ formatNumber @root.translation.locale this.percentage }}%, {{ @root.filters.currency }} {{ formatNumber @root.translation.locale this.amount }})"></div>
                             {{else}}
                             <div class="tag bg-light" style="width: {{ this.percentage }}%;" title="{{ @root.translation.expenses.list.untagged }} ({{ this.percentage }}%, {{ this.amount }}{{ @root.filters.currency }})"></div>
                             {{/if}}
@@ -123,7 +123,7 @@
                 <td>{{ shop }}</td>
                 <td>
                     {{#each tags}}
-                    <div class="tag {{ expenseTagColorClass this.color }} badge rounded-pill">{{ this.name }}</div>
+                    <div class="tag tag-{{ expenseTagColorKey this.color }} badge rounded-pill">{{ this.name }}</div>
                     {{/each}}
                 </td>
                 <td>
@@ -198,7 +198,7 @@
         </div>
         <div>
             {{#each tags}}
-            <div class="tag {{ expenseTagColorClass this.color }} badge rounded-pill">{{ this.name }}</div>
+            <div class="tag tag-{{ expenseTagColorKey this.color }} badge rounded-pill">{{ this.name }}</div>
             {{/each}}
         </div>
         <hr>

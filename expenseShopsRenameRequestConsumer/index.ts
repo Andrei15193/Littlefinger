@@ -8,7 +8,7 @@ import { DataStorageError } from "../app/data/DataStorageError";
 
 export default async function expenseShopsRenameRequestConsumer(context: Context, { userId, initialExpenseShopName, newExpenseShopName }: IExpenseShopRenameRequest): Promise<void> {
     try {
-        context.log(`Expense shop rename requested for user ${userId} having initial name  ${initialExpenseShopName}, new name: ${newExpenseShopName}`)
+        context.log(`Expense shop rename requested for user ${userId} having initial name '${initialExpenseShopName}', new name: '${newExpenseShopName}'`)
 
         const azureStorage = new AzureStorage(process.env.AzureWebJobsStorage as string);
 
@@ -55,19 +55,20 @@ export default async function expenseShopsRenameRequestConsumer(context: Context
 
             await azureStorage.tables.expenseShops.updateEntity<IExpenseShopEntity>(
                 {
-                    partitionKey: AzureTableStorageUtils.escapeKeyValue(userId),
-                    rowKey: AzureTableStorageUtils.escapeKeyValue(newExpenseShopName.toLowerCase()),
-                    name: newExpenseShopName,
+                    partitionKey: destinationExpenseShopEntity.partitionKey,
+                    rowKey: destinationExpenseShopEntity.rowKey,
+                    name: destinationExpenseShopEntity.name,
                     state: "ready"
                 },
                 "Replace",
                 { etag: destinationExpenseShopEntity.etag }
             );
-            await azureStorage.tables.expenseShops.deleteEntity(
-                AzureTableStorageUtils.escapeKeyValue(userId),
-                AzureTableStorageUtils.escapeKeyValue(initialExpenseShopName.toLowerCase()),
-                { etag: initialExpenseShopEntity.etag }
-            );
+            if (initialExpenseShopName.localeCompare(newExpenseShopName, "en-GB", { sensitivity: "base" }) !== 0)
+                await azureStorage.tables.expenseShops.deleteEntity(
+                    initialExpenseShopEntity.partitionKey,
+                    initialExpenseShopEntity.rowKey,
+                    { etag: initialExpenseShopEntity.etag }
+                );
 
             context.log(`The rename change request for ExpenseShopEntity('${userId}', '${initialExpenseShopName}') has been successfully completed.`);
         }

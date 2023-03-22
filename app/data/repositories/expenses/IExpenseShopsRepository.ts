@@ -5,7 +5,7 @@ export interface IExpenseShopsRepository {
 
     getAllAsync(): Promise<readonly IExpenseShop[]>;
 
-    renameAsync(initialExpenseShopName: string, newExpenseShopName: string, etag: string): Promise<void>;
+    renameAsync(initialExpenseShopName: string, initialExpenseShopEtag: string, newExpenseShopName: string): Promise<void>;
 
     removeAsync(expenseShopName: string, etag: string): Promise<void>;
 }

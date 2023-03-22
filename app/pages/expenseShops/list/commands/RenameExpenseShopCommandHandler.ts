@@ -33,7 +33,7 @@ export class RenameExpenseShopCommandHandler extends FormCommandHandler<ExpenseS
                     });
                 }
 
-                await this._expenseShopsRepository.renameAsync(form.initialName.value!, form.newName.value!, form.etag!);
+                await this._expenseShopsRepository.renameAsync(form.initialName.value!, form.etag!, form.newName.value!);
             }
 
             return this.render("expenseShops/list", {
@@ -49,7 +49,7 @@ export class RenameExpenseShopCommandHandler extends FormCommandHandler<ExpenseS
             form.error = dataStorageError.map({
                 notFound: this._translation.expenseShops.rename.errors.notFound,
                 invalidEtag: this._translation.expenseShops.rename.errors.invalidEtag,
-                targetNorReady: this._translation.expenseShops.rename.errors.targetNotReady,
+                targetNotReady: this._translation.expenseShops.rename.errors.targetNotReady,
                 get unknown(): string {
                     throw error;
                 }

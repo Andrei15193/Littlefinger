@@ -1,5 +1,5 @@
 import type { IEnvironmentTranslationLabels, ISiteTranslationTabels, ITranslation } from "./translations/Translation";
-import type { IExpenseShopWarning, IExpenseWarning } from "./model/Expenses";
+import type { IExpenseWarning, IExpenseTagWarning, IExpenseShopWarning } from "./model/Expenses";
 import fs from "fs";
 import hbs from "hbs";
 import Markdown from "markdown-it";
@@ -178,6 +178,14 @@ export function createHandlebarsInstance(viewsDirectoryPath: string): IHandlebar
             return translationLabelOrSelector.apply(translation.expenses.warnings, expenseWarning.arguments as any[]);
     });
 
+    handlebars.registerHelper("expenseTagWarning", function (this: any, translation: ITranslation, expenseTagWarning: IExpenseTagWarning) {
+        const translationLabelOrSelector: string | ((...args: readonly any[]) => string) = translation.expenseTags.warnings[expenseTagWarning.key];
+        if (typeof translationLabelOrSelector === "string")
+            return translationLabelOrSelector;
+        else
+            return translationLabelOrSelector.apply(translation.expenses.warnings, expenseTagWarning.arguments as any[]);
+    });
+
     handlebars.registerHelper("expenseShopWarning", function (this: any, translation: ITranslation, expenseShopWarning: IExpenseShopWarning) {
         const translationLabelOrSelector: string | ((...args: readonly any[]) => string) = translation.expenseShops.warnings[expenseShopWarning.key];
         if (typeof translationLabelOrSelector === "string")
@@ -186,8 +194,8 @@ export function createHandlebarsInstance(viewsDirectoryPath: string): IHandlebar
             return translationLabelOrSelector.apply(translation.expenses.warnings, expenseShopWarning.arguments as any[]);
     });
 
-    handlebars.registerHelper("expenseTagColorClass", function (this: any, expenseTagColor: ExpenseTagColor): string {
-        return `tag-${Enum.getKey(ExpenseTagColor, expenseTagColor)}`;
+    handlebars.registerHelper("expenseTagColorKey", function (this: any, expenseTagColor: ExpenseTagColor): string {
+        return Enum.getKey(ExpenseTagColor, expenseTagColor)!;
     });
 
     handlebars.registerHelper("environmentNameTranslation", function (this: any, translation: ITranslation, { name: environmentName }: { readonly name: keyof ISiteTranslationTabels["environments"] }): string {
