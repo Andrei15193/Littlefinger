@@ -8,7 +8,7 @@ import { DataStorageError } from "../app/data/DataStorageError";
 
 export default async function expenseTagsRenameRequestConsumer(context: Context, { userId, initialExpenseTagName, newExpenseTagName }: IExpenseTagRenameRequest): Promise<void> {
     try {
-        context.log(`Expense tag rename requested for user ${userId} having initial name '${initialExpenseTagName}', new name: '${newExpenseTagName}'`)
+        context.log(`Executing expense tag rename requested for ExpenseTagEntity('${userId}', '${initialExpenseTagName.toLowerCase()}'), new name: '${newExpenseTagName}'`);
 
         const azureStorage = new AzureStorage(process.env.AzureWebJobsStorage as string);
 

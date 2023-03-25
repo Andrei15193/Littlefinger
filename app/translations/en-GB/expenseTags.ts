@@ -2,9 +2,12 @@ import type { IExpenseTagsTranslationLabels } from "../Translation";
 
 export const expenseTagsTranslationLabels: IExpenseTagsTranslationLabels = {
     states: {
-        renaming: "There is a pending request for changing the name of this expense tag."
+        renaming: "There is a pending request for changing the name of this expense tag.",
+        removing: "There is a pending request for deleting this expense tag."
     },
     warnings: {
+        remove: "An attempt was made to delete this tag, however the operation failed.",
+
         rename(newName: string): string {
             return `An attempt was made to change the name to '${newName}', however the operation failed.`;
         },
@@ -25,7 +28,7 @@ export const expenseTagsTranslationLabels: IExpenseTagsTranslationLabels = {
 
         actions: {
             edit: "Edit",
-            delete: "Delete"
+            remove: "Delete"
         },
 
         empty: "There are no expense tags. These are automatically added as you log expenses."
@@ -65,12 +68,12 @@ export const expenseTagsTranslationLabels: IExpenseTagsTranslationLabels = {
         }
     },
 
-    delete: {
+    remove: {
         modal: {
             title(expenseTagName: string): string {
                 return `Delete ${expenseTagName}`;
             },
-            message: "This action will delete the tag, **all** expenses will be updated and have this tag removed.\n"
+            message: "This action will delete the indexed tag, **all** expenses will be updated and have this tag removed.\n"
                 + "\n"
                 + "Please confirm your action.",
             confirmButtonLabel: "Confirm",

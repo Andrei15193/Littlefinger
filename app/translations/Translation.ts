@@ -233,8 +233,11 @@ export interface IExpenseShopsTranslationLabels {
 export interface IExpenseTagsTranslationLabels {
     readonly states: {
         readonly renaming: string;
+        readonly removing: string;
     }
     readonly warnings: {
+        readonly remove: string;
+
         rename(newName: string): string;
         renameTarget(initialName: string): string;
     }
@@ -250,7 +253,7 @@ export interface IExpenseTagsTranslationLabels {
 
         readonly actions: {
             readonly edit: string;
-            readonly delete: string;
+            readonly remove: string;
         }
 
         readonly empty: string;
@@ -287,7 +290,7 @@ export interface IExpenseTagsTranslationLabels {
         }
     }
 
-    readonly delete: {
+    readonly remove: {
         readonly modal: {
             title(expenseTagName: string): string;
 

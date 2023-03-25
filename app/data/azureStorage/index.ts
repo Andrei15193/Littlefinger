@@ -19,4 +19,5 @@ export interface IAzureStorageQueues {
     readonly expenseMonthChangeRequests: QueueClient;
     readonly expenseShopRenameRequests: QueueClient;
     readonly expenseTagRenameRequests: QueueClient;
+    readonly expenseTagRemoveRequests: QueueClient;
 }

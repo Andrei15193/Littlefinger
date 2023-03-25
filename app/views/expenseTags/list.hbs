@@ -41,6 +41,12 @@
                         <div class="text-info me-2" title="{{ @root.translation.expenseTags.states.renaming }}">
                             <div class="spinner-grow spinner-grow-sm"></div>
                         </div>
+                        {{else}}
+                        {{#ifCompare state '===' 'removing'}}
+                        <div class="text-info me-2" title="{{ @root.translation.expenseTags.states.removing }}">
+                            <div class="spinner-grow spinner-grow-sm"></div>
+                        </div>
+                        {{/ifCompare}}
                         {{/ifCompare}}
                         {{/if}}
 
@@ -99,7 +105,30 @@
                     </div>
                 </td>
                 <td>
-                    <button type="button" class="btn btn-sm btn-danger disabled">{{{markdown @root.translation.expenseTags.list.actions.delete}}}</button>
+                    <button type="button" class="btn btn-sm btn-danger{{#ifCompare state '!==' 'ready'}} disabled{{/ifCompare}}" data-bs-toggle="modal" data-bs-target="#confirmRemoveModal{{ @index }}">{{{markdown @root.translation.expenseTags.list.actions.remove}}}</button>
+
+                    <div class="modal fade" id="confirmRemoveModal{{ @index }}" tabindex="-1" aria-hidden="false">
+                        <form class="modal-dialog" method="POST">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5">{{call @root.translation.expenseTags.remove.modal.title name}}</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    {{{markdownBlock @root.translation.expenseTags.remove.modal.message}}}
+
+                                    <input type="hidden" name="initialName" value="{{ name }}">
+                                    <input type="hidden" name="newName" value="{{ name }}">
+                                    <input type="hidden" name="color" value="{{ color }}">
+                                    <input type="hidden" name="etag" value="{{ etag }}">
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" name="command" value="remove" class="btn btn-danger">{{{markdown @root.translation.expenseTags.remove.modal.confirmButtonLabel}}}</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{{markdown @root.translation.expenseTags.remove.modal.cancelButtonLabel}}}</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </td>
             </tr>
             {{/each}}

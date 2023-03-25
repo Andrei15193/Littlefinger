@@ -4,6 +4,7 @@ import { FormPage } from "../../page";
 import { ExpenseTagForm } from "../ExpenseTagForm";
 import { GetExpenseTagsQueryHandler } from "./queries/GetExpenseTagsQueryHandler";
 import { EditExpenseTagCommandHandler } from "./commands/EditExpenseTagCommandHandler";
+import { RemoveExpenseTagCommandHandler } from "./commands/RemoveExpenseTagCommandHandler";
 
 export class ListExpenseTagsPage extends FormPage<ExpenseTagForm, IListExpenseTagsRouteParams, IModifyExpenseTagsRequestBody, IListExpenseTagsViewOptions> {
     public readonly route: string = "/expense-tags";
@@ -17,6 +18,10 @@ export class ListExpenseTagsPage extends FormPage<ExpenseTagForm, IListExpenseTa
         {
             name: "edit",
             handlerType: EditExpenseTagCommandHandler
+        },
+        {
+            name: "remove",
+            handlerType: RemoveExpenseTagCommandHandler
         }
     ];
 }

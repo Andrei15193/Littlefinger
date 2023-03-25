@@ -8,7 +8,7 @@ import { DataStorageError } from "../app/data/DataStorageError";
 
 export default async function expenseShopsRenameRequestConsumer(context: Context, { userId, initialExpenseShopName, newExpenseShopName }: IExpenseShopRenameRequest): Promise<void> {
     try {
-        context.log(`Expense shop rename requested for user ${userId} having initial name '${initialExpenseShopName}', new name: '${newExpenseShopName}'`)
+        context.log(`Executing expense shop rename requested for ExpenseShopEntity('${userId}', '${initialExpenseShopName}'), new name: '${newExpenseShopName}'`);
 
         const azureStorage = new AzureStorage(process.env.AzureWebJobsStorage as string);
 
@@ -48,7 +48,7 @@ export default async function expenseShopsRenameRequestConsumer(context: Context
                                 console.warn(`ExpenseEntity('${userId}-${expenseEntity.month}', '${expenseEntity.id}') was removed while changing shop name, skipping.`);
                             },
                             unknown() {
-                                console.error(`Failed to update ExpenseEntity with unknown error, skipping.`);
+                                console.error(`Failed to update ExpenseEntity, unknown error, skipping.`);
                             }
                         })
                     }
@@ -70,14 +70,14 @@ export default async function expenseShopsRenameRequestConsumer(context: Context
                     { etag: initialExpenseShopEntity.etag }
                 );
 
-            context.log(`The rename change request for ExpenseShopEntity('${userId}', '${initialExpenseShopName}') has been successfully completed.`);
+            context.log(`The rename request for ExpenseShopEntity('${userId}', '${initialExpenseShopName}') has been successfully completed.`);
         }
     }
     catch (error) {
         const dataStorageError = new DataStorageError(error as RestError);
         dataStorageError.handle({
             notFound: () => {
-                context.log(`The the rename change request for ExpenseShopEntity('${userId}', '${initialExpenseShopName}') was not performed, entity not found.`);
+                context.log(`The the rename request for ExpenseShopEntity('${userId}', '${initialExpenseShopName}') was not performed, entity not found.`);
             },
             unknown: () => {
                 throw dataStorageError;

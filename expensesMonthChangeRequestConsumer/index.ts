@@ -9,7 +9,7 @@ import { DataStorageError } from "../app/data/DataStorageError";
 
 export default async function expensesMonthChangeRequestConsumer(context: Context, { userId, expenseKey: { month: expenseMonth, id: expenseId }, newExpenseDateString }: IExpenseMonthChangeRequest): Promise<void> {
     try {
-        context.log(`Expense month change requested for user ${userId} having expense ID ${expenseId}, current expense month: ${expenseMonth}, new expense date: ${newExpenseDateString}`)
+        context.log(`Executing expense month change requested for ExpenseEntity('${userId}-${expenseMonth}', '${expenseId}'), current expense month: ${expenseMonth}, new expense date: ${newExpenseDateString}`);
 
         const azureStorage = new AzureStorage(process.env.AzureWebJobsStorage as string);
 

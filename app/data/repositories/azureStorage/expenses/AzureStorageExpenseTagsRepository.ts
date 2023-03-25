@@ -5,6 +5,7 @@ import type { IExpenseTagsRepository } from "../../expenses/IExpenseTagsReposito
 import type { IAzureStorage } from "../../../azureStorage";
 import type { IExpenseTagEntity } from "../../../azureStorage/entities/Expenses";
 import type { IExpenseTagRenameRequest } from "../../../azureStorage/requests/IExpenseTagRenameRequest";
+import type { IExpenseTagRemoveRequest } from "../../../azureStorage/requests/IExpenseTagRemoveRequest";
 import { DataStorageError } from "../../../DataStorageError";
 import { AzureTableStorageUtils } from "../../AzureTableStorageUtils";
 import { AzureQueueStorageUtils } from "../../AzureQueueStorageUtils";
@@ -117,6 +118,41 @@ export class AzureStorageExpenseTagsRepository implements IExpenseTagsRepository
 
                 throw new DataStorageError(error as RestError);
             }
+        }
+    }
+
+    public async removeAsync(expenseTagName: string, expenseTagEtag: string): Promise<void> {
+        if (AzureTableStorageUtils.isInvalidEtag(expenseTagEtag))
+            throw new DataStorageError("InvalidEtag");
+
+        const warningActivation = new Date();
+        warningActivation.setHours(warningActivation.getHours() + 1);
+
+        try {
+            await this._azureStorage.tables.expenseTags.updateEntity<Omit<IExpenseTagEntity, "name" | "color">>(
+                {
+                    partitionKey: AzureTableStorageUtils.escapeKeyValue(this._userId),
+                    rowKey: AzureTableStorageUtils.escapeKeyValue(expenseTagName.toLowerCase()),
+                    state: "removing",
+                    warning: JSON.stringify({
+                        key: "remove"
+                    } as IExpenseTagWarning),
+                    warningActivation
+                },
+                "Merge",
+                { etag: expenseTagEtag }
+            );
+
+            await this._azureStorage.queues.expenseTagRemoveRequests.sendMessage(AzureQueueStorageUtils.encodeMessage<IExpenseTagRemoveRequest>({
+                userId: this._userId,
+                expenseTagName: expenseTagName
+            }));
+        }
+        catch (error) {
+            if (error instanceof DataStorageError)
+                throw error;
+
+            throw new DataStorageError(error as RestError);
         }
     }
 

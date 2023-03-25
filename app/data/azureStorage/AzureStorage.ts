@@ -42,7 +42,8 @@ class AzureStorageQueues implements IAzureStorageQueues {
         this.all = [
             this.expenseMonthChangeRequests = this.queueService.getQueueClient("expense-month-change-requests"),
             this.expenseShopRenameRequests = this.queueService.getQueueClient("expense-shop-rename-requests"),
-            this.expenseTagRenameRequests = this.queueService.getQueueClient("expense-tag-rename-requests")
+            this.expenseTagRenameRequests = this.queueService.getQueueClient("expense-tag-rename-requests"),
+            this.expenseTagRemoveRequests = this.queueService.getQueueClient("expense-tag-remove-requests")
         ];
     }
 
@@ -51,6 +52,8 @@ class AzureStorageQueues implements IAzureStorageQueues {
     public readonly expenseShopRenameRequests: QueueClient;
 
     public readonly expenseTagRenameRequests: QueueClient;
+
+    public readonly expenseTagRemoveRequests: QueueClient;
 
     public readonly queueService: QueueServiceClient;
 

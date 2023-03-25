@@ -9,4 +9,6 @@ export interface IExpenseTagsRepository {
     getAllByNameAsync(): Promise<{ readonly [tagName: string]: IExpenseTag; }>;
 
     updateAsync(initialExpenseTagName: string, initialExpenseTagEtag: string, expenseTag: WithoutEtag<WithoutState<IExpenseTag>>): Promise<void>;
+
+    removeAsync(ExpenseTagName: string, expenseTagEtag: string): Promise<void>;
 }

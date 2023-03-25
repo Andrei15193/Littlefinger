@@ -46,7 +46,7 @@ export enum ExpenseTagColor {
     "FF6361", "FFA600"
 }
 
-export type ExpenseTagState = "ready" | "renaming" | "deleting";
+export type ExpenseTagState = "ready" | "renaming" | "removing";
 
 export interface IExpenseTagWarning {
     readonly key: keyof IExpenseTagsTranslationLabels["warnings"];
