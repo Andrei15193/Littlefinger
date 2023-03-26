@@ -57,7 +57,7 @@ export default async function expenseShopsRenameRequestConsumer(context: Context
                 {
                     partitionKey: destinationExpenseShopEntity.partitionKey,
                     rowKey: destinationExpenseShopEntity.rowKey,
-                    name: destinationExpenseShopEntity.name,
+                    name: newExpenseShopName,
                     state: "ready"
                 },
                 "Replace",
