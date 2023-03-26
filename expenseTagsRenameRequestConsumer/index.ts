@@ -63,7 +63,7 @@ export default async function expenseTagsRenameRequestConsumer(context: Context,
                 {
                     partitionKey: destinationExpenseTagEntity.partitionKey,
                     rowKey: destinationExpenseTagEntity.rowKey,
-                    name: destinationExpenseTagEntity.name,
+                    name: newExpenseTagName,
                     color: destinationExpenseTagEntity.color,
                     state: "ready"
                 },
