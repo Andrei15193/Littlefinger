@@ -11,6 +11,17 @@ import { EnvironmentType } from "./config";
 
 type IHandlebars = ReturnType<typeof hbs.create>;
 
+const integerFormatOptions: Intl.NumberFormatOptions = {
+    notation: "standard",
+    maximumFractionDigits: 0
+};
+
+const floatFormatOptions: Intl.NumberFormatOptions = {
+    notation: "standard",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+};
+
 export function createHandlebarsInstance(viewsDirectoryPath: string): IHandlebars {
     const markdownParser = new Markdown();
     markdownParser.configure("commonmark");
@@ -61,11 +72,11 @@ export function createHandlebarsInstance(viewsDirectoryPath: string): IHandlebar
         if (locale === undefined || locale === null || typeof locale !== "string")
             throw new Error("getLeadingZeros expects a locale, but none was provided.");
 
-        const significantIntegerDigits = value.toLocaleString(locale, { notation: "standard" });
+        const significantIntegerDigits = value.toLocaleString(locale, integerFormatOptions);
 
-        const oneAsString = (1).toLocaleString(locale, { notation: "standard" });
-        const zeroAsString = (0).toLocaleString(locale, { notation: "standard" });
-        const zerosTemplate = Number("1" + "0".repeat(integerDigitsCount! - 1)).toLocaleString(locale, { notation: "standard" }).replace(oneAsString, zeroAsString);
+        const oneAsString = (1).toLocaleString(locale, integerFormatOptions);
+        const zeroAsString = (0).toLocaleString(locale, integerFormatOptions);
+        const zerosTemplate = Number("1" + "0".repeat(integerDigitsCount! - 1)).toLocaleString(locale, integerFormatOptions).replace(oneAsString, zeroAsString);
 
         return zerosTemplate.substring(0, zerosTemplate.length - significantIntegerDigits.length);
     });
@@ -73,13 +84,13 @@ export function createHandlebarsInstance(viewsDirectoryPath: string): IHandlebar
         if (locale === undefined || locale === null || typeof locale !== "string")
             throw new Error("formatNumber expects a locale, but none was provided.");
 
-        return value?.toLocaleString(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2, notation: "standard" }) || "";
+        return value?.toLocaleString(locale, floatFormatOptions) || "";
     });
     handlebars.registerHelper("formatIntegerNumber", function (this: any, locale: string, value?: number): string {
         if (locale === undefined || locale === null || typeof locale !== "string")
             throw new Error("formatIntegerNumber expects a locale, but none was provided.");
 
-        return value?.toLocaleString(locale, { maximumFractionDigits: 0, notation: "standard" }) || "";
+        return value?.toLocaleString(locale, integerFormatOptions) || "";
     });
 
     handlebars.registerHelper("toInputDateValue", function (this: any, date: Date): string {

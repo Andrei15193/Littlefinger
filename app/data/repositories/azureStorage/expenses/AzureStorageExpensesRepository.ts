@@ -261,7 +261,7 @@ export class AzureStorageExpensesRepository implements IExpensesRepository {
             await this._azureStorage.tables.currencies.createEntity<ICurrencyEntity>(
                 {
                     partitionKey: AzureTableStorageUtils.escapeKeyValue(this._userId),
-                    rowKey: AzureTableStorageUtils.escapeKeyValue(currencyDisplayValue),
+                    rowKey: AzureTableStorageUtils.escapeKeyValue(currencyDisplayValue.toLowerCase()),
                     displayValue: currencyDisplayValue
                 }
             );
