@@ -6,6 +6,7 @@ export interface ITranslation {
     readonly site: ISiteTranslationTabels;
     readonly home: IHomeTranslationLabels;
     readonly expenses: IExpensesTranslationLabels;
+    readonly expenseTemplates: IExpenseTemplatesTranslationLabels;
     readonly expenseShops: IExpenseShopsTranslationLabels;
     readonly expenseTags: IExpenseTagsTranslationLabels;
     readonly about: IAboutTranslationLabels;
@@ -156,6 +157,81 @@ export interface IExpensesTranslationLabels {
 
         readonly error: {
             readonly notEditable: string;
+            readonly unknown: string;
+            readonly invalidEtag: string;
+            readonly notFound: IFormErrorCallback<(expenseMonth: string) => readonly string[]>;
+        }
+    }
+}
+
+export interface IExpenseTemplatesTranslationLabels {
+    readonly list: {
+        readonly title: string;
+        readonly pageTitle: string;
+        readonly addButtonLabel: string;
+
+        readonly columns: {
+            readonly name: string;
+            readonly actions: string;
+        };
+
+        readonly empty: string;
+    }
+
+    readonly add: {
+        readonly title: string;
+        readonly pageTitle: string;
+
+        readonly addButtonLabel: string;
+        readonly cancelButtonLabel: string;
+    };
+
+    readonly form: {
+        readonly name: {
+            readonly label: string;
+            readonly error: {
+                readonly required: string;
+            };
+        };
+        readonly shop: {
+            readonly label: string;
+            readonly error: {
+                readonly required: string;
+            };
+        };
+        readonly tags: {
+            readonly label: string;
+            readonly error: {
+                readonly required: string;
+            };
+
+            readonly addMoreButtonLabel: string;
+        };
+        readonly currency: {
+            readonly error: {
+                readonly required: string;
+            };
+        };
+        readonly price: {
+            readonly label: string;
+            readonly error: {
+                readonly required: string;
+            };
+        };
+        readonly quantity: {
+            readonly label: string;
+            readonly error: {
+                readonly required: string;
+            };
+        };
+        readonly dayOfMonth: {
+            readonly label: string;
+            readonly error: {
+                readonly required: string;
+            };
+        };
+
+        readonly error: {
             readonly unknown: string;
             readonly invalidEtag: string;
             readonly notFound: IFormErrorCallback<(expenseMonth: string) => readonly string[]>;

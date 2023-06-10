@@ -7,6 +7,7 @@ import type { IAzureStorage } from "../data/azureStorage";
 import type { IUserSessionsRepository } from "../data/repositories/users/IUserSessionsRepository";
 import type { ICurrenciesRepository } from "../data/repositories/expenses/ICurrenciesRepository";
 import type { IExpensesRepository } from "../data/repositories/expenses/IExpensesRepository";
+import type { IExpenseTemplatesRepository } from "../data/repositories/expenses/IExpenseTemplatesRepository";
 import type { IExpenseTagsRepository } from "../data/repositories/expenses/IExpenseTagsRepository";
 import type { IExpenseShopsRepository } from "../data/repositories/expenses/IExpenseShopsRepository";
 import { ApplicationTabs } from "../ApplicationTabs";
@@ -15,6 +16,7 @@ import { AzureActiveDirectorySessionService } from "../services/azureActiveDirec
 import { AzureStorageUserSessionsRepository } from "../data/repositories/azureStorage/users/AzureStorageUserSessionsRepository";
 import { AzureStorageCurrenciesRepository } from "../data/repositories/azureStorage/expenses/AzureStorageCurrencyRepository";
 import { AzureStorageExpensesRepository } from "../data/repositories/azureStorage/expenses/AzureStorageExpensesRepository";
+import { AzureStorageExpenseTemplatesRepository } from "../data/repositories/azureStorage/expenses/AzureStorageExpenseTemplatesRepository";
 import { AzureStorageExpenseTagsRepository } from "../data/repositories/azureStorage/expenses/AzureStorageExpenseTagsRepository";
 import { AzureStorageExpenseShopsRepository } from "../data/repositories/azureStorage/expenses/AzureStorageExpenseShopsRepository";
 
@@ -54,6 +56,10 @@ export class DependencyContainer implements IDependencyContainer {
 
     public get expensesRepository(): IExpensesRepository {
         return this._getInstance("IExpensesRepository", this._replacements.expensesRepository, AzureStorageExpensesRepository, this._userId, this.azureStorage);
+    }
+
+    public get expenseTemplatesRepository(): IExpenseTemplatesRepository {
+        return this._getInstance("IExpenseTemplatesRepository", this._replacements.expenseTemplatesRepository, AzureStorageExpenseTemplatesRepository, this._userId, this.azureStorage);
     }
 
     public get expenseTagsRepository(): IExpenseTagsRepository {

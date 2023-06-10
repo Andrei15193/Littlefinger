@@ -8,6 +8,11 @@
             </a>
         </li>
         <li>
+            <a class="dropdown-item{{#ifCompare pageTitle '===' @root.translation.expenseTemplates.list.pageTitle}} active{{/ifCompare}}" href="/expense-templates">
+                {{{ markdown @root.translation.expenseTemplates.list.pageTitle }}}
+            </a>
+        </li>
+        <li>
             <a class="dropdown-item{{#ifCompare pageTitle '===' @root.translation.expenseShops.list.pageTitle}} active{{/ifCompare}}" href="/expense-shops">
                 {{{ markdown @root.translation.expenseShops.list.pageTitle }}}
             </a>

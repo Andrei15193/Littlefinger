@@ -1,0 +1,50 @@
+<div class="expenses-list-view">
+    <div class="expenses-list-header h-auto pb-1">
+        <div class="d-flex flex-row align-items-center">
+            {{>expenses/subpageNavigation pageTitle = @root.translation.expenseTemplates.list.pageTitle}}
+            <a href="/expense-templates/add" class="ms-2 btn btn-sm btn-primary">{{{ markdown @root.translation.expenseTemplates.list.addButtonLabel }}}</a>
+        </div>
+    </div>
+
+    {{#if form.error}}
+    <div class="alert alert-danger p-2" role="alert">
+        {{ markdown form.error }}
+    </div>
+    {{else}}
+    {{#each form.fields}}
+    {{#if error}}
+    <div class="alert alert-danger p-2" role="alert">
+        {{ markdown error }}
+    </div>
+    {{/if}}
+    {{/each}}
+    {{/if}}
+
+    {{#unlessCompare expenseTemplates.length '===' 0}}
+    <table class="table table-sticky table-hover mt-2">
+        <thead>
+            <tr class="expenses-table-header">
+                <th>
+                    <div>{{ @root.translation.expenseTemplates.list.columns.name }}</div>
+                </th>
+                <th colspan="2" class="text-center">
+                    <div>{{ @root.translation.expenseTemplates.list.columns.actions }}</div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each expenseTemplates}}
+            <tr {{#unlessOdd @index}} class="table-light" {{/unlessOdd}}>
+                <th class="align-middle w-100">
+                    {{ this.name }}
+                </th>
+                <td class="ps-2 pe-0">
+                </td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+    {{else}}
+    <div class="p-2 alert alert-secondary text-center" role="alert">{{{ markdown @root.translation.expenseTemplates.list.empty }}}</div>
+    {{/unlessCompare}}
+</div>

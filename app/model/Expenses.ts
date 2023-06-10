@@ -30,6 +30,21 @@ export interface IExpenseWarning {
     readonly arguments: readonly (string | number | object)[];
 }
 
+export interface IExpenseTemplate {
+    readonly id: string;
+
+    readonly name: string;
+    readonly shop: string;
+    readonly tags: readonly IExpenseTag[];
+    readonly price: number;
+    readonly currency: string;
+    readonly quantity: number;
+    readonly amount: number;
+    readonly dayOfMonth: number;
+
+    readonly etag: string;
+}
+
 export interface IExpenseTag {
     readonly name: string;
     readonly color: ExpenseTagColor;
