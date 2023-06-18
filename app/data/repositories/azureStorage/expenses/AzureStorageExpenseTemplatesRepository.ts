@@ -1,4 +1,4 @@
-import type { WithoutAnyEtag } from "../../../../model/common";
+import type { WithoutAnyEtag, WithoutRelatedEtags } from "../../../../model/common";
 import type { RestError, TableEntityResult } from "@azure/data-tables";
 import type { IExpenseTemplatesRepository } from "../../expenses/IExpenseTemplatesRepository";
 import type { IExpenseTag, IExpenseTemplate } from "../../../../model/Expenses";
@@ -18,22 +18,36 @@ export class AzureStorageExpenseTemplatesRepository implements IExpenseTemplates
         this._azureStorage = azureStorage;
     }
 
-    public async getAllAsync(): Promise<readonly IExpenseTemplate[]> {
+    public async getAsync(expenseTemplateId: string): Promise<IExpenseTemplate> {
         try {
-            const expenseTags: IExpenseTemplate[] = [];
             const allExpenseTagsByName = await this._getAllExpenseTagsByNameAsync();
 
-            for await (const expenseTemplateEntity of this._azureStorage.tables.expenseTemplates.listEntities<IExpenseTemplateEntity>({ queryOptions: { filter: `PartitionKey eq '${AzureTableStorageUtils.escapeKeyValue(this._userId)}'` } }))
-                expenseTags.push(this._mapExpenseTemplateEntity(expenseTemplateEntity, allExpenseTagsByName));
+            const expenseTemplateEntity = await this._azureStorage.tables.expenseTemplates.getEntity<IExpenseTemplateEntity>(AzureTableStorageUtils.escapeKeyValue(this._userId), AzureTableStorageUtils.escapeKeyValue(expenseTemplateId));
 
-            return expenseTags;
+            const expenseTemplate = this._mapExpenseTemplateEntity(expenseTemplateEntity, allExpenseTagsByName);
+            return expenseTemplate;
         }
         catch (error) {
             throw new DataStorageError(error as RestError);
         }
     }
 
-    public async addAsync(expenseTemplate:  WithoutAnyEtag<Omit<IExpenseTemplate, "id" | "amount">>): Promise<void> {
+    public async getAllAsync(): Promise<readonly IExpenseTemplate[]> {
+        try {
+            const expenseTemplates: IExpenseTemplate[] = [];
+            const allExpenseTagsByName = await this._getAllExpenseTagsByNameAsync();
+
+            for await (const expenseTemplateEntity of this._azureStorage.tables.expenseTemplates.listEntities<IExpenseTemplateEntity>({ queryOptions: { filter: `PartitionKey eq '${AzureTableStorageUtils.escapeKeyValue(this._userId)}'` } }))
+                expenseTemplates.push(this._mapExpenseTemplateEntity(expenseTemplateEntity, allExpenseTagsByName));
+
+            return expenseTemplates;
+        }
+        catch (error) {
+            throw new DataStorageError(error as RestError);
+        }
+    }
+
+    public async addAsync(expenseTemplate: WithoutAnyEtag<Omit<IExpenseTemplate, "id" | "amount">>): Promise<void> {
         try {
             const expenseTemplateId = uuid();
 
@@ -50,6 +64,36 @@ export class AzureStorageExpenseTemplatesRepository implements IExpenseTemplates
                 dayOfMonth: expenseTemplate.dayOfMonth
             };
             await this._azureStorage.tables.expenseTemplates.createEntity(expenseTemplateEntity);
+            await this._indexTagsAsync(expenseTemplate.tags);
+            await this._indexShopAsync(expenseTemplate.shop);
+            await this._indexCurrencyAsync(expenseTemplate.currency);
+        }
+        catch (error) {
+            throw new DataStorageError(error as RestError);
+        }
+    }
+    public async updateAsync(expenseTemplate: WithoutRelatedEtags<Omit<IExpenseTemplate, "amount">>): Promise<void> {
+        if (AzureTableStorageUtils.isInvalidEtag(expenseTemplate.etag))
+            throw new DataStorageError("InvalidEtag");
+
+        try {
+            await this._azureStorage.tables.expenseTemplates.updateEntity<IExpenseTemplateEntity>(
+                {
+                    partitionKey: AzureTableStorageUtils.escapeKeyValue(this._userId),
+                    rowKey: AzureTableStorageUtils.escapeKeyValue(expenseTemplate.id),
+                    id: expenseTemplate.id,
+                    name: expenseTemplate.name,
+                    shop: expenseTemplate.shop,
+                    tags: JSON.stringify(expenseTemplate.tags.map(tag => tag.name)),
+                    currency: expenseTemplate.currency.toUpperCase(),
+                    price: expenseTemplate.price,
+                    quantity: expenseTemplate.quantity,
+                    dayOfMonth: expenseTemplate.dayOfMonth
+                },
+                "Replace",
+                { etag: expenseTemplate.etag }
+            );
+
             await this._indexTagsAsync(expenseTemplate.tags);
             await this._indexShopAsync(expenseTemplate.shop);
             await this._indexCurrencyAsync(expenseTemplate.currency);

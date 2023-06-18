@@ -19,6 +19,18 @@ export const expenseTemplatesTranslationLabels: IExpenseTemplatesTranslationLabe
         addButtonLabel: "Add",
         cancelButtonLabel: "Cancel"
     },
+    edit: {
+        title(expenseId) {
+            return `Edit Expense Template ${expenseId}`;
+        },
+        pageTitle: "Edit Expense Template",
+        notFound: {
+            title: "Expense Template Not Found"
+        },
+
+        updateButtonLabel: "Update",
+        cancelButtonLabel: "Cancel",
+    },
     form: {
         name: {
             label: "Name",
@@ -65,13 +77,11 @@ export const expenseTemplatesTranslationLabels: IExpenseTemplatesTranslationLabe
         error: {
             unknown: "An unknown error has occurred, please reload the page and retry the operation",
             invalidEtag: "The expense template has already been edited or deleted",
-            notFound(expensesMonth: string) {
-                return {
-                    message: "The expense you are trying to view does not exist.",
-                    actions: [
-                        `[Expense templates list view](/expense-templates/${expensesMonth}){.alert-link}`
-                    ]
-                };
+            notFound: {
+                message: "The expense template you are trying to view does not exist.",
+                actions: [
+                    "[Expense templates list view](/expense-templates){.alert-link}"
+                ]
             }
         }
     }

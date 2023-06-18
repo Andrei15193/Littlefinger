@@ -36,7 +36,7 @@
             {{#each expenseTemplates}}
             <tr {{#unlessOdd @index}} class="table-light" {{/unlessOdd}}>
                 <th class="align-middle w-100">
-                    {{ this.name }}
+                    <a href="/expense-templates/{{ this.id }}">{{ this.name }}</a>
                 </th>
                 <td class="ps-2 pe-0">
                 </td>

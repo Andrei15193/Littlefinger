@@ -23,7 +23,7 @@ export class GetBlankExpenseTemplateQueryHandler extends FormQueryHandler<Expens
         form.dayOfMonth.value = 1;
 
         return this.render("expenseTemplates/add", {
-            title: this._translation.expenses.add.title,
+            title: this._translation.expenseTemplates.add.title,
             tab: "expenses",
             form
         });

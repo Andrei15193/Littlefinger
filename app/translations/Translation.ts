@@ -186,6 +186,17 @@ export interface IExpenseTemplatesTranslationLabels {
         readonly cancelButtonLabel: string;
     };
 
+    readonly edit: {
+        title(expenseTemplateId: string): string;
+        readonly pageTitle: string;
+        readonly notFound: {
+            readonly title: string;
+        };
+
+        readonly updateButtonLabel: string;
+        readonly cancelButtonLabel: string;
+    };
+
     readonly form: {
         readonly name: {
             readonly label: string;
@@ -234,7 +245,7 @@ export interface IExpenseTemplatesTranslationLabels {
         readonly error: {
             readonly unknown: string;
             readonly invalidEtag: string;
-            readonly notFound: IFormErrorCallback<(expenseMonth: string) => readonly string[]>;
+            readonly notFound: IFormError;
         }
     }
 }
