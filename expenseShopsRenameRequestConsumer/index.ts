@@ -1,5 +1,5 @@
 import type { Context } from "@azure/functions"
-import type { IExpenseEntity, IExpenseShopEntity } from "../app/data/azureStorage/entities/Expenses";
+import type { IExpenseEntity, IExpenseShopEntity, IExpenseTemplateEntity } from "../app/data/azureStorage/entities/Expenses";
 import type { IExpenseShopRenameRequest } from "../app/data/azureStorage/requests/IExpenseShopRenameRequest";
 import type { RestError } from "@azure/data-tables";
 import { AzureStorage } from "../app/data/azureStorage/AzureStorage";
@@ -49,6 +49,33 @@ export default async function expenseShopsRenameRequestConsumer(context: Context
                             },
                             unknown() {
                                 console.error(`Failed to update ExpenseEntity, unknown error, skipping.`);
+                            }
+                        })
+                    }
+
+            for await (const expenseTemplateEntity of azureStorage.tables.expenseTemplates.listEntities<IExpenseTemplateEntity>())
+                if (expenseTemplateEntity.shop.localeCompare(initialExpenseShopName, "en-GB", { sensitivity: "base" }) === 0)
+                    try {
+                        await azureStorage.tables.expenseTemplates.updateEntity<Pick<IExpenseTemplateEntity, "partitionKey" | "rowKey" | "shop">>(
+                            {
+                                partitionKey: expenseTemplateEntity.partitionKey,
+                                rowKey: expenseTemplateEntity.rowKey,
+                                shop: newExpenseShopName
+                            },
+                            "Merge",
+                            { etag: expenseTemplateEntity.etag });
+                    }
+                    catch (error) {
+                        const dataStorageError = new DataStorageError(error as RestError);
+                        dataStorageError.handle({
+                            invalidEtag() {
+                                console.warn(`ExpenseTemplateEntity('${userId}', '${expenseTemplateEntity.id}') was updated while changing shop name, skipping.`);
+                            },
+                            notFound() {
+                                console.warn(`ExpenseTemplateEntity('${userId}', '${expenseTemplateEntity.id}') was removed while changing shop name, skipping.`);
+                            },
+                            unknown() {
+                                console.error(`Failed to update ExpenseTemplateEntity, unknown error, skipping.`);
                             }
                         })
                     }

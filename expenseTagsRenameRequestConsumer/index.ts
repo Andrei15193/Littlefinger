@@ -1,5 +1,5 @@
 import type { Context } from "@azure/functions"
-import type { IExpenseEntity, IExpenseTagEntity } from "../app/data/azureStorage/entities/Expenses";
+import type { IExpenseEntity, IExpenseTagEntity, IExpenseTemplateEntity } from "../app/data/azureStorage/entities/Expenses";
 import type { IExpenseTagRenameRequest } from "../app/data/azureStorage/requests/IExpenseTagRenameRequest";
 import type { RestError } from "@azure/data-tables";
 import { AzureStorage } from "../app/data/azureStorage/AzureStorage";
@@ -54,6 +54,39 @@ export default async function expenseTagsRenameRequestConsumer(context: Context,
                             },
                             unknown() {
                                 console.error(`Failed to update ExpenseEntity with unknown error, skipping.`);
+                            }
+                        })
+                    }
+            }
+
+            for await (const expenseTemplateEntity of azureStorage.tables.expenseTemplates.listEntities<IExpenseTemplateEntity>()) {
+                const expenseTemplateTagNames: readonly string[] = JSON.parse(expenseTemplateEntity.tags);
+                if (expenseTemplateTagNames.findIndex(expenseTagName => expenseTagName.localeCompare(initialExpenseTagName, "en-GB", { sensitivity: "base" }) === 0) >= 0)
+                    try {
+                        await azureStorage.tables.expenseTemplates.updateEntity<Pick<IExpenseTemplateEntity, "partitionKey" | "rowKey" | "tags">>(
+                            {
+                                partitionKey: expenseTemplateEntity.partitionKey,
+                                rowKey: expenseTemplateEntity.rowKey,
+                                tags: JSON.stringify(expenseTemplateTagNames.map(expenseTagName =>
+                                    expenseTagName.localeCompare(initialExpenseTagName, "en-GB", { sensitivity: "base" }) === 0
+                                        ? newExpenseTagName
+                                        : expenseTagName
+                                ))
+                            },
+                            "Merge",
+                            { etag: expenseTemplateEntity.etag });
+                    }
+                    catch (error) {
+                        const dataStorageError = new DataStorageError(error as RestError);
+                        dataStorageError.handle({
+                            invalidEtag() {
+                                console.warn(`ExpenseTemplateEntity('${userId}', '${expenseTemplateEntity.id}') was updated while changing tag name, skipping.`);
+                            },
+                            notFound() {
+                                console.warn(`ExpenseTemplateEntity('${userId}', '${expenseTemplateEntity.id}') was removed while changing tag name, skipping.`);
+                            },
+                            unknown() {
+                                console.error(`Failed to update ExpenseTemplateEntity with unknown error, skipping.`);
                             }
                         })
                     }
