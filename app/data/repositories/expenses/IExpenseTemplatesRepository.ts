@@ -9,4 +9,6 @@ export interface IExpenseTemplatesRepository {
     addAsync(expenseTemplate: WithoutAnyEtag<WithoutAnyState<Omit<IExpenseTemplate, "id" | "amount">>>): Promise<void>;
 
     updateAsync(expense: WithoutRelatedEtags<WithoutAnyState<Omit<IExpenseTemplate, "amount">>>): Promise<void>;
+
+    removeAsync(expenseTemplateId: string, expenseTemplateEtag: string): Promise<void>;
 }

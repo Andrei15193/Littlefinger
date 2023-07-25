@@ -5,6 +5,7 @@ import { ExpenseTemplateForm } from "../ExpenseTemplateForm";
 import { FormPage } from "../../page";
 import { GetExpenseTemplateQueryHandler } from "./queries/GetExpenseTemplateQueryHandler";
 import { EditExpenseTemplateCommandHandler } from "./commands/EditExpenseTemplateCommandHandler";
+import { RemoveExpenseTemplateCommandHandler } from "./commands/RemoveExpenseTemplateCommandHandler";
 import { AddExpenseTemplateTagCommandHandler } from "./commands/AddExpenseTemplateTagCommandHandler";
 import { RemoveExpenseTemplateTagCommandHandler } from "./commands/RemoveExpenseTemplateTagCommandHandler";
 
@@ -20,6 +21,10 @@ export class EditExpenseTemplatePage extends FormPage<ExpenseTemplateForm, {}, I
         {
             name: "edit",
             handlerType: EditExpenseTemplateCommandHandler
+        },
+        {
+            name: "remove",
+            handlerType: RemoveExpenseTemplateCommandHandler
         },
         {
             name: "add-tag",

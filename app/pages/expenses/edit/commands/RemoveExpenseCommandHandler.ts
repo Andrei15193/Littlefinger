@@ -35,8 +35,8 @@ export class RemoveExpenseCommandHandler extends FormCommandHandler<ExpenseForm,
                 })
 
                 return dataStorageError.map<IRequestResult>({
-                    notFound: () => this.redirect(`/expenses/${expenseMonth}`),
-                    unknown: () => this.render("expenses/edit", {
+                    notFound: this.redirect(`/expenses/${expenseMonth}`),
+                    unknown: this.render("expenses/edit", {
                         title: this._translation.expenses.edit.title(expenseId),
                         tab: "expenses",
                         state: expense.state,

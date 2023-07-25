@@ -194,7 +194,15 @@ export interface IExpenseTemplatesTranslationLabels {
         };
 
         readonly updateButtonLabel: string;
+        readonly deleteButtonLabel: string;
         readonly cancelButtonLabel: string;
+
+        readonly deleteConfirmation: {
+            readonly title: string;
+            readonly message: string;
+            readonly confirmButtonLabel: string;
+            readonly cancelButtonLabel: string;
+        }
     };
 
     readonly form: {

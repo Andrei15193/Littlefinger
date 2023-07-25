@@ -103,6 +103,18 @@ export class AzureStorageExpenseTemplatesRepository implements IExpenseTemplates
         }
     }
 
+    public async removeAsync(expenseTemplateId: string, expenseTemplateEtag: string): Promise<void> {
+        if (AzureTableStorageUtils.isInvalidEtag(expenseTemplateEtag))
+            throw new DataStorageError("InvalidEtag");
+
+        try {
+            await this._azureStorage.tables.expenseTemplates.deleteEntity(AzureTableStorageUtils.escapeKeyValue(this._userId), AzureTableStorageUtils.escapeKeyValue(expenseTemplateId), { etag: expenseTemplateEtag });
+        }
+        catch (error) {
+            throw new DataStorageError(error as RestError);
+        }
+    }
+
     private async _getAllExpenseTagsByNameAsync(): Promise<Record<string, IExpenseTag>> {
         const allExpenseTagsByName: Record<string, IExpenseTag> = {};
 

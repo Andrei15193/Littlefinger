@@ -7,6 +7,9 @@
                 <button type="submit" name="command" value="edit" class="btn btn-sm btn-primary">
                     {{{ markdown @root.translation.expenseTemplates.edit.updateButtonLabel }}}
                 </button>
+                <button type="button" class="ms-2 btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#confirmationModal">
+                    {{{ markdown @root.translation.expenseTemplates.edit.deleteButtonLabel }}}
+                </button>
                 <a href="/expense-templates" class="ms-2 btn btn-sm btn-secondary">
                     {{{ markdown @root.translation.expenseTemplates.edit.cancelButtonLabel }}}
                 </a>
@@ -16,6 +19,30 @@
             <input type="hidden" id="etag" name="etag" value="{{ form.etag }}">
 
             {{> expenseTemplates/form }}
+        </div>
+    </div>
+    
+    <div class="modal fade" id="confirmationModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">
+                        {{{ markdown @root.translation.expenseTemplates.edit.deleteConfirmation.title }}}
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {{{ markdownBlock @root.translation.expenseTemplates.edit.deleteConfirmation.message }}}
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" name="command" value="remove" class="btn btn-danger">
+                        {{{ markdown @root.translation.expenseTemplates.edit.deleteConfirmation.confirmButtonLabel }}}
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        {{{ markdown @root.translation.expenseTemplates.edit.deleteConfirmation.cancelButtonLabel }}}
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </form>

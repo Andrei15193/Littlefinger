@@ -29,7 +29,15 @@ export const expenseTemplatesTranslationLabels: IExpenseTemplatesTranslationLabe
         },
 
         updateButtonLabel: "Update",
+        deleteButtonLabel: "Delete",
         cancelButtonLabel: "Cancel",
+
+        deleteConfirmation: {
+            title: "Confirm Deletion",
+            message: "This action will permanently delete your expense template.\n\nPlease confirm your action.",
+            confirmButtonLabel: "Confirm",
+            cancelButtonLabel: "Cancel"
+        }
     },
     form: {
         name: {

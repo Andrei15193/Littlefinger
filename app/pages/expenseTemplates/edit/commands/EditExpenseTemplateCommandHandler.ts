@@ -44,8 +44,7 @@ export class EditExpenseTemplateCommandHandler extends FormCommandHandler<Expens
                 return this.redirect("/expense-templates");
             }
             catch (error) {
-                console.error(error);
-                form.error = this._translation.expenses.form.error.unknown;
+                form.error = this._translation.expenseTemplates.form.error.unknown;
 
                 return this.render("expenseTemplates/edit", {
                     title: this._translation.expenses.add.title,
