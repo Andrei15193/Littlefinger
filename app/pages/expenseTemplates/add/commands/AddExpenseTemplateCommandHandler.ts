@@ -41,7 +41,6 @@ export class AddExpenseTemplateCommandHandler extends FormCommandHandler<Expense
                 return this.redirect("/expense-templates");
             }
             catch (error) {
-                console.error(error);
                 form.error = this._translation.expenses.form.error.unknown;
 
                 return this.render("expenseTemplates/add", {

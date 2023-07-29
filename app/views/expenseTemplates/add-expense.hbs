@@ -1,0 +1,18 @@
+<h3>{{{ markdown @root.translation.expenses.add.pageTitle }}}</h3>
+
+<form method="POST">
+    <div class="d-flex flex-column-reverse">
+        <div class="d-flex flex-row">
+            <button type="submit" name="command" value="add" class="btn btn-sm btn-primary">
+                {{{ markdown @root.translation.expenses.add.addButtonLabel }}}
+            </button>
+            <a href="/expense-templates" class="ms-2 btn btn-sm btn-secondary">
+                {{{ markdown @root.translation.expenses.add.cancelButtonLabel }}}
+            </a>
+        </div>
+
+        <div>
+            {{> expenses/form}}
+        </div>
+    </div>
+</form>

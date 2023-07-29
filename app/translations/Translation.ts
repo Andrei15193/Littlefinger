@@ -175,6 +175,10 @@ export interface IExpenseTemplatesTranslationLabels {
             readonly actions: string;
         };
 
+        readonly actions: {
+            readonly addExpense: string;
+        };
+
         readonly empty: string;
     }
 

@@ -10,6 +10,11 @@ export const expenseTemplatesTranslationLabels: IExpenseTemplatesTranslationLabe
             name: "Name",
             actions: "Actions"
         },
+
+        actions: {
+            addExpense: "Add expense"
+        },
+
         empty: "There are no expenses templates."
     },
     add: {

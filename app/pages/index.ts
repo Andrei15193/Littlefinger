@@ -2,6 +2,7 @@ import type { IPage } from "./page";
 import { HomePage } from "./home";
 import { AddExpensePage, EditExpensePage, ListExpensesPage } from "./expenses";
 import { AddExpenseTemplatePage, EditExpenseTemplatePage, ListExpenseTemplatesPage } from "./expenseTemplates";
+import { AddExpenseFromTemplatePage } from "./expenseTemplates/addExpense/AddExpenseFromTemplatePage";
 import { ListExpenseShopsPage } from "./expenseShops/index";
 import { ListExpenseTagsPage } from "./expenseTags/index";
 import { AboutPage } from "./about";
@@ -17,6 +18,7 @@ export const pages: IPage[] = [
     new ListExpenseTemplatesPage(),
     new AddExpenseTemplatePage(),
     new EditExpenseTemplatePage(),
+    new AddExpenseFromTemplatePage(),
 
     new ListExpenseShopsPage(),
 

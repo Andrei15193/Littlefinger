@@ -38,7 +38,8 @@
                 <th class="align-middle w-100">
                     <a href="/expense-templates/{{ this.id }}">{{ this.name }}</a>
                 </th>
-                <td class="ps-2 pe-0">
+                <td>
+                    <a href="/expense-templates/{{ this.id }}/add-expense" class="btn btn-sm btn-primary text-nowrap">{{{ markdown @root.translation.expenseTemplates.list.actions.addExpense }}}</a>
                 </td>
             </tr>
             {{/each}}
