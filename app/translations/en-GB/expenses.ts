@@ -48,6 +48,7 @@ export const expensesTranslationLabels: IExpensesTranslationLabels = {
         },
 
         updateButtonLabel: "Update",
+        copyButtonLabel: "Copy",
         deleteButtonLabel: "Delete",
         cancelButtonLabel: "Cancel",
 
@@ -57,6 +58,17 @@ export const expensesTranslationLabels: IExpensesTranslationLabels = {
             confirmButtonLabel: "Confirm",
             cancelButtonLabel: "Cancel"
         }
+    },
+    copy: {
+        title(expenseId) {
+            return `Copy Expense ${expenseId}`;
+        },
+        pageTitle: "Copy Expense",
+        notFound: {
+            title: "Expense Not Found"
+        },
+        copyButtonLabel: "Copy",
+        cancelButtonLabel: "Cancel"
     },
     form: {
         name: {

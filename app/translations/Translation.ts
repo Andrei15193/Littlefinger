@@ -99,6 +99,7 @@ export interface IExpensesTranslationLabels {
         };
 
         readonly updateButtonLabel: string;
+        readonly copyButtonLabel: string;
         readonly deleteButtonLabel: string;
         readonly cancelButtonLabel: string;
 
@@ -108,6 +109,17 @@ export interface IExpensesTranslationLabels {
             readonly confirmButtonLabel: string;
             readonly cancelButtonLabel: string;
         }
+    };
+
+    readonly copy: {
+        title(expenseId: string): string;
+        readonly pageTitle: string;
+        readonly notFound: {
+            readonly title: string;
+        };
+
+        readonly copyButtonLabel: string;
+        readonly cancelButtonLabel: string;
     };
 
     readonly form: {

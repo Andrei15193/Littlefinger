@@ -1,10 +1,9 @@
 import type { IPage } from "./page";
 import { HomePage } from "./home";
-import { AddExpensePage, EditExpensePage, ListExpensesPage } from "./expenses";
-import { AddExpenseTemplatePage, EditExpenseTemplatePage, ListExpenseTemplatesPage } from "./expenseTemplates";
-import { AddExpenseFromTemplatePage } from "./expenseTemplates/addExpense/AddExpenseFromTemplatePage";
-import { ListExpenseShopsPage } from "./expenseShops/index";
-import { ListExpenseTagsPage } from "./expenseTags/index";
+import { AddExpensePage, EditExpensePage, CopyExpensePage, ListExpensesPage } from "./expenses";
+import { AddExpenseTemplatePage, EditExpenseTemplatePage, AddExpenseFromTemplatePage, ListExpenseTemplatesPage } from "./expenseTemplates";
+import { ListExpenseShopsPage } from "./expenseShops";
+import { ListExpenseTagsPage } from "./expenseTags";
 import { AboutPage } from "./about";
 import { AzureActiveDirectoryUserFlowTemplatePage } from "./azureActiveDirectoryUserFlowTemplate/index"
 
@@ -14,6 +13,7 @@ export const pages: IPage[] = [
     new ListExpensesPage(),
     new AddExpensePage(),
     new EditExpensePage(),
+    new CopyExpensePage(),
 
     new ListExpenseTemplatesPage(),
     new AddExpenseTemplatePage(),
